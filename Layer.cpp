@@ -2772,41 +2772,43 @@ std::ostream& operator<< (std::ostream& out, Layer::Attributes& a)
 
 
 
+/// <summary>
+/// Constructor for the LayerDescriptor class.
+/// </summary>
 LayerDescriptor::LayerDescriptor() :
-_kind(Layer::Kind::Hidden),
-_type(Layer::Type::FullyConnected),
-_poolingFunction(None),
-_Nx(1),
-_Ny(1),
-_Nz(1),
-_Nw(1),
-_dimensions(1),
-_bDimensionsProvided(true),
-_weightInit(Xavier),
-_weightInitScale((float)1.0),
-_biasInit((float)0.0),
-_kernelX(1),
-_kernelY(1),
-_kernelZ(1),
-_kernelStrideX(1),
-_kernelStrideY(1),
-_kernelStrideZ(1),
-_kernelPaddingX(0),
-_kernelPaddingY(0),
-_kernelPaddingZ(0),
-_kernelDimensions(1),
-_weightNorm((float)0.0),
-_deltaNorm((float)0.0),
-_pDropout((float)0.0),
-_activation(Activation::Sigmoid),
-_sparsenessPenalty_p((float)0.0),
-_sparsenessPenalty_beta((float)0.0),
-_RELUSlope(NAN),
-_ELUAlpha(NAN),
-_SELULambda(NAN),
-_attributes(Layer::Attributes::None)
+    _kind(Layer::Kind::Hidden),                 // The kind of layer.
+    _type(Layer::Type::FullyConnected),         // The type of layer.
+    _poolingFunction(None),                     // The pooling function used (if any).
+    _Nx(1),                                     // The number of units in the x dimension.
+    _Ny(1),                                     // The number of units in the y dimension.
+    _Nz(1),                                     // The number of units in the z dimension.
+    _Nw(1),                                     // The number of units in the w dimension.
+    _dimensions(1),                             // The number of dimensions for the layer.
+    _bDimensionsProvided(true),                 // Indicates if dimensions are provided.
+    _weightInit(Xavier),                        // The weight initialization method.
+    _weightInitScale((float)1.0),               // The scale for weight initialization.
+    _biasInit((float)0.0),                      // The bias initialization value.
+    _kernelX(1),                                // The size of the kernel in the x dimension.
+    _kernelY(1),                                // The size of the kernel in the y dimension.
+    _kernelZ(1),                                // The size of the kernel in the z dimension.
+    _kernelStrideX(1),                          // The stride in the x dimension for the kernel.
+    _kernelStrideY(1),                          // The stride in the y dimension for the kernel.
+    _kernelStrideZ(1),                          // The stride in the z dimension for the kernel.
+    _kernelPaddingX(0),                         // The padding in the x dimension for the kernel.
+    _kernelPaddingY(0),                         // The padding in the y dimension for the kernel.
+    _kernelPaddingZ(0),                         // The padding in the z dimension for the kernel.
+    _kernelDimensions(1),                       // The number of dimensions for the kernel.
+    _weightNorm((float)0.0),                    // The weight normalization factor.
+    _deltaNorm((float)0.0),                     // The delta normalization factor.
+    _pDropout((float)0.0),                      // The dropout probability.
+    _activation(Activation::Sigmoid),           // The activation function.
+    _sparsenessPenalty_p((float)0.0),           // The sparseness penalty factor (p).
+    _sparsenessPenalty_beta((float)0.0),        // The sparseness penalty factor (beta).
+    _RELUSlope(NAN),                            // The slope for the ReLU activation function.
+    _ELUAlpha(NAN),                             // The alpha parameter for the ELU activation function.
+    _SELULambda(NAN),                           // The lambda parameter for the SELU activation function.
+    _attributes(Layer::Attributes::None)        // Additional attributes for the layer.
 {
-
 }
 
 /// <summary>
