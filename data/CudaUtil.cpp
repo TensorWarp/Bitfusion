@@ -9,7 +9,7 @@
 #include <stdexcept>
 #include <queue>
 #include <functional>
-#include "ThreadPool.h"
+#include "../system/ThreadPool.h"
 
 namespace astdl
 {

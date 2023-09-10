@@ -6,7 +6,7 @@
 #include <memory>
 
 #include "RecsGenerator.h"
-#include "GpuTypes.h"
+#include "../system/GpuTypes.h"
 #include "Utils.h"
 #include "Filters.h"
 

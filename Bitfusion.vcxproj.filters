@@ -16,229 +16,206 @@
     <Filter Include="Header Files\System">
       <UniqueIdentifier>{74c1e75b-6dd3-4e15-b511-c8e9473ef9fc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\System\ThreadPool">
-      <UniqueIdentifier>{be29050f-9352-4294-9fbb-4e805ff6f978}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Knn">
-      <UniqueIdentifier>{4bf844e6-f00f-4db9-82c4-bd37c08d8c2c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Runtime">
       <UniqueIdentifier>{246eb618-0c2e-4ffe-8601-9c98b9b32cb0}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Utils">
       <UniqueIdentifier>{38e76f9f-ec3d-492b-9806-f81d61b30670}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Utils\CDL">
-      <UniqueIdentifier>{25f7384a-b2ba-40f7-aee0-c3eee5a36027}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Knn">
+    <Filter Include="Source Files\data">
       <UniqueIdentifier>{636bd7a6-2bce-4489-80d6-1ae152d7ce0f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Runtime">
+    <Filter Include="Source Files\runtime">
       <UniqueIdentifier>{dde391e4-7d48-44e0-a550-e18945afb0b3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Utils">
-      <UniqueIdentifier>{716488fe-53c2-4de3-b118-a8d7a3541eb6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\System">
+    <Filter Include="Source Files\system">
       <UniqueIdentifier>{4249eefe-b46e-49de-b506-cbeef0c67a4d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Github">
-      <UniqueIdentifier>{85c444fa-ae46-4093-8714-f1d7851a4fc7}</UniqueIdentifier>
+    <Filter Include="Source Files\utils">
+      <UniqueIdentifier>{716488fe-53c2-4de3-b118-a8d7a3541eb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\data">
+      <UniqueIdentifier>{4bf844e6-f00f-4db9-82c4-bd37c08d8c2c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MathUtil.cu">
-      <Filter>Source Files\Knn</Filter>
+    <ClCompile Include="system\Activation.cu">
+      <Filter>Source Files\system</Filter>
     </ClCompile>
-    <ClCompile Include="ExactGpu.cu">
-      <Filter>Source Files\Knn</Filter>
+    <ClCompile Include="system\Delta.cu">
+      <Filter>Source Files\system</Filter>
     </ClCompile>
-    <ClCompile Include="Data.cpp">
-      <Filter>Source Files\Knn</Filter>
+    <ClCompile Include="system\GpuTypes.cpp">
+      <Filter>Source Files\system</Filter>
     </ClCompile>
-    <ClCompile Include="DataReader.cpp">
-      <Filter>Source Files\Knn</Filter>
+    <ClCompile Include="system\kernels.cu">
+      <Filter>Source Files\system</Filter>
     </ClCompile>
-    <ClCompile Include="CudaUtil.cpp">
-      <Filter>Source Files\Knn</Filter>
+    <ClCompile Include="system\Layer.cpp">
+      <Filter>Source Files\system</Filter>
     </ClCompile>
-    <ClCompile Include="Runtime.cpp">
-      <Filter>Source Files\Runtime</Filter>
+    <ClCompile Include="system\Loss.cu">
+      <Filter>Source Files\system</Filter>
     </ClCompile>
-    <ClCompile Include="RecsGenerator.cpp">
-      <Filter>Source Files\Utils</Filter>
+    <ClCompile Include="system\Network.cpp">
+      <Filter>Source Files\system</Filter>
     </ClCompile>
-    <ClCompile Include="Utils.cpp">
-      <Filter>Source Files\Utils</Filter>
+    <ClCompile Include="system\Types.cpp">
+      <Filter>Source Files\system</Filter>
     </ClCompile>
-    <ClCompile Include="Output.cu">
-      <Filter>Source Files\Knn</Filter>
+    <ClCompile Include="system\Weight.cpp">
+      <Filter>Source Files\system</Filter>
     </ClCompile>
-    <ClCompile Include="NetCDFhelper.cpp">
-      <Filter>Source Files\Utils</Filter>
+    <ClCompile Include="runtime\Runtime.cpp">
+      <Filter>Source Files\runtime</Filter>
     </ClCompile>
-    <ClCompile Include="Main.cpp">
-      <Filter>Source Files\Utils</Filter>
+    <ClCompile Include="data\CudaUtil.cpp">
+      <Filter>Source Files\data</Filter>
     </ClCompile>
-    <ClCompile Include="NetCDFGenerator.cpp">
-      <Filter>Source Files\Utils</Filter>
+    <ClCompile Include="data\Data.cpp">
+      <Filter>Source Files\data</Filter>
     </ClCompile>
-    <ClCompile Include="Predict.cpp">
-      <Filter>Source Files\Utils</Filter>
+    <ClCompile Include="data\DataReader.cpp">
+      <Filter>Source Files\data</Filter>
     </ClCompile>
-    <ClCompile Include="CDL.cpp">
-      <Filter>Source Files\Utils</Filter>
+    <ClCompile Include="data\ExactGpu.cu">
+      <Filter>Source Files\data</Filter>
     </ClCompile>
-    <ClCompile Include="Weight.cpp">
-      <Filter>Source Files\System</Filter>
+    <ClCompile Include="data\MathUtil.cu">
+      <Filter>Source Files\data</Filter>
     </ClCompile>
-    <ClCompile Include="Types.cpp">
-      <Filter>Source Files\System</Filter>
+    <ClCompile Include="data\Output.cu">
+      <Filter>Source Files\data</Filter>
     </ClCompile>
-    <ClCompile Include="Network.cpp">
-      <Filter>Source Files\System</Filter>
+    <ClCompile Include="utils\CDL.cpp">
+      <Filter>Source Files\utils</Filter>
     </ClCompile>
-    <ClCompile Include="Loss.cu">
-      <Filter>Source Files\System</Filter>
+    <ClCompile Include="utils\Filters.cpp">
+      <Filter>Source Files\utils</Filter>
     </ClCompile>
-    <ClCompile Include="Layer.cpp">
-      <Filter>Source Files\System</Filter>
+    <ClCompile Include="utils\Main.cpp">
+      <Filter>Source Files\utils</Filter>
     </ClCompile>
-    <ClCompile Include="kernels.cu">
-      <Filter>Source Files\System</Filter>
+    <ClCompile Include="utils\NetCDFGenerator.cpp">
+      <Filter>Source Files\utils</Filter>
     </ClCompile>
-    <ClCompile Include="GpuTypes.cpp">
-      <Filter>Source Files\System</Filter>
+    <ClCompile Include="utils\NetCDFhelper.cpp">
+      <Filter>Source Files\utils</Filter>
     </ClCompile>
-    <ClCompile Include="Delta.cu">
-      <Filter>Source Files\System</Filter>
+    <ClCompile Include="utils\Predict.cpp">
+      <Filter>Source Files\utils</Filter>
     </ClCompile>
-    <ClCompile Include="Activation.cu">
-      <Filter>Source Files\System</Filter>
+    <ClCompile Include="utils\RecsGenerator.cpp">
+      <Filter>Source Files\utils</Filter>
     </ClCompile>
-    <ClCompile Include="Filters.cpp">
-      <Filter>Source Files\Utils</Filter>
+    <ClCompile Include="utils\Train.cpp">
+      <Filter>Source Files\utils</Filter>
     </ClCompile>
-    <ClCompile Include="Train.cpp">
-      <Filter>Source Files\Utils</Filter>
+    <ClCompile Include="utils\Utils.cpp">
+      <Filter>Source Files\utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Bitonic.cuh">
+    <ClInclude Include="system\ThreadPool.h">
+      <Filter>Source Files\system</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\CDL.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\CDLConfig.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\ConfigBase.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\ConfigException.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\ConfigFactory.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\Filters.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\JSONParsingException.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\Logger.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\NetCDFhelper.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\RecsGenerator.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\TrainingParameters.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\Utils.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="system\Bitonic.cuh">
       <Filter>Header Files\System</Filter>
     </ClInclude>
-    <ClInclude Include="GpuSort.h">
+    <ClInclude Include="system\ConcurrentQueue.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
-    <ClInclude Include="GpuTypes.h">
+    <ClInclude Include="system\Enum.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
-    <ClInclude Include="kernels.cuh">
+    <ClInclude Include="system\GpuSort.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
-    <ClInclude Include="Network.h">
+    <ClInclude Include="system\GpuTypes.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
-    <ClInclude Include="Weight.h">
+    <ClInclude Include="system\kernels.cuh">
       <Filter>Header Files\System</Filter>
     </ClInclude>
-    <ClInclude Include="ThreadPool.h">
-      <Filter>Header Files\System\ThreadPool</Filter>
-    </ClInclude>
-    <ClInclude Include="Types.h">
+    <ClInclude Include="system\Layer.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
-    <ClInclude Include="ExactGpu.cuh">
-      <Filter>Header Files\Knn</Filter>
-    </ClInclude>
-    <ClInclude Include="Output.cuh">
-      <Filter>Header Files\Knn</Filter>
-    </ClInclude>
-    <ClInclude Include="MathUtil.cuh">
-      <Filter>Header Files\Knn</Filter>
-    </ClInclude>
-    <ClInclude Include="Data.h">
-      <Filter>Header Files\Knn</Filter>
-    </ClInclude>
-    <ClInclude Include="CudaUtil.h">
-      <Filter>Header Files\Knn</Filter>
-    </ClInclude>
-    <ClInclude Include="Layer.h">
+    <ClInclude Include="system\Network.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
-    <ClInclude Include="DataReader.h">
-      <Filter>Header Files\Knn</Filter>
-    </ClInclude>
-    <ClInclude Include="Enum.h">
+    <ClInclude Include="system\Types.h">
       <Filter>Header Files\System</Filter>
     </ClInclude>
-    <ClInclude Include="Runtime.h">
+    <ClInclude Include="system\Weight.h">
+      <Filter>Header Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\Runtime.h">
       <Filter>Header Files\Runtime</Filter>
     </ClInclude>
-    <ClInclude Include="Filters.h">
-      <Filter>Header Files\Utils</Filter>
+    <ClInclude Include="data\CudaUtil.h">
+      <Filter>Header Files\data</Filter>
     </ClInclude>
-    <ClInclude Include="Utils.h">
-      <Filter>Header Files\Utils</Filter>
+    <ClInclude Include="data\Data.h">
+      <Filter>Header Files\data</Filter>
     </ClInclude>
-    <ClInclude Include="ConfigFactory.h">
-      <Filter>Header Files\Utils\CDL</Filter>
+    <ClInclude Include="data\DataReader.h">
+      <Filter>Header Files\data</Filter>
     </ClInclude>
-    <ClInclude Include="JSONParsingException.h">
-      <Filter>Header Files\Utils\CDL</Filter>
+    <ClInclude Include="data\ExactGpu.cuh">
+      <Filter>Header Files\data</Filter>
     </ClInclude>
-    <ClInclude Include="ConfigBase.h">
-      <Filter>Header Files\Utils\CDL</Filter>
+    <ClInclude Include="data\MathUtil.cuh">
+      <Filter>Header Files\data</Filter>
     </ClInclude>
-    <ClInclude Include="ConfigException.h">
-      <Filter>Header Files\Utils\CDL</Filter>
-    </ClInclude>
-    <ClInclude Include="TrainingParameters.h">
-      <Filter>Header Files\Utils\CDL</Filter>
-    </ClInclude>
-    <ClInclude Include="CDLConfig.h">
-      <Filter>Header Files\Utils\CDL</Filter>
-    </ClInclude>
-    <ClInclude Include="CDL.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="NetCDFhelper.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Logger.h">
-      <Filter>Header Files\Utils\CDL</Filter>
-    </ClInclude>
-    <ClInclude Include="RecsGenerator.h">
-      <Filter>Header Files\Utils</Filter>
+    <ClInclude Include="data\Output.cuh">
+      <Filter>Header Files\data</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="CODE_OF_CONDUCT.md">
-      <Filter>Resource Files\Github</Filter>
-    </None>
-    <None Include="CONTRIBUTING.md">
-      <Filter>Resource Files\Github</Filter>
-    </None>
-    <None Include="LICENSE">
-      <Filter>Resource Files\Github</Filter>
-    </None>
-    <None Include="README.md">
-      <Filter>Resource Files\Github</Filter>
-    </None>
-    <None Include="SECURITY.md">
-      <Filter>Resource Files\Github</Filter>
-    </None>
+    <None Include=".gitattributes" />
+    <None Include="SECURITY.md" />
+    <None Include="README.md" />
+    <None Include="CONTRIBUTING.md" />
+    <None Include="LICENSE" />
+    <None Include=".gitignore" />
+    <None Include="CODE_OF_CONDUCT.md" />
     <None Include="vcpkg.json">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include=".gitattributes">
-      <Filter>Resource Files\Github</Filter>
-    </None>
-    <None Include=".gitignore">
-      <Filter>Resource Files\Github</Filter>
-    </None>
-    <None Include="Dockerfile">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

@@ -17,8 +17,8 @@
 #include <string_view>
 
 #include "json/json.h"
-#include "Enum.h"
-#include "ThreadPool.h"
+#include "../system/Enum.h"
+#include "../system/ThreadPool.h"
 #include "Logger.h"
 #include "JSONParsingException.h"
 #include "ConfigException.h"

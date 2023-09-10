@@ -1,6 +1,6 @@
 #ifdef __CUDACC__
 
-#include "Bitonic.cuh"
+#include "../system/Bitonic.cuh"
 #include "Output.cuh"
 #include <limits>
 

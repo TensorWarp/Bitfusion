@@ -1,8 +1,8 @@
 #pragma once
 
-#include "GpuTypes.h"
-#include "Types.h"
-#include "Layer.h"
+#include "../system/GpuTypes.h"
+#include "../system/Types.h"
+#include "../system/Layer.h"
 
 using namespace std;
 

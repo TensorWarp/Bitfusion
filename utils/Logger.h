@@ -1,5 +1,5 @@
 #pragma once
-#include "Enum.h"
+#include "../system/Enum.h"
 
 class Logger {
 public:

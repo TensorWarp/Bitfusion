@@ -8,7 +8,7 @@
 #include <vector>
 #include <condition_variable>
 
-#include "ConfigException.h"
+#include "../utils/ConfigException.h"
 
 /// <summary>
 /// Thread pool implementation for concurrent task execution.

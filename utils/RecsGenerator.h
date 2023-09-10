@@ -4,8 +4,8 @@
 #include <string>
 #include <memory>
 
-#include "GpuTypes.h"
-#include "Types.h"
+#include "../system/GpuTypes.h"
+#include "../system/Types.h"
 
 class FilterConfig;
 class Network;

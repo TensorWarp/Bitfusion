@@ -1,5 +1,5 @@
 #pragma once
-#include "Enum.h"
+#include "../system/Enum.h"
 
 class ConfigException : public std::exception {
 public:

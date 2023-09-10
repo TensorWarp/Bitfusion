@@ -1,7 +1,7 @@
 #pragma once
 
-#include "GpuTypes.h"
-#include "Types.h"
+#include "../system/GpuTypes.h"
+#include "../system/Types.h"
 
 struct CDL
 {

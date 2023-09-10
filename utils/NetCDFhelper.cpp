@@ -12,7 +12,7 @@
 #include <unordered_map>
 #include <stdexcept>
 
-#include "Enum.h"
+#include "../system/Enum.h"
 #include "Utils.h"
 #include "NetCDFhelper.h"
 

@@ -1,5 +1,5 @@
-#include "GpuTypes.h"
-#include "Types.h"
+#include "../system/GpuTypes.h"
+#include "../system/Types.h"
 #include <time.h>
 #include "CDL.h"
 

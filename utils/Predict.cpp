@@ -13,8 +13,8 @@
 
 #include "Utils.h"
 #include "Filters.h"
-#include "GpuTypes.h"
-#include "Types.h"
+#include "../system/GpuTypes.h"
+#include "../system/Types.h"
 #include "RecsGenerator.h"
 #include "NetCDFhelper.h"
 

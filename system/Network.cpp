@@ -1,7 +1,7 @@
 #include "GpuTypes.h"
 #include "Types.h"
 #include "Kernels.cuh"
-#include "Utils.h"
+#include "../utils/Utils.h"
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 #include <queue>

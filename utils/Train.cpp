@@ -11,9 +11,9 @@
 #include <stdexcept>
 #include <unordered_map>
 #include <iomanip>
-#include "GpuTypes.h"
+#include "../system/GpuTypes.h"
 #include "NetCDFhelper.h"
-#include "Types.h"
+#include "../system/Types.h"
 #include "Utils.h"
 
 using namespace netCDF;
