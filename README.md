@@ -10,7 +10,7 @@ We're still in the project's early developmental stages, and we highly value you
 
 For easy access to our list of pending tasks, you can navigate to the "Task List" view in Visual Studio, which includes all the TODO items.
 
-## Building with Visual Studio 2022 17.7
+## Install Visual Studio
 
 We highly recommend Visual Studio as our preferred tool for C++ projects, It offers a comprehensive and user-friendly development environment with powerful features tailored specifically for C++ programming with plugins for both CUDA & AMD. To install Visual Studio for your C++ projects, follow these steps:
 
@@ -27,7 +27,7 @@ The NVIDIA CUDA Toolkit provides a development environment for creating high per
 https://developer.nvidia.com/cuda-downloads?target_os=Windows&target_arch=x86_64&target_version=11
 
 ### Install AMD HIP SDK
-The AMD HIP SDK is a software development kit (SDK) that allows developers to utilize both CUDA & HIP in one codebase.
+The AMD HIP SDK is a software development kit (SDK) that allows us to utilize both CUDA & HIP in one codebase overtime.
 
 https://www.amd.com/en/developer/rocm-hub/hip-sdk.html
 
@@ -64,7 +64,8 @@ vcpkg install
 2. Right-click on the project in the Solution Explorer, and select "Properties" from the context menu.
 3. In the project properties window, navigate to the "Configuration Properties" section and select "VC++ Directories".
 4. In the "Include Directories" field, add the paths to the header files of the external libraries. These paths will vary depending on the installation location of each library (Separate multiple paths with semicolons)
-5. In the "Library Directories" field, add the paths to the library files (.lib) of the external libraries. Again, these paths will depend on the installation location of each library. (Separate multiple paths with semicolons)
-7. Next, navigate to the "Linker" section under "Configuration Properties" and select "Input".
-8. In the "Additional Dependencies" field, add the names of the library files (.lib) that the project needs to link against. Make sure to include the appropriate library names for each external library. (Separate multiple libraries with spaces)
-9. Click "Apply" and then "OK" to save the changes to the project properties.
+5. Click "Apply" and then "OK" to save the changes to the project properties.
+
+## Build with Visual Studio
+
+Go the tab build and choose build solution or press F7 to build the project.

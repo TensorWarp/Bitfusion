@@ -115,7 +115,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Bitfusion\vcpkg_installed\x86-windows\include;C:\Bitfusion\vcpkg_installed\x86-windows\include\gmock;C:\Bitfusion\vcpkg_installed\x86-windows\include\gtest;C:\Bitfusion\vcpkg_installed\x86-windows\include\json;C:\Bitfusion\vcpkg_installed\x86-windows\include\openblas;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.2\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Bitfusion\vcpkg_installed\x86-windows\include\gmock;C:\Bitfusion\vcpkg_installed\x86-windows\include\gtest;C:\Bitfusion\vcpkg_installed\x86-windows\include\json;C:\Bitfusion\vcpkg_installed\x86-windows\include\openblas;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.2\include;E:\Bitfusion\vcpkg_installed\x86-windows\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
