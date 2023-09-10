@@ -2701,76 +2701,79 @@ void Layer::Dump(std::string fname, float* pBuffer)
 }
 
 
-std::pair<Layer::Kind, std::string> Layer::_sKindPair[] =
-{
-    std::pair<Layer::Kind, std::string>(Layer::Kind::Input,      "Input"),
-    std::pair<Layer::Kind, std::string>(Layer::Kind::Hidden,     "Hidden"),
-    std::pair<Layer::Kind, std::string>(Layer::Kind::Output,     "Output"),
-    std::pair<Layer::Kind, std::string>(Layer::Kind::Target,     "Target"),    
+/// <summary>
+/// Defines a static constant map that associates Layer kinds with their string representations.
+/// </summary>
+const std::map<Layer::Kind, std::string> Layer::_sKindMap = {
+    {Layer::Kind::Input, "Input"},
+    {Layer::Kind::Hidden, "Hidden"},
+    {Layer::Kind::Output, "Output"},
+    {Layer::Kind::Target, "Target"}
 };
 
-std::map<Layer::Kind, std::string> Layer::_sKindMap =
-std::map<Layer::Kind, std::string>(_sKindPair, _sKindPair + sizeof(_sKindPair) / sizeof(_sKindPair[0]));
-
-
-std::pair<Layer::Type, std::string> Layer::_sTypePair[] =
-{
-    std::pair<Layer::Type, std::string>(Layer::Type::FullyConnected, "FullyConnected"),
-    std::pair<Layer::Type, std::string>(Layer::Type::Convolutional,  "Convolutional"),
-    std::pair<Layer::Type, std::string>(Layer::Type::Pooling,        "Pooling"),    
+/// <summary>
+/// Defines a static constant map that associates Layer types with their string representations.
+/// </summary>
+const std::map<Layer::Type, std::string> Layer::_sTypeMap = {
+    {Layer::Type::FullyConnected, "FullyConnected"},
+    {Layer::Type::Convolutional, "Convolutional"},
+    {Layer::Type::Pooling, "Pooling"}
 };
 
-std::map<Layer::Type, std::string> Layer::_sTypeMap =
-std::map<Layer::Type, std::string>(_sTypePair, _sTypePair + sizeof(_sTypePair) / sizeof(_sTypePair[0]));
-
-std::pair<Layer::Attributes, std::string> Layer::_sAttributesPair[] =
-{
-    std::pair<Layer::Attributes, std::string>(Layer::Attributes::None,               "None"),
-    std::pair<Layer::Attributes, std::string>(Layer::Attributes::Sparse,             "Sparse"),
-    std::pair<Layer::Attributes, std::string>(Layer::Attributes::Denoising,          "Denoising"),
-    std::pair<Layer::Attributes, std::string>(Layer::Attributes::BatchNormalization, "BatchNormalization"),
+/// <summary>
+/// Defines a static constant map that associates Layer attributes with their string representations.
+/// </summary>
+const std::map<Layer::Attributes, std::string> Layer::_sAttributesMap = {
+    {Layer::Attributes::None, "None"},
+    {Layer::Attributes::Sparse, "Sparse"},
+    {Layer::Attributes::Denoising, "Denoising"},
+    {Layer::Attributes::BatchNormalization, "BatchNormalization"}
 };
 
-std::map<Layer::Attributes, std::string> Layer::_sAttributesMap =
-std::map<Layer::Attributes, std::string>(_sAttributesPair, _sAttributesPair + sizeof(_sAttributesPair) / sizeof(_sAttributesPair[0]));
-
-std::pair<Layer::Parallelization, std::string> Layer::_sParallelizationPair[] =
-{
-    
-    std::pair<Layer::Parallelization, std::string>(Layer::Parallelization::Data,     "Data"),
-    std::pair<Layer::Parallelization, std::string>(Layer::Parallelization::Model,    "Model"),
-    std::pair<Layer::Parallelization, std::string>(Layer::Parallelization::Serial,   "Serial"),
+/// <summary>
+/// Defines a static constant map that associates Layer parallelization options with their string representations.
+/// </summary>
+const std::map<Layer::Parallelization, std::string> Layer::_sParallelizationMap = {
+    {Layer::Parallelization::Data, "Data"},
+    {Layer::Parallelization::Model, "Model"},
+    {Layer::Parallelization::Serial, "Serial"}
 };
 
-std::map<Layer::Parallelization, std::string> Layer::_sParallelizationMap =
-std::map<Layer::Parallelization, std::string>(_sParallelizationPair, _sParallelizationPair + sizeof(_sParallelizationPair) / sizeof(_sParallelizationPair[0]));
-
-
-std::ostream& operator<< (std::ostream& out, Layer::Kind& k)
-{
-    out << Layer::_sKindMap[k];
-    return out;
-}
-std::ostream& operator<< (std::ostream& out, Layer::Type& t)
-{
-    out << Layer::_sTypeMap[t];
+/// <summary>
+/// Overload the << operator for Layer::Kind to allow printing a Layer kind to an output stream.
+/// </summary>
+/// <param name="out">The output stream.</param>
+/// <param name="k">The Layer::Kind to be printed.</param>
+/// <returns>The output stream.</returns>
+std::ostream& operator<< (std::ostream& out, Layer::Kind k) {
+    // Use the _sKindMap to get the string representation of the Layer kind and output it to the stream.
+    out << Layer::_sKindMap.at(k);
     return out;
 }
 
-std::ostream& operator<< (std::ostream& out, Layer::Parallelization& p)
-{
-    out << Layer::_sParallelizationMap[p];
+/// <summary>
+/// Overload the << operator for Layer::Type to allow printing a Layer type to an output stream.
+/// </summary>
+/// <param name="out">The output stream.</param>
+/// <param name="t">The Layer::Type to be printed.</param>
+/// <returns>The output stream.</returns>
+std::ostream& operator<< (std::ostream& out, Layer::Type t) {
+    // Use the _sTypeMap to get the string representation of the Layer type and output it to the stream.
+    out << Layer::_sTypeMap.at(t);
     return out;
 }
 
-std::ostream& operator<< (std::ostream& out, Layer::Attributes& a)
-{
-    out << Layer::_sAttributesMap[a];
+/// <summary>
+/// Overload the << operator for Layer::Parallelization to allow printing a Layer parallelization option to an output stream.
+/// </summary>
+/// <param name="out">The output stream.</param>
+/// <param name="p">The Layer::Parallelization option to be printed.</param>
+/// <returns>The output stream.</returns>
+std::ostream& operator<< (std::ostream& out, Layer::Parallelization p) {
+    // Use the _sParallelizationMap to get the string representation of the parallelization option and output it to the stream.
+    out << Layer::_sParallelizationMap.at(p);
     return out;
 }
-
-
-
 
 /// <summary>
 /// Constructor for the LayerDescriptor class.

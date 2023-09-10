@@ -24,7 +24,7 @@ public:
     };
 
     static std::pair<Layer::Kind, std::string> _sKindPair[];
-    static std::map<Layer::Kind, std::string> _sKindMap;
+    static const std::map<Kind, std::string> _sKindMap;
 
     enum Type
     {
@@ -34,7 +34,7 @@ public:
     };
 
     static std::pair<Layer::Type, std::string> _sTypePair[];
-    static std::map<Layer::Type, std::string> _sTypeMap;
+    static const std::map<Type, std::string> _sTypeMap;
 
     enum Attributes
     {
@@ -45,7 +45,7 @@ public:
     };
 
     static std::pair<Layer::Attributes, std::string> _sAttributesPair[];
-    static std::map<Layer::Attributes, std::string> _sAttributesMap;
+    static const std::map<Attributes, std::string> _sAttributesMap;
 
     enum Parallelization {
         Data,
@@ -54,7 +54,7 @@ public:
     };
 
     static std::pair<Layer::Parallelization, std::string> _sParallelizationPair[];
-    static std::map<Layer::Parallelization, std::string> _sParallelizationMap;
+    static const std::map<Parallelization, std::string> _sParallelizationMap;
 
 
 private:
