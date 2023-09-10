@@ -1355,109 +1355,125 @@ void Layer::ForwardPropagateFullyConnected(uint32_t position, uint32_t batch, bo
 #endif    
 }
 
-
+/// <summary>
+/// This function performs forward propagation for a convolutional layer.
+/// </summary>
+/// <param name="position">The position of the layer.</param>
+/// <param name="batch">The batch size.</param>
+/// <param name="bTraining">A flag indicating whether training mode is enabled.</param>
 void Layer::ForwardPropagateConvolutional(uint32_t position, uint32_t batch, bool bTraining)
-{ 
-    if (_kind != Layer::Kind::Input)
+{
+    // Check if the layer kind is not Input and the number of GPU processes is 1
+    if (_kind != Layer::Kind::Input && getGpu()._numprocs == 1)
     {
-        if (getGpu()._numprocs == 1)
-        {
-            float alpha                   = (float)1.0;
-            float beta                    = (float)0.0;            
-            for (uint32_t i = 0; i < _vIncomingLayer.size(); i++)
-            {
-                Layer* pLayer             = _vIncomingLayer[i];
-                Weight* pWeight           = _vIncomingWeight[i]->_bShared ? 
-                                              _vIncomingWeight[i]->_pSharedWeight : 
-                                              _vIncomingWeight[i];
+        constexpr float alpha = 1.0f;                   // Define a constant alpha with a value of 1.0
+        float beta = 0.0f;                              // Initialize a beta variable with a value of 0.0
 
-                cudnnStatus_t cudnnStatus   = cudnnConvolutionForward(getGpu()._cuDNNHandle,
-                                                                      &alpha,
-                                                                      pLayer->getTensorDescriptor(batch),
-                                                                      pLayer->GetUnitBuffer(),
-                                                                      pWeight->_convFilterDesc,
-                                                                      pWeight->_pbWeight->_pDevData,
-                                                                      pWeight->_convDesc,
-                                                                      pWeight->_convFWAlgo,
-                                                                      getGpu()._pNetwork->_pbCUDNNWorkspace->_pDevData,
-                                                                      getGpu()._pNetwork->_CUDNNWorkspaceSize,
-                                                                      &beta,
-                                                                      getTensorDescriptor(batch),
-                                                                      GetIncomingUnitBuffer());
-                CUDNNERROR(cudnnStatus, "Layer::ForwardPropagateConvolutional: cudnnConvolutionForward Failed");
-                                                                                 
-                cudnnStatus                 = cudnnAddTensor(getGpu()._cuDNNHandle,
-                                                             &alpha,
-                                                             _vIncomingWeight[i]->_convBiasTensor,
-                                                             _vIncomingWeight[i]->_pbBias->_pDevData,
-                                                             &alpha,
-                                                             getTensorDescriptor(batch),
-                                                             GetIncomingUnitBuffer());
-                CUDNNERROR(cudnnStatus, "Layer::ForwardPropagateConvolutional: cudnnAddTensor Failed");
-                beta                        = 1.0f;            
-            }
-            
-            for (auto l : _vIncomingSkip)
+        // Iterate over incoming layers and perform convolution forward propagation
+        for (auto i = 0u; i < _vIncomingLayer.size(); ++i)
+        {
+            auto* pLayer = _vIncomingLayer[i];
+            auto* pWeight = _vIncomingWeight[i]->_bShared ? _vIncomingWeight[i]->_pSharedWeight : _vIncomingWeight[i];
+
+            // Perform convolution forward operation using cuDNN
+            cudnnStatus_t cudnnStatus = cudnnConvolutionForward(getGpu()._cuDNNHandle,
+                &alpha,
+                pLayer->getTensorDescriptor(batch),
+                pLayer->GetUnitBuffer(),
+                pWeight->_convFilterDesc,
+                pWeight->_pbWeight->_pDevData,
+                pWeight->_convDesc,
+                pWeight->_convFWAlgo,
+                getGpu()._pNetwork->_pbCUDNNWorkspace->_pDevData,
+                getGpu()._pNetwork->_CUDNNWorkspaceSize,
+                &beta,
+                getTensorDescriptor(batch),
+                GetIncomingUnitBuffer());
+            CUDNNERROR(cudnnStatus, "Layer::ForwardPropagateConvolutional: cudnnConvolutionForward Failed");
+
+            // Add bias to the result using cuDNN
+            cudnnStatus = cudnnAddTensor(getGpu()._cuDNNHandle,
+                &alpha,
+                _vIncomingWeight[i]->_convBiasTensor,
+                _vIncomingWeight[i]->_pbBias->_pDevData,
+                &alpha,
+                getTensorDescriptor(batch),
+                GetIncomingUnitBuffer());
+            CUDNNERROR(cudnnStatus, "Layer::ForwardPropagateConvolutional: cudnnAddTensor Failed");
+            beta = 1.0f;                            // Update beta to 1.0 for subsequent iterations
+        }
+
+        // Add skip connections by calling kAddBuffers function
+        for (const auto& l : _vIncomingSkip)
+        {
+            kAddBuffers(GetIncomingUnitBuffer(), l->GetUnitBuffer(), batch * _stride);
+        }
+
+        // Check if batch normalization is enabled
+        if (_bBatchNormalization)
+        {
+            constexpr float alphaBN = 1.0f;         // Define constant alpha for batch normalization
+            constexpr float betaBN = 0.0f;          // Define constant beta for batch normalization
+
+            cudnnStatus_t cudnnStatus;
+
+            // Set tensor descriptors for batch normalization
+            cudnnStatus = cudnnSetTensor4dDescriptor(_tensorDescriptorBN, CUDNN_TENSOR_NCHW, CUDNN_DATA_FLOAT, batch, _Nz, _Ny, _Nx);
+            CUDNNERROR(cudnnStatus, "Layer::ForwardPropagateConvolutional: unable to create _tensorDescriptorBN");
+            cudnnStatus = cudnnSetTensor4dDescriptor(_scaleBiasMeanVarDescBN, CUDNN_TENSOR_NCHW, CUDNN_DATA_FLOAT, 1, _Nz, 1, 1);
+            CUDNNERROR(cudnnStatus, "Layer::ForwardPropagateConvolutional: unable to create _scaleBiasMeanVarDescBN");
+
+            // Perform batch normalization based on training or inference mode
+            if (bTraining)
             {
-                kAddBuffers(GetIncomingUnitBuffer(), l->GetUnitBuffer(), batch * _stride);
+                cudnnStatus = cudnnBatchNormalizationForwardTraining(
+                    getGpu()._cuDNNHandle,
+                    CUDNN_BATCHNORM_SPATIAL,
+                    &alphaBN,
+                    &betaBN,
+                    _tensorDescriptorBN,
+                    GetIncomingUnitBuffer(),
+                    _tensorDescriptorBN,
+                    GetUnitBuffer(),
+                    _scaleBiasMeanVarDescBN,
+                    _pbScaleBN->_pDevData,
+                    _pbBiasBN->_pDevData,
+                    1.0 / (_bnCalls + 1),
+                    _pbRunningMeanBN->_pDevData,
+                    _pbRunningVarianceBN->_pDevData,
+                    CUDNN_BN_MIN_EPSILON,
+                    _pbSaveMeanBN->_pDevData,
+                    _pbSaveInvVarianceBN->_pDevData);
+                CUDNNERROR(cudnnStatus, "Layer::ForwardPropagateConvolutional: cudnnBatchNormalizationForwardTraining Failed");
+                ++_bnCalls;
             }
-            
-            if (_bBatchNormalization)
+            else
             {
-                float alpha = 1;
-                float beta = 0;
-                cudnnStatus_t cudnnStatus;
-                cudnnStatus = cudnnSetTensor4dDescriptor(_tensorDescriptorBN, CUDNN_TENSOR_NCHW, CUDNN_DATA_FLOAT, batch, _Nz, _Ny, _Nx);
-                CUDNNERROR(cudnnStatus, "Layer::ForwardPropagateConvolutional: unable to create _tensorDescriptorBN");        
-                cudnnStatus = cudnnSetTensor4dDescriptor(_scaleBiasMeanVarDescBN, CUDNN_TENSOR_NCHW, CUDNN_DATA_FLOAT, 1, _Nz, 1, 1);
-                CUDNNERROR(cudnnStatus, "Layer::ForwardPropagateConvolutional: unable to create _scaleBiasMeanVarDescBN");        
-                if (bTraining)
-                {
-                    cudnnStatus = cudnnBatchNormalizationForwardTraining(
-                            getGpu()._cuDNNHandle,
-                            CUDNN_BATCHNORM_SPATIAL,
-                            &alpha,
-                            &beta,
-                            _tensorDescriptorBN,
-                            GetIncomingUnitBuffer(),
-                            _tensorDescriptorBN,
-                            GetUnitBuffer(),
-                            _scaleBiasMeanVarDescBN,
-                            _pbScaleBN->_pDevData,
-                            _pbBiasBN->_pDevData,
-                            1.0/(_bnCalls + 1), 
-                            _pbRunningMeanBN->_pDevData,
-                            _pbRunningVarianceBN->_pDevData,
-                            CUDNN_BN_MIN_EPSILON,
-                            _pbSaveMeanBN->_pDevData,
-                            _pbSaveInvVarianceBN->_pDevData);
-                    CUDNNERROR(cudnnStatus, "Layer::ForwardPropagateConvolutional: cudnnBatchNormalizationForwardTraining Failed");
-                    ++_bnCalls;
-                } else {
-                    cudnnStatus = cudnnBatchNormalizationForwardInference(
-                            getGpu()._cuDNNHandle,
-                            CUDNN_BATCHNORM_SPATIAL,
-                            &alpha,
-                            &beta,
-                            _tensorDescriptorBN,
-                            GetIncomingUnitBuffer(),
-                            _tensorDescriptorBN,
-                            GetUnitBuffer(),
-                            _scaleBiasMeanVarDescBN,
-                            _pbScaleBN->_pDevData,
-                            _pbBiasBN->_pDevData,
-                            _pbRunningMeanBN->_pDevData,
-                            _pbRunningVarianceBN->_pDevData,
-                            CUDNN_BN_MIN_EPSILON);
-                    CUDNNERROR(cudnnStatus, "Layer::ForwardPropagateConvolutional: cudnnBatchNormalizationForwardInference Failed");
-                }
+                cudnnStatus = cudnnBatchNormalizationForwardInference(
+                    getGpu()._cuDNNHandle,
+                    CUDNN_BATCHNORM_SPATIAL,
+                    &alphaBN,
+                    &betaBN,
+                    _tensorDescriptorBN,
+                    GetIncomingUnitBuffer(),
+                    _tensorDescriptorBN,
+                    GetUnitBuffer(),
+                    _scaleBiasMeanVarDescBN,
+                    _pbScaleBN->_pDevData,
+                    _pbBiasBN->_pDevData,
+                    _pbRunningMeanBN->_pDevData,
+                    _pbRunningVarianceBN->_pDevData,
+                    CUDNN_BN_MIN_EPSILON);
+                CUDNNERROR(cudnnStatus, "Layer::ForwardPropagateConvolutional: cudnnBatchNormalizationForwardInference Failed");
             }
-           
-            CalculateActivation(batch);
-            
-            if (bTraining && (_pDropout > (float)0.0))
-                CalculateDropout(batch);             
-        }       
+        }
+
+        // Calculate the activation function for the current batch
+        CalculateActivation(batch);
+
+        // If training and dropout rate is greater than 0, apply dropout
+        if (bTraining && (_pDropout > 0.0f))
+            CalculateDropout(batch);
     }
 }
 
