@@ -69,3 +69,9 @@ vcpkg install
 ## Build with Visual Studio
 
 Go the tab build and choose build solution or press F7 to build the project.
+
+## Desired output
+
+1>Done building project "Bitfusion.vcxproj".
+========== Build: 1 succeeded, 0 failed, 0 up-to-date, 0 skipped ==========
+========== Build started at 4:48 PM and took 06:42.725 minutes ==========
