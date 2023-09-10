@@ -1,4 +1,4 @@
-name: Build and Test
+name: Build Linux
 
 on:
   push:
@@ -17,7 +17,17 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v3
 
-    - name: Install Dependencies
+    - name: Cache CUDA Toolkit
+      uses: actions/cache@v3
+      with:
+        path: |
+          /usr/local/cuda
+          /var/cuda-repo-ubuntu2204-12-2-local
+        key: cuda-${{ runner.os }}-${{ hashFiles('**/*.deb') }}
+        restore-keys: |
+          cuda-${{ runner.os }}-
+
+    - name: Install CUDA 12.2
       run: |
         wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-ubuntu2204.pin
         sudo mv cuda-ubuntu2204.pin /etc/apt/preferences.d/cuda-repository-pin-600
@@ -28,32 +38,46 @@ jobs:
         sudo apt-get -y install cuda
       shell: bash
 
-    - name: Install Vcpkg
+    - name: Install C++20
       run: |
-        git clone https://github.com/microsoft/vcpkg.git
-        cd vcpkg
-        ./bootstrap-vcpkg.sh
+        sudo apt-get install -y gcc-11 g++-11
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 100 --slave /usr/bin/g++ g++ /usr/bin/g++-11
+        sudo update-alternatives --config gcc
+      shell: bash
+    
+    - name: Install OpenMPI
+      run: |
+        sudo apt-get install -y openmpi-bin
+        sudo apt-get install -y libopenmpi-dev
+      shell: bash
+    
+    - name: Install HDF5
+      run: |
+        sudo apt-get install -y libatlas-base-dev
       shell: bash
 
-    - name: Install Vcpkg Dependencies
+    - name: Install NetCDF
       run: |
-        vcpkg install
+        sudo apt-get install -y libnetcdf-dev
+        sudo apt-get install -y libnetcdf-c++4-dev
       shell: bash
 
-  build-windows:
-    runs-on: windows-latest
-    needs: build
-
-    steps:
-    - name: Checkout Code
-      uses: actions/checkout@v2
-
-    - name: Install Visual Studio 2022 Build Tools
+    - name: Install json cpp
       run: |
-        choco install visualstudio2022buildtools --package-parameters "--add Microsoft.VisualStudio.Component.VC.Tools.x86.x64"
-      shell: cmd
-
-    - name: Build Project with Visual Studio
+        sudo apt-get install -y libjsoncpp-dev
+      shell: bash
+    
+    - name: Install zlib
       run: |
-        msbuild /p:Configuration=Release Bitfusion.sln
-      shell: cmd
+        sudo apt-get install zlib1g-dev
+      shell: bash
+    
+    - name: Install libcurl
+      run: |
+        sudo apt-get install libhdf5-dev
+      shell: bash
+    
+    - name: Install cblas
+      run: |
+        sudo apt-get install libblas-dev
+      shell: bash
