@@ -2639,67 +2639,88 @@ void Layer::Gather(uint32_t batch, uint32_t stride, float* pBuffer, uint32_t loc
     }
 }
 
+/// <summary>
+/// Dump the layer's data to a file.
+/// </summary>
+/// <param name="fname">The name of the output file.</param>
+/// <param name="pBuffer">A pointer to the float buffer containing the data.</param>
 void Layer::Dump(std::string fname, float* pBuffer)
-{   
+{
+    // Create a vector "vData" to hold float data, with a size of "_batch * _stride".
     std::vector<float> vData(_batch * _stride);
-    if (getGpu()._numprocs == 1) 
+
+    // Check if the number of GPU processors is equal to 1.
+    if (getGpu()._numprocs == 1)
     {
+        // If there is only one processor, copy data from "pBuffer" to "vData" using CUDA memory copy.
         cudaMemcpy(vData.data(), pBuffer, _batch * _stride * sizeof(float), cudaMemcpyDefault);
-    } 
-    else 
+    }
+    else
     {
+        // If there is more than one processor, perform data communication.
         if (getGpu()._id == 0)
         {
-            float* pData              = vData.data();       
+            // For the master GPU (ID 0), prepare to receive data from other GPUs.
+            float* pData = vData.data();
             cudaMemcpy2D(pData, _stride * sizeof(float), pBuffer, _localStride * sizeof(float), _localStride * sizeof(float), _batch, cudaMemcpyDefault);
-            pData                      += _localStride;
+            pData += _localStride;
+
+            // Iterate through all other GPUs to receive and reconstruct data.
             for (uint32_t i = 1; i < getGpu()._numprocs; i++)
-            {                        
+            {
                 uint64_t size;
-                MPI_Status status;                
+                MPI_Status status;
                 MPI_Recv(&size, 1, MPI_UINT64_T, i, 0, MPI_COMM_WORLD, &status);
                 std::vector<float> vTemp(size);
                 MPI_Recv(vTemp.data(), size, MPI_FLOAT, i, 0, MPI_COMM_WORLD, &status);
-                uint64_t lstride    = size / _batch;
+                uint64_t lstride = size / _batch;
                 float* pSrc = vTemp.data();
                 float* pDst = pData;
+
+                // Reconstruct data received from other GPUs.
                 for (uint32_t j = 0; j < _batch; j++)
                 {
                     memcpy(pDst, pSrc, lstride * sizeof(float));
-                    pSrc               += lstride;
-                    pDst               += _stride;
-                }                          
-                pData                  += lstride;
+                    pSrc += lstride;
+                    pDst += _stride;
+                }
+                pData += lstride;
             }
         }
         else
         {
-            uint64_t size               = _batch * _localStride;
+            // For non-master GPUs, prepare data to be sent to the master GPU.
+            uint64_t size = _batch * _localStride;
             std::vector<float> vLocalData(size);
             cudaMemcpy(vLocalData.data(), pBuffer, size * sizeof(float), cudaMemcpyDefault);
             MPI_Send(&size, 1, MPI_UINT64_T, 0, 0, MPI_COMM_WORLD);
-            MPI_Send(vLocalData.data(), size, MPI_FLOAT, 0, 0, MPI_COMM_WORLD);                  
+            MPI_Send(vLocalData.data(), size, MPI_FLOAT, 0, 0, MPI_COMM_WORLD);
         }
     }
 
+    // If the current GPU ID is 0 (master GPU),
     if (getGpu()._id == 0)
     {
-        FILE* fp                    = fopen(fname.c_str(), "w");
-        float* pData              = vData.data();
+        // Open an output file with the specified file name.
+        std::ofstream outputFile(fname);
+        float* pData = vData.data();
+
+        // Iterate over the data and write it to the output file with formatting.
         for (int i = 0; i < _batch; i++)
         {
-            fprintf(fp, "%4d ", i);
+            outputFile << std::setw(4) << i << " ";
             for (int j = 0; j < _stride; j++)
             {
-                fprintf(fp, "%12.9f ", *pData);
+                outputFile << std::fixed << std::setprecision(9) << *pData << " ";
                 pData++;
             }
-            fprintf(fp, "\n");
+            outputFile << "\n";
         }
-        fclose(fp);
+
+        // Close the output file.
+        outputFile.close();
     }
 }
-
 
 /// <summary>
 /// Defines a static constant map that associates Layer kinds with their string representations.
