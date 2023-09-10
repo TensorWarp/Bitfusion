@@ -1477,88 +1477,103 @@ void Layer::ForwardPropagateConvolutional(uint32_t position, uint32_t batch, boo
     }
 }
 
+/// <summary>
+/// Forward propagates the pooling operation for this layer.
+/// </summary>
+/// <param name="position">The position.</param>
+/// <param name="batch">The batch size.</param>
+/// <param name="bTraining">True if the network is in training mode; otherwise, false.</param>
 void Layer::ForwardPropagatePooling(uint32_t position, uint32_t batch, bool bTraining)
-{ 
+{
+    // Check if the layer is not of type "Input" because pooling is not applied to input layers.
     if (_kind != Layer::Kind::Input)
     {
-        float alpha                           = (float)1.0;
-        float beta                            = (float)0.0;
-        for (int i = 0; i < _vIncomingLayer.size(); i++)
+        // Initialize alpha and beta values used in cuDNN pooling operations.
+        float alpha = 1.0f;
+        float beta = 0.0f;
+
+        // Loop over incoming layers connected to this layer.
+        for (auto* pLayer : _vIncomingLayer)
         {
-            Layer* pLayer                     = _vIncomingLayer[i];
             cudnnStatus_t cudnnStatus;
+
+            // Determine the type of pooling operation based on _poolingFunction.
             switch (_poolingFunction)
             {
-                case PoolingFunction::Max:
-                case PoolingFunction::Average:             
-                    cudnnStatus                 = cudnnPoolingForward(getGpu()._cuDNNHandle,
-                                                                  _poolingDescriptor,
-                                                                  &alpha,
-                                                                  pLayer->getTensorDescriptor(batch),
-                                                                  pLayer->GetUnitBuffer(),
-                                                                  &beta,
-                                                                  getTensorDescriptor(batch),
-                                                                  GetIncomingUnitBuffer());
-                    CUDNNERROR(cudnnStatus, "Layer::ForwardPropagatePooling: cudnnPoolingForward Failed");
-                    break;
+            case PoolingFunction::Max:
+            case PoolingFunction::Average:
+                // Perform cuDNN pooling operation (Max or Average).
+                cudnnStatus = cudnnPoolingForward(getGpu()._cuDNNHandle,
+                    _poolingDescriptor,
+                    &alpha,
+                    pLayer->getTensorDescriptor(batch),
+                    pLayer->GetUnitBuffer(),
+                    &beta,
+                    getTensorDescriptor(batch),
+                    GetIncomingUnitBuffer());
+                CUDNNERROR(cudnnStatus, "Layer::ForwardPropagatePooling: cudnnPoolingForward Failed");
+                break;
 
-                case PoolingFunction::LRN:
-                    cudnnStatus                 = cudnnLRNCrossChannelForward(getGpu()._cuDNNHandle,
-                                                                          _LRNDescriptor,
-                                                                          CUDNN_LRN_CROSS_CHANNEL_DIM1,
-                                                                          &alpha,
-                                                                          pLayer->getTensorDescriptor(batch),
-                                                                          pLayer->GetUnitBuffer(),
-                                                                          &beta,
-                                                                          getTensorDescriptor(batch),
-                                                                          GetIncomingUnitBuffer());
-                    CUDNNERROR(cudnnStatus, "Layer::ForwardPropagatePooling: cudnnLRNCrossChannelForward Failed");                                                                              
-                    break;
+            case PoolingFunction::LRN:
+                // Perform cuDNN LRN (Local Response Normalization) operation.
+                cudnnStatus = cudnnLRNCrossChannelForward(getGpu()._cuDNNHandle,
+                    _LRNDescriptor,
+                    CUDNN_LRN_CROSS_CHANNEL_DIM1,
+                    &alpha,
+                    pLayer->getTensorDescriptor(batch),
+                    pLayer->GetUnitBuffer(),
+                    &beta,
+                    getTensorDescriptor(batch),
+                    GetIncomingUnitBuffer());
+                CUDNNERROR(cudnnStatus, "Layer::ForwardPropagatePooling: cudnnLRNCrossChannelForward Failed");
+                break;
 
-                case PoolingFunction::Cosine:
-                    if (i >= 1)
-                    {
-                        Layer* p0Layer        = _vIncomingLayer[0];
-                        uint32_t offset         = i - 1;
-                        kCalculateCosine(p0Layer->GetUnitBuffer(), pLayer->GetUnitBuffer(), batch, pLayer->_localStride, 
-                                    GetIncomingUnitBuffer() + offset, 
-                                    _pbBuffer1->_pDevData + offset, 
-                                    _pbBuffer2->_pDevData + offset, 
-                                    _localStride);
-                    }
-                    break;
-                    
-                case PoolingFunction::DotProduct:
-                    if (i >= 1)
-                    {
-                        Layer* p0Layer        = _vIncomingLayer[0];
-                        uint32_t offset         = i - 1;
-                        kCalculateDotProduct(p0Layer->GetUnitBuffer(), pLayer->GetUnitBuffer(), batch, pLayer->_localStride, 
-                                    GetIncomingUnitBuffer() + offset, 
-                                    _localStride);
-                    }
-                    break;
-                    
-                case PoolingFunction::Maxout:
-                    if (beta != (float)0.0)
-                    {
-                        kCalculateMaxout(pLayer->GetUnitBuffer(), batch * _localStride, GetIncomingUnitBuffer());
-                    }
-                    else
-                    {
-                        cudaError_t status     = cudaMemcpy(GetIncomingUnitBuffer(), pLayer->GetUnitBuffer(), batch * _localStride * sizeof(float), cudaMemcpyDefault);
-                        RTERROR(status, "Layer::ForwardPropagate: Error calling cudaMemcpy for maxout pooling.");
-                    }
-                    break;
-                    
+            case PoolingFunction::Cosine:
+                // Calculate cosine similarity between this layer and another incoming layer.
+                if (auto* p0Layer = _vIncomingLayer.front(); pLayer != p0Layer)
+                {
+                    uint32_t offset = static_cast<uint32_t>(std::distance(_vIncomingLayer.begin(), std::find(_vIncomingLayer.begin(), _vIncomingLayer.end(), pLayer)));
+                    kCalculateCosine(p0Layer->GetUnitBuffer(), pLayer->GetUnitBuffer(), batch, pLayer->_localStride,
+                        GetIncomingUnitBuffer() + offset,
+                        _pbBuffer1->_pDevData + offset,
+                        _pbBuffer2->_pDevData + offset,
+                        _localStride);
+                }
+                break;
+
+            case PoolingFunction::DotProduct:
+                // Calculate dot product between this layer and another incoming layer.
+                if (auto* p0Layer = _vIncomingLayer.front(); pLayer != p0Layer)
+                {
+                    uint32_t offset = static_cast<uint32_t>(std::distance(_vIncomingLayer.begin(), std::find(_vIncomingLayer.begin(), _vIncomingLayer.end(), pLayer)));
+                    kCalculateDotProduct(p0Layer->GetUnitBuffer(), pLayer->GetUnitBuffer(), batch, pLayer->_localStride,
+                        GetIncomingUnitBuffer() + offset,
+                        _localStride);
+                }
+                break;
+
+            case PoolingFunction::Maxout:
+                // Perform maxout pooling operation.
+                if (beta != 0.0f)
+                {
+                    kCalculateMaxout(pLayer->GetUnitBuffer(), batch * _localStride, GetIncomingUnitBuffer());
+                }
+                else
+                {
+                    // Copy the data from the incoming layer to this layer (maxout pooling).
+                    cudaError_t status = cudaMemcpy(GetIncomingUnitBuffer(), pLayer->GetUnitBuffer(), batch * _localStride * sizeof(float), cudaMemcpyDefault);
+                    RTERROR(status, "Layer::ForwardPropagate: Error calling cudaMemcpy for maxout pooling.");
+                }
+                break;
             }
-            beta                            = (float)1.0;
+            beta = 1.0f; // Set beta to 1.0 for subsequent iterations.
         }
 
-        for (auto l : _vIncomingSkip)
+        // Loop over incoming skip layers and add their buffers to this layer's buffer.
+        for (auto* l : _vIncomingSkip)
         {
             kAddBuffers(GetIncomingUnitBuffer(), l->GetUnitBuffer(), batch * _stride);
-        }        
+        }
     }
 }
 
