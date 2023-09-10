@@ -1,0 +1,50 @@
+name: Build and Test
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Install Visual Studio 2022 Build Tools
+      run: |
+        choco install visualstudio2022buildtools --package-parameters "--add Microsoft.VisualStudio.Component.VC.Tools.x86.x64"
+      shell: cmd
+
+    - name: Install CUDA Toolkit
+      run: |
+        choco install cuda-toolkit --package-parameters "'--silent'"
+      shell: cmd
+
+    - name: Configure MSVC
+      run: |
+        choco install ninja -y
+        ninja --version
+        choco install conan -y
+        conan --version
+      shell: cmd
+
+    - name: Build Project
+      run: |
+        mkdir build
+        cd build
+        cmake
+        cmake --build . --config Release
+      shell: powershell
+
+    - name: Run Tests
+      run: |
+        cd build
+        ctest -C Release
+      shell: powershell
