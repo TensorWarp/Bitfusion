@@ -2920,62 +2920,87 @@ bool LoadLayerDescriptorNetCDF(const std::string& fname, netCDF::NcFile& nc, uin
     return true;
 }
 
-std::ostream& operator<< (std::ostream& out, LayerDescriptor& d)
+/// <summary>
+/// Output stream operator for LayerDescriptor class.
+/// </summary>
+/// <param name="out">The output stream.</param>
+/// <param name="d">The LayerDescriptor object to output.</param>
+/// <returns>The output stream.</returns>
+std::ostream& operator<<(std::ostream& out, const LayerDescriptor& d)
 {
-    out << "Name:                  " << d._name << std::endl;
-    out << "Kind:                  " << d._kind << std::endl;
-    out << "Type:                  " << d._type << std::endl;
+    // Output the name, kind, and type of the layer with proper formatting.
+    out << std::left << std::setw(20) << "Name:" << d._name << '\n'
+        << std::setw(20) << "Kind:" << d._kind << '\n'
+        << std::setw(20) << "Type:" << d._type << '\n';
+
+    // If the layer is not of type Pooling, output its pooling function.
     if (d._type != Layer::Type::Pooling)
-        out << "Pooling Function:      " << d._poolingFunction << std::endl;
-    out << "Nx:                    " << d._Nx << std::endl;
-    out << "Ny:                    " << d._Ny << std::endl;
-    out << "Nz:                    " << d._Nz << std::endl;
-    out << "Nw:                    " << d._Nw << std::endl;
+        out << std::setw(20) << "Pooling Function:" << d._poolingFunction << '\n';
+
+    // Output the dimensions of the layer.
+    out << std::setw(20) << "Nx:" << d._Nx << '\n'
+        << std::setw(20) << "Ny:" << d._Ny << '\n'
+        << std::setw(20) << "Nz:" << d._Nz << '\n'
+        << std::setw(20) << "Nw:" << d._Nw << '\n';
+
+    // If the layer is not of type FullyConnected, output its kernel parameters.
     if (d._type != Layer::Type::FullyConnected)
     {
-        out << "kernelX:               " << d._kernelX << std::endl;
-        out << "kernelY:               " << d._kernelY << std::endl;
-        out << "kernelZ:               " << d._kernelZ << std::endl;
-        out << "kernelStrideX:         " << d._kernelStrideX << std::endl;
-        out << "kernelStrideY:         " << d._kernelStrideY << std::endl;
-        out << "kernelStrideZ:         " << d._kernelStrideZ << std::endl;
-        out << "kernelPaddingX:        " << d._kernelPaddingX << std::endl;
-        out << "kernelPaddingY:        " << d._kernelPaddingY << std::endl;
-        out << "kernelPaddingZ:        " << d._kernelPaddingZ << std::endl;
-        out << "kernelDimensions:      " << d._kernelDimensions << std::endl;
+        out << std::setw(20) << "kernelX:" << d._kernelX << '\n'
+            << std::setw(20) << "kernelY:" << d._kernelY << '\n'
+            << std::setw(20) << "kernelZ:" << d._kernelZ << '\n'
+            << std::setw(20) << "kernelStrideX:" << d._kernelStrideX << '\n'
+            << std::setw(20) << "kernelStrideY:" << d._kernelStrideY << '\n'
+            << std::setw(20) << "kernelStrideZ:" << d._kernelStrideZ << '\n'
+            << std::setw(20) << "kernelPaddingX:" << d._kernelPaddingX << '\n'
+            << std::setw(20) << "kernelPaddingY:" << d._kernelPaddingY << '\n'
+            << std::setw(20) << "kernelPaddingZ:" << d._kernelPaddingZ << '\n'
+            << std::setw(20) << "kernelDimensions:" << d._kernelDimensions << '\n';
     }
+
+    // If the layer is not of type Pooling, output additional properties.
     if (d._type != Layer::Type::Pooling)
     {
-        out << "pDropout:              " << d._pDropout << std::endl;
-        out << "weightInit:            " << d._weightInit << std::endl;
-        out << "weightInitScale:       " << d._weightInitScale << std::endl;
-        out << "biasInit:              " << d._biasInit << std::endl;
-        out << "weightNorm:            " << d._weightNorm << std::endl;
-        out << "deltaNorm:             " << d._deltaNorm << std::endl;
-        out << "activation:            " << d._activation << std::endl;
-        out << "RELUSlope:             " << d._RELUSlope << std::endl;
-        out << "ELUAlpha:              " << d._ELUAlpha << std::endl;
-        out << "SELULambda:            " << d._SELULambda << std::endl;
-        out << "Sparse:                " << ((d._attributes & Layer::Attributes::Sparse) != 0) << std::endl;
-        out << "batchNormalization:    " << ((d._attributes & Layer::Attributes::BatchNormalization) != 0) << std::endl;
+        out << std::setw(20) << "pDropout:" << d._pDropout << '\n'
+            << std::setw(20) << "weightInit:" << d._weightInit << '\n'
+            << std::setw(20) << "weightInitScale:" << d._weightInitScale << '\n'
+            << std::setw(20) << "biasInit:" << d._biasInit << '\n'
+            << std::setw(20) << "weightNorm:" << d._weightNorm << '\n'
+            << std::setw(20) << "deltaNorm:" << d._deltaNorm << '\n'
+            << std::setw(20) << "activation:" << d._activation << '\n'
+            << std::setw(20) << "RELUSlope:" << d._RELUSlope << '\n'
+            << std::setw(20) << "ELUAlpha:" << d._ELUAlpha << '\n'
+            << std::setw(20) << "SELULambda:" << d._SELULambda << '\n'
+            << std::setw(20) << "Sparse:" << std::boolalpha << ((d._attributes & Layer::Attributes::Sparse) != 0) << '\n'
+            << std::setw(20) << "batchNormalization:" << std::boolalpha << ((d._attributes & Layer::Attributes::BatchNormalization) != 0) << '\n';
+
+        // If the layer is of type FullyConnected, output sparseness penalty parameters if they are greater than 0.
         if (d._type == Layer::Type::FullyConnected)
         {
-            if (d._sparsenessPenalty_p > (float)0.0)
-                out << "sparsenessPenalty_p    " << d._sparsenessPenalty_p << std::endl;
-            if (d._sparsenessPenalty_beta > (float)0.0)
-                out << "sparsenessPenalty_beta " << d._sparsenessPenalty_beta << std::endl;
+            if (d._sparsenessPenalty_p > 0.0)
+                out << std::setw(20) << "sparsenessPenalty_p:" << d._sparsenessPenalty_p << '\n';
+            if (d._sparsenessPenalty_beta > 0.0)
+                out << std::setw(20) << "sparsenessPenalty_beta:" << d._sparsenessPenalty_beta << '\n';
         }
+
+        // If the layer's kind is not Hidden, output the DataSet property.
         if (d._kind != Layer::Kind::Hidden)
-            out << "DataSet:               " << d._dataSet << std::endl;
+            out << std::setw(20) << "DataSet:" << d._dataSet << '\n';
     }
-    for (size_t i = 0 ; i < d._vSource.size(); i++)
+
+    // Output sources connected to the layer.
+    for (size_t i = 0; i < d._vSource.size(); i++)
     {
-        out << "source " << std::setw(3) << i << ":            " << d._vSource[i] << std::endl;
+        out << "source " << std::setw(3) << i << ":" << d._vSource[i] << '\n';
     }
-    for (size_t i = 0 ; i < d._vSkip.size(); i++)
+
+    // Output skip connections connected to the layer.
+    for (size_t i = 0; i < d._vSkip.size(); i++)
     {
-        out << "skip " << std::setw(3) << i << ":            " << d._vSkip[i] << std::endl;
-    }     
+        out << "skip " << std::setw(3) << i << ":" << d._vSkip[i] << '\n';
+    }
+
+    // Return the output stream.
     return out;
 }
 
