@@ -154,6 +154,11 @@ private:
     uint32_t                    _bnCalls;
     int32_t                     _priority;
     Layer(LayerDescriptor& l, uint32_t batch);
+    void InitializeDescriptors();
+
+    void InitializeBatchNormalization(LayerDescriptor& d);
+
+    void InitializePoolingDescriptor();
     ~Layer();
     void Allocate(bool validate);
     void Deallocate();
