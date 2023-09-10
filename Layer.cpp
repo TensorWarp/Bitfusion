@@ -1577,41 +1577,56 @@ void Layer::ForwardPropagatePooling(uint32_t position, uint32_t batch, bool bTra
     }
 }
 
+/// <summary>
+/// Calculate the activation for the layer.
+/// </summary>
+/// <param name="batch">The batch size.</param>
 void Layer::CalculateActivation(uint32_t batch)
 {
-    uint64_t size                   = (uint64_t)batch * (uint64_t)_localStride;
+    // Calculate the size based on batch and local stride
+    uint64_t size = (uint64_t)batch * (uint64_t)_localStride;
+
+    // Switch based on the activation type
     switch (_activation)
     {
-        case Sigmoid:
-            kCalculateSigmoidActivation(GetUnitBuffer(), size);
-            break;
+    case Sigmoid:
+        // Calculate sigmoid activation
+        kCalculateSigmoidActivation(GetUnitBuffer(), size);
+        break;
 
-        case Tanh:
-            kCalculateTanhActivation(GetUnitBuffer(), size);
-            break;
+    case Tanh:
+        // Calculate tanh activation
+        kCalculateTanhActivation(GetUnitBuffer(), size);
+        break;
 
-        case RectifiedLinear:
-            kCalculateRELUActivation(GetUnitBuffer(), size);
-            break;
+    case RectifiedLinear:
+        // Calculate ReLU activation
+        kCalculateRELUActivation(GetUnitBuffer(), size);
+        break;
 
-        case LeakyRectifiedLinear:
-            kCalculateLRELUActivation(GetUnitBuffer(), size, _RELUSlope);
-            break;
-            
-        case ExponentialLinear:
-            kCalculateELUActivation(GetUnitBuffer(), size, _ELUAlpha);        
-            break;
-            
-        case ScaledExponentialLinear:
-            kCalculateSELUActivation(GetUnitBuffer(), size, _ELUAlpha, _SELULambda);        
-            break;            
+    case LeakyRectifiedLinear:
+        // Calculate Leaky ReLU activation with specified slope
+        kCalculateLRELUActivation(GetUnitBuffer(), size, _RELUSlope);
+        break;
 
-        case SoftMax:
-            kCalculateSoftMaxActivation(GetUnitBuffer(), batch, _localStride);
-            break;
+    case ExponentialLinear:
+        // Calculate ELU activation with specified alpha
+        kCalculateELUActivation(GetUnitBuffer(), size, _ELUAlpha);
+        break;
 
-        case Linear:
-            break;
+    case ScaledExponentialLinear:
+        // Calculate SELU activation with specified alpha and lambda
+        kCalculateSELUActivation(GetUnitBuffer(), size, _ELUAlpha, _SELULambda);
+        break;
+
+    case SoftMax:
+        // Calculate SoftMax activation
+        kCalculateSoftMaxActivation(GetUnitBuffer(), batch, _localStride);
+        break;
+
+    case Linear:
+        // No activation needed for the Linear case
+        break;
     }
 }
 
