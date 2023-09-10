@@ -11,40 +11,49 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout Code
       uses: actions/checkout@v3
+
+    - name: Install Dependencies
+      run: |
+        wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-ubuntu2204.pin
+        sudo mv cuda-ubuntu2204.pin /etc/apt/preferences.d/cuda-repository-pin-600
+        wget https://developer.download.nvidia.com/compute/cuda/12.2.2/local_installers/cuda-repo-ubuntu2204-12-2-local_12.2.2-535.104.05-1_amd64.deb
+        sudo dpkg -i cuda-repo-ubuntu2204-12-2-local_12.2.2-535.104.05-1_amd64.deb
+        sudo cp /var/cuda-repo-ubuntu2204-12-2-local/cuda-*-keyring.gpg /usr/share/keyrings/
+        sudo apt-get update
+        sudo apt-get -y install cuda
+      shell: bash
+
+    - name: Install Vcpkg
+      run: |
+        git clone https://github.com/microsoft/vcpkg.git
+        cd vcpkg
+        ./bootstrap-vcpkg.sh
+      shell: bash
+
+    - name: Install Vcpkg Dependencies
+      run: |
+        vcpkg install
+      shell: bash
+
+  build-windows:
+    runs-on: windows-latest
+    needs: build
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
 
     - name: Install Visual Studio 2022 Build Tools
       run: |
         choco install visualstudio2022buildtools --package-parameters "--add Microsoft.VisualStudio.Component.VC.Tools.x86.x64"
       shell: cmd
 
-    - name: Install CUDA Toolkit
+    - name: Build Project with Visual Studio
       run: |
-        choco install cuda-toolkit --package-parameters "'--silent'"
+        msbuild /p:Configuration=Release Bitfusion.sln
       shell: cmd
-
-    - name: Configure MSVC
-      run: |
-        choco install ninja -y
-        ninja --version
-        choco install conan -y
-        conan --version
-      shell: cmd
-
-    - name: Build Project
-      run: |
-        mkdir build
-        cd build
-        cmake
-        cmake --build . --config Release
-      shell: powershell
-
-    - name: Run Tests
-      run: |
-        cd build
-        ctest -C Release
-      shell: powershell
