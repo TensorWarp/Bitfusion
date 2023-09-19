@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Bitonic.cuh" />
+    <ClInclude Include="src\Enum.h" />
+    <ClInclude Include="src\GpuSort.h" />
+    <ClInclude Include="src\GpuTypes.h" />
+    <ClInclude Include="src\Kernels.cuh" />
+    <ClInclude Include="src\knn\CudaUtil.h" />
+    <ClInclude Include="src\knn\Data.h" />
+    <ClInclude Include="src\knn\DataReader.h" />
+    <ClInclude Include="src\knn\ExactGpu.cuh" />
+    <ClInclude Include="src\knn\MathUtil.cuh" />
+    <ClInclude Include="src\knn\Output.cuh" />
+    <ClInclude Include="src\Layer.h" />
+    <ClInclude Include="src\Network.h" />
+    <ClInclude Include="src\runtime\Runtime.h" />
+    <ClInclude Include="src\ThreadPool.h" />
+    <ClInclude Include="src\Types.h" />
+    <ClInclude Include="src\utils\CDL.h" />
+    <ClInclude Include="src\utils\CDLConfig.h" />
+    <ClInclude Include="src\utils\ConfigBase.h" />
+    <ClInclude Include="src\utils\ConfigException.h" />
+    <ClInclude Include="src\utils\ConfigFactory.h" />
+    <ClInclude Include="src\utils\Filters.h" />
+    <ClInclude Include="src\utils\JSONParsingException.h" />
+    <ClInclude Include="src\utils\Logger.h" />
+    <ClInclude Include="src\utils\NetCDFGenerator.h" />
+    <ClInclude Include="src\utils\NetCDFhelper.h" />
+    <ClInclude Include="src\utils\RecsGenerator.h" />
+    <ClInclude Include="src\utils\TrainingParameters.h" />
+    <ClInclude Include="src\utils\Utils.h" />
+    <ClInclude Include="src\Weight.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\GpuTypes.cpp" />
+    <ClCompile Include="src\Kernels.cu" />
+    <ClCompile Include="src\knn\CudaUtil.cpp" />
+    <ClCompile Include="src\knn\Data.cpp" />
+    <ClCompile Include="src\knn\DataReader.cpp" />
+    <ClCompile Include="src\knn\ExactGpu.cu" />
+    <ClCompile Include="src\knn\MathUtil.cu" />
+    <ClCompile Include="src\knn\Output.cu" />
+    <ClCompile Include="src\Layer.cpp" />
+    <ClCompile Include="src\Network.cpp" />
+    <ClCompile Include="src\runtime\Runtime.cpp" />
+    <ClCompile Include="src\Types.cpp" />
+    <ClCompile Include="src\utils\CDL.cpp" />
+    <ClCompile Include="src\utils\Filters.cpp" />
+    <ClCompile Include="src\utils\Main.cpp" />
+    <ClCompile Include="src\utils\NetCDFGenerator.cpp" />
+    <ClCompile Include="src\utils\NetCDFhelper.cpp" />
+    <ClCompile Include="src\utils\Predict.cpp" />
+    <ClCompile Include="src\utils\RecsGenerator.cpp" />
+    <ClCompile Include="src\utils\Train.cpp" />
+    <ClCompile Include="src\utils\Utils.cpp" />
+    <ClCompile Include="src\Weight.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <ProjectGuid>{340ab489-547a-43cb-afd9-9f1b70c0f0af}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>Bitfusion</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>HIP_clang</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>HIP_clang</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Condition="'$(PlatformToolset)'=='HIP_clang'" Project="$(VCTargetsPath)\AMD.HIP.Clang.Common.props" />
+    <Import Condition="'$(PlatformToolset)'=='HIP_nvcc'" Project="$(VCTargetsPath)\AMD.HIP.Nvcc.Common.props" />
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Bitfusion\vcpkg_installed\x86-windows\include;C:\Bitfusion\vcpkg_installed\x86-windows\include\openblas;C:\Bitfusion\vcpkg_installed\x86-windows\include\json;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.2\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>C:\Bitfusion\vcpkg_installed\x86-windows\include;C:\Bitfusion\vcpkg_installed\x86-windows\include\openblas;C:\Bitfusion\vcpkg_installed\x86-windows\include\json;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.2\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64' and '$(PlatformToolset)'=='HIP_clang'">
+    <ClCompile>
+      <WarningLevel>Level1</WarningLevel>
+      <PreprocessorDefinitions>__clang__;__HIP__;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">stdcpp20</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64' and '$(PlatformToolset)'=='HIP_nvcc'">
+    <ClCompile>
+      <PreprocessorDefinitions>__CUDACC__;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">stdcpp20</LanguageStandard>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64' and '$(PlatformToolset)'=='HIP_clang'">
+    <ClCompile>
+      <WarningLevel>Level2</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>__clang__;__HIP__;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Release|x64'">stdcpp20</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64' and '$(PlatformToolset)'=='HIP_nvcc'">
+    <ClCompile>
+      <PreprocessorDefinitions>__CUDACC__;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Release|x64'">stdcpp20</LanguageStandard>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Condition="'$(PlatformToolset)'=='HIP_clang'" Project="$(VCTargetsPath)\AMD.HIP.Clang.Common.targets" />
+    <Import Condition="'$(PlatformToolset)'=='HIP_nvcc'" Project="$(VCTargetsPath)\AMD.HIP.Nvcc.Common.targets" />
+  </ImportGroup>
+</Project>
