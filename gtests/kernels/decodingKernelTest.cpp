@@ -1,12 +1,8 @@
-#ifndef TOP_LEVEL_DIR
-#error "Define TOP_LEVEL_DIR"
-#endif
-
 #include <gtest/gtest.h>
 
-#include "bitfusion/kernels/decodingCommon.h"
-#include "bitfusion/kernels/decodingKernels.h"
-#include "bitfusion/runtime/bufferManager.h"
+#include "../../kernels/decodingCommon.h"
+#include "../../kernels/decodingKernels.h"
+#include "../../runtime/bufferManager.h"
 #include <curand_kernel.h>
 #include <random>
 
