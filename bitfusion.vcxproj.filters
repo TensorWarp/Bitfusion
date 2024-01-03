@@ -103,6 +103,12 @@
     <Filter Include="gtests\common">
       <UniqueIdentifier>{d1fd5f6f-a69c-45fe-805b-d13ef895e80f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="gtests\kernels">
+      <UniqueIdentifier>{0ec2a257-e211-4b15-92bd-6a1d7c174237}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gtests\kernels\sampling">
+      <UniqueIdentifier>{a67eb256-3ecd-499e-9d60-71165f43b592}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kernels\contextFusedMultiHeadAttention\fmhaRunner.cpp">
@@ -1787,6 +1793,21 @@
     <ClCompile Include="gtests\common\tllmExceptionTest.cpp">
       <Filter>gtests\common</Filter>
     </ClCompile>
+    <ClCompile Include="gtests\kernels\sampling\samplingPenaltyTest.cpp">
+      <Filter>gtests\kernels\sampling</Filter>
+    </ClCompile>
+    <ClCompile Include="gtests\kernels\sampling\samplingTest.cpp">
+      <Filter>gtests\kernels\sampling</Filter>
+    </ClCompile>
+    <ClCompile Include="gtests\kernels\sampling\samplingTopKTest.cpp">
+      <Filter>gtests\kernels\sampling</Filter>
+    </ClCompile>
+    <ClCompile Include="gtests\kernels\sampling\samplingTopPTest.cpp">
+      <Filter>gtests\kernels\sampling</Filter>
+    </ClCompile>
+    <ClCompile Include="gtests\kernels\sampling\samplingUtilsTest.cu">
+      <Filter>gtests\kernels\sampling</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="kernels\contextFusedMultiHeadAttention\fmhaRunner.h">
@@ -2246,6 +2267,9 @@
     </ClInclude>
     <ClInclude Include="runtime\utils\utils.h">
       <Filter>runtime\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="gtests\kernels\sampling\samplingTest.h">
+      <Filter>gtests\kernels\sampling</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
