@@ -1,12 +1,12 @@
-#include "bitfusion/common/cudaUtils.h"
-#include "bitfusion/common/memoryUtils.h"
-#include "bitfusion/runtime/cudaStream.h"
+#include "../../common/cudaUtils.h"
+#include "../../common/memoryUtils.h"
+#include "../../runtime/cudaStream.h"
 #include <algorithm>
 #include <gtest/gtest.h>
 #include <numeric>
 
-#include "bitfusion/kernels/mixtureOfExperts/moe_kernels.h"
-#include "bitfusion/runtime/bufferManager.h"
+#include "../../kernels/mixtureOfExperts/moe_kernels.h"
+#include "../../runtime/bufferManager.h"
 
 using namespace bitfusion::kernels;
 using namespace bitfusion::common;
