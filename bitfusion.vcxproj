@@ -23,6 +23,13 @@
     <ClCompile Include="common\stringUtils.cpp" />
     <ClCompile Include="common\tensor.cpp" />
     <ClCompile Include="common\tllmException.cpp" />
+    <ClCompile Include="gtests\common\allocatorTest.cpp" />
+    <ClCompile Include="gtests\common\memoryUtilsTest.cu" />
+    <ClCompile Include="gtests\common\quantizationTest.cpp" />
+    <ClCompile Include="gtests\common\stlUtilsTest.cpp" />
+    <ClCompile Include="gtests\common\stringUtilsTest.cpp" />
+    <ClCompile Include="gtests\common\tensorTest.cpp" />
+    <ClCompile Include="gtests\common\tllmExceptionTest.cpp" />
     <ClCompile Include="kernels\banBadWords.cu" />
     <ClCompile Include="kernels\banRepeatNgram.cu" />
     <ClCompile Include="kernels\beamSearchPenaltyKernels.cu" />
@@ -773,7 +780,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\demps\Desktop\bitfusion\vcpkg_installed\x64-windows\include\pybind11;C:\Users\demps\Desktop\bitfusion\vcpkg_installed\x64-windows\include;C:\Users\demps\Desktop\bitfusion\vcpkg_installed\x64-windows\include\openblas;C:\Users\demps\Desktop\bitfusion\vcpkg_installed\x64-windows\include\json;C:\Users\demps\Desktop\bitfusion\vcpkg_installed\x64-windows\include\hwy;C:\Users\demps\Desktop\bitfusion\vcpkg_installed\x64-windows\include\python3.10;C:\Users\demps\Desktop\bitfusion\vcpkg_installed\x64-windows\include\curl;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\demps\Desktop\bitfusion\vcpkg_installed\x64-windows\include\pybind11;C:\Users\demps\Desktop\bitfusion\vcpkg_installed\x64-windows\include;C:\Users\demps\Desktop\bitfusion\vcpkg_installed\x64-windows\include\openblas;C:\Users\demps\Desktop\bitfusion\vcpkg_installed\x64-windows\include\json;C:\Users\demps\Desktop\bitfusion\vcpkg_installed\x64-windows\include\hwy;C:\Users\demps\Desktop\bitfusion\vcpkg_installed\x64-windows\include\python3.10;C:\Users\demps\Desktop\bitfusion\vcpkg_installed\x64-windows\include\curl;C:\Users\demps\Desktop\bitfusion\vcpkg_installed\x64-windows\include\gtest;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>

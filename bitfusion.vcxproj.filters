@@ -97,6 +97,12 @@
     <Filter Include="plugins\weightOnlyQuantMatmulPlugin">
       <UniqueIdentifier>{7d92c778-2748-4b62-bf84-31055ff499aa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="gtests">
+      <UniqueIdentifier>{f23d5126-b17e-4418-ae7b-f7f8956b2be5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gtests\common">
+      <UniqueIdentifier>{d1fd5f6f-a69c-45fe-805b-d13ef895e80f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kernels\contextFusedMultiHeadAttention\fmhaRunner.cpp">
@@ -1759,6 +1765,27 @@
     </ClCompile>
     <ClCompile Include="runtime\utils\utils.cpp">
       <Filter>runtime\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="gtests\common\allocatorTest.cpp">
+      <Filter>gtests\common</Filter>
+    </ClCompile>
+    <ClCompile Include="gtests\common\memoryUtilsTest.cu">
+      <Filter>gtests\common</Filter>
+    </ClCompile>
+    <ClCompile Include="gtests\common\quantizationTest.cpp">
+      <Filter>gtests\common</Filter>
+    </ClCompile>
+    <ClCompile Include="gtests\common\stlUtilsTest.cpp">
+      <Filter>gtests\common</Filter>
+    </ClCompile>
+    <ClCompile Include="gtests\common\stringUtilsTest.cpp">
+      <Filter>gtests\common</Filter>
+    </ClCompile>
+    <ClCompile Include="gtests\common\tensorTest.cpp">
+      <Filter>gtests\common</Filter>
+    </ClCompile>
+    <ClCompile Include="gtests\common\tllmExceptionTest.cpp">
+      <Filter>gtests\common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
