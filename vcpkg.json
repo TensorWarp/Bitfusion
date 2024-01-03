@@ -10,7 +10,8 @@
     "highway",
     "boost",
     "python3",
-    "pybind11"
+    "pybind11",
+    "gtest"
 
   ],
   "builtin-baseline": "84df5613f71eda8a73ab08dc3041f3af7103a5b2"
