@@ -109,6 +109,9 @@
     <Filter Include="gtests\kernels\sampling">
       <UniqueIdentifier>{a67eb256-3ecd-499e-9d60-71165f43b592}</UniqueIdentifier>
     </Filter>
+    <Filter Include="gtests\runtime">
+      <UniqueIdentifier>{a22f9564-38e4-4616-a62c-2e4ed25a69fb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="kernels\contextFusedMultiHeadAttention\fmhaRunner.cpp">
@@ -1816,6 +1819,33 @@
     </ClCompile>
     <ClCompile Include="gtests\kernels\stopCriteriaKernelsTest.cpp">
       <Filter>gtests\kernels</Filter>
+    </ClCompile>
+    <ClCompile Include="gtests\runtime\bufferManagerTest.cpp">
+      <Filter>gtests\runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="gtests\runtime\gptDecoderBatchTest.cpp">
+      <Filter>gtests\runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="gtests\runtime\gptDecoderTest.cpp">
+      <Filter>gtests\runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="gtests\runtime\iTensorTest.cpp">
+      <Filter>gtests\runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="gtests\runtime\runtimeKernelTest.cpp">
+      <Filter>gtests\runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="gtests\runtime\samplingTest.cpp">
+      <Filter>gtests\runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="gtests\runtime\tllmBuffersTest.cpp">
+      <Filter>gtests\runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="gtests\runtime\transposeKVKernelTest.cpp">
+      <Filter>gtests\runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="gtests\runtime\worldConfigTest.cpp">
+      <Filter>gtests\runtime</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
