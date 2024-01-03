@@ -30,6 +30,11 @@
     <ClCompile Include="gtests\common\stringUtilsTest.cpp" />
     <ClCompile Include="gtests\common\tensorTest.cpp" />
     <ClCompile Include="gtests\common\tllmExceptionTest.cpp" />
+    <ClCompile Include="gtests\kernels\sampling\samplingPenaltyTest.cpp" />
+    <ClCompile Include="gtests\kernels\sampling\samplingTest.cpp" />
+    <ClCompile Include="gtests\kernels\sampling\samplingTopKTest.cpp" />
+    <ClCompile Include="gtests\kernels\sampling\samplingTopPTest.cpp" />
+    <ClCompile Include="gtests\kernels\sampling\samplingUtilsTest.cu" />
     <ClCompile Include="kernels\banBadWords.cu" />
     <ClCompile Include="kernels\banRepeatNgram.cu" />
     <ClCompile Include="kernels\beamSearchPenaltyKernels.cu" />
@@ -614,6 +619,7 @@
     <ClInclude Include="common\tensorConversion.h" />
     <ClInclude Include="common\tllmException.h" />
     <ClInclude Include="common\workspace.h" />
+    <ClInclude Include="gtests\kernels\sampling\samplingTest.h" />
     <ClInclude Include="kernels\banBadWords.h" />
     <ClInclude Include="kernels\banRepeatNgram.h" />
     <ClInclude Include="kernels\beamSearchPenaltyKernels.h" />
