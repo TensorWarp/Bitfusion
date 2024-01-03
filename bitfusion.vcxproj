@@ -38,6 +38,15 @@
     <ClCompile Include="gtests\kernels\sampling\samplingTopPTest.cpp" />
     <ClCompile Include="gtests\kernels\sampling\samplingUtilsTest.cu" />
     <ClCompile Include="gtests\kernels\stopCriteriaKernelsTest.cpp" />
+    <ClCompile Include="gtests\runtime\bufferManagerTest.cpp" />
+    <ClCompile Include="gtests\runtime\gptDecoderBatchTest.cpp" />
+    <ClCompile Include="gtests\runtime\gptDecoderTest.cpp" />
+    <ClCompile Include="gtests\runtime\iTensorTest.cpp" />
+    <ClCompile Include="gtests\runtime\runtimeKernelTest.cpp" />
+    <ClCompile Include="gtests\runtime\samplingTest.cpp" />
+    <ClCompile Include="gtests\runtime\tllmBuffersTest.cpp" />
+    <ClCompile Include="gtests\runtime\transposeKVKernelTest.cpp" />
+    <ClCompile Include="gtests\runtime\worldConfigTest.cpp" />
     <ClCompile Include="kernels\banBadWords.cu" />
     <ClCompile Include="kernels\banRepeatNgram.cu" />
     <ClCompile Include="kernels\beamSearchPenaltyKernels.cu" />
