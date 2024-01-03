@@ -1808,6 +1808,15 @@
     <ClCompile Include="gtests\kernels\sampling\samplingUtilsTest.cu">
       <Filter>gtests\kernels\sampling</Filter>
     </ClCompile>
+    <ClCompile Include="gtests\kernels\decodingKernelTest.cpp">
+      <Filter>gtests\kernels</Filter>
+    </ClCompile>
+    <ClCompile Include="gtests\kernels\mixtureOfExpertsTest.cu">
+      <Filter>gtests\kernels</Filter>
+    </ClCompile>
+    <ClCompile Include="gtests\kernels\stopCriteriaKernelsTest.cpp">
+      <Filter>gtests\kernels</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="kernels\contextFusedMultiHeadAttention\fmhaRunner.h">
