@@ -1,0 +1,2229 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="common">
+      <UniqueIdentifier>{6fa6c3ab-13b9-409f-92ba-587a91f93287}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kernels">
+      <UniqueIdentifier>{cccad487-a97a-4cce-8fc0-d26ff23fe788}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kernels\contextFusedMultiHeadAttention">
+      <UniqueIdentifier>{b13b83b0-5d6e-4816-b2d9-cbd4372617ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin">
+      <UniqueIdentifier>{6a650dc4-0136-4d3a-9732-f2b739b69b1a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kernels\contextFusedMultiHeadAttention\cubin">
+      <UniqueIdentifier>{19746421-2374-459c-a711-33d3b4ca8c89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kernels\decoderMaskedMultiheadAttention">
+      <UniqueIdentifier>{a4c4c24e-39d3-479d-9983-7317a6c26490}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kernels\weightOnlyBatchedGemv">
+      <UniqueIdentifier>{4227bc04-1af3-40ff-9cd2-61bcc01a9a89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kernels\onlineSoftmaxBeamsearchKernels">
+      <UniqueIdentifier>{d9981ef9-4c3f-4b0c-b5cf-1bf8a55bd21b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="layers">
+      <UniqueIdentifier>{353c619c-e69e-4d9d-b7bb-368cc0162702}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="runtime">
+      <UniqueIdentifier>{aeab335c-0681-4134-b8ad-27e4c576421a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="runtime\utils">
+      <UniqueIdentifier>{947c8185-e1a1-4e4d-9830-25b184b3eef7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="batch_manager">
+      <UniqueIdentifier>{658a6600-490a-4231-9734-ebc74d761f62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="plugins">
+      <UniqueIdentifier>{04e6e31d-147e-4b9c-9ac5-0f9b7a5f8bfa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="plugins\api">
+      <UniqueIdentifier>{07ee2753-6141-4029-8657-5793651f450d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="plugins\bertAttentionPlugin">
+      <UniqueIdentifier>{9edd6907-f98f-460a-b332-1e9c3a536379}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="plugins\common">
+      <UniqueIdentifier>{7bc4a499-8ac6-4334-b8e7-de9526217027}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="plugins\gemmPlugin">
+      <UniqueIdentifier>{b0848ce8-836a-46c2-ac0c-247b4ead70b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="plugins\gptAttentionPlugin">
+      <UniqueIdentifier>{75076f0a-7d42-4bf0-abd8-552cd1daec9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="plugins\identityPlugin">
+      <UniqueIdentifier>{d1bab8fa-603f-48e5-8e41-301cca9947f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="plugins\layernormPlugin">
+      <UniqueIdentifier>{ff69f7d2-3c6f-471e-81b7-b8a5404e3566}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="plugins\layernormQuantizationPlugin">
+      <UniqueIdentifier>{c5356d4b-3680-4320-a210-2764e4ebf328}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="plugins\lookupPlugin">
+      <UniqueIdentifier>{6d5068fe-0fa8-47b2-95c5-fcff67cb62ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="plugins\loraPlugin">
+      <UniqueIdentifier>{2a154662-0222-4476-a83d-7d7a01a08d4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="plugins\mixtureOfExperts">
+      <UniqueIdentifier>{72f329de-9591-4ca4-b669-8b1626d02273}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="plugins\ncclPlugin">
+      <UniqueIdentifier>{95246959-b5c4-4c98-9b5f-19f2bb2d30d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="plugins\quantizePerTokenPlugin">
+      <UniqueIdentifier>{c7edb0a3-d91c-4f89-ac94-04659c86925e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="plugins\quantizeTensorPlugin">
+      <UniqueIdentifier>{0d890949-47e1-4bfa-8aa2-039e2e7a728c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="plugins\rmsnormPlugin">
+      <UniqueIdentifier>{68af577e-9db5-49c3-bfea-640e20cc4ec6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="plugins\rmsnormQuantizationPlugin">
+      <UniqueIdentifier>{f04e1423-d500-4bea-9908-b06d0b8fb9b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="plugins\smoothQuantGemmPlugin">
+      <UniqueIdentifier>{8317429a-f6a9-4e6f-a977-c44d2802d7c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="plugins\weightOnlyGroupwiseQuantMatmulPlugin">
+      <UniqueIdentifier>{1abdfdb6-2790-4bed-9808-06b2eca67840}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="plugins\weightOnlyQuantMatmulPlugin">
+      <UniqueIdentifier>{7d92c778-2748-4b62-bf84-31055ff499aa}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\fmhaRunner.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_16_S_160_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_16_S_160_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_16_S_160_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_16_S_160_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_16_S_256_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_16_S_256_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_16_S_256_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_16_S_256_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_32_S_40_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_32_S_40_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_32_S_40_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_32_S_40_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_32_S_64_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_32_S_64_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_32_S_64_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_32_S_64_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_32_S_80_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_32_S_80_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_32_S_80_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_32_S_80_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_32_S_128_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_32_S_128_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_32_S_128_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_32_S_128_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_64_S_16_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_64_S_16_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_64_S_16_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_64_S_16_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_64_S_32_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_64_S_32_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_64_S_32_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_64_S_32_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_64_S_256_pagedKV_alibi_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_64_S_256_pagedKV_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_128_S_32_pagedKV_alibi_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_128_S_32_pagedKV_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_128_S_64_pagedKV_alibi_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_128_S_64_pagedKV_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_128_S_80_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_128_S_80_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_128_S_80_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_128_S_80_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_128_S_128_pagedKV_alibi_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_128_S_128_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_128_S_128_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_128_S_128_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_128_S_128_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_128_S_128_pagedKV_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_128_S_160_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_128_S_160_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_128_S_160_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_128_S_160_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_128_S_256_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_128_S_256_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_128_S_256_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_64_128_S_256_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_128_128_S_16_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_128_128_S_16_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_128_128_S_16_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_128_128_S_16_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_128_128_S_32_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_128_128_S_32_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_128_128_S_32_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_128_128_S_32_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_128_128_S_40_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_128_128_S_40_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_128_128_S_40_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_128_128_S_40_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_128_128_S_64_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_128_128_S_64_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_128_128_S_64_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_bf16_128_128_S_64_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_16_S_160_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_16_S_160_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_16_S_160_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_16_S_160_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_16_S_256_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_16_S_256_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_16_S_256_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_16_S_256_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_32_S_40_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_32_S_40_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_32_S_40_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_32_S_40_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_32_S_64_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_32_S_64_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_32_S_64_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_32_S_64_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_32_S_80_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_32_S_80_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_32_S_80_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_32_S_80_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_32_S_128_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_32_S_128_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_32_S_128_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_32_S_128_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_64_S_16_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_64_S_16_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_64_S_16_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_64_S_16_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_64_S_32_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_64_S_32_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_64_S_32_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_64_S_32_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_64_S_256_pagedKV_alibi_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_64_S_256_pagedKV_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_128_S_32_pagedKV_alibi_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_128_S_32_pagedKV_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_128_S_64_pagedKV_alibi_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_128_S_64_pagedKV_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_128_S_80_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_128_S_80_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_128_S_80_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_128_S_80_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_128_S_128_pagedKV_alibi_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_128_S_128_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_128_S_128_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_128_S_128_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_128_S_128_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_128_S_128_pagedKV_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_128_S_160_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_128_S_160_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_128_S_160_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_128_S_160_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_128_S_256_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_128_S_256_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_128_S_256_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_64_128_S_256_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_128_128_S_16_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_128_128_S_16_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_128_128_S_16_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_128_128_S_16_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_128_128_S_32_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_128_128_S_32_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_128_128_S_32_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_128_128_S_32_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_128_128_S_40_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_128_128_S_40_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_128_128_S_40_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_128_128_S_40_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_128_128_S_64_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_128_128_S_64_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_128_128_S_64_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_128_128_S_64_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_16_S_160_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_16_S_160_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_16_S_160_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_16_S_160_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_16_S_256_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_16_S_256_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_16_S_256_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_16_S_256_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_32_S_40_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_32_S_40_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_32_S_40_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_32_S_40_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_32_S_64_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_32_S_64_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_32_S_64_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_32_S_64_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_32_S_80_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_32_S_80_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_32_S_80_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_32_S_80_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_32_S_128_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_32_S_128_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_32_S_128_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_32_S_128_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_64_S_16_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_64_S_16_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_64_S_16_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_64_S_16_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_64_S_32_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_64_S_32_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_64_S_32_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_64_S_32_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_64_S_256_pagedKV_alibi_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_64_S_256_pagedKV_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_128_S_32_pagedKV_alibi_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_128_S_32_pagedKV_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_128_S_64_pagedKV_alibi_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_128_S_64_pagedKV_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_128_S_80_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_128_S_80_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_128_S_80_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_128_S_80_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_128_S_128_pagedKV_alibi_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_128_S_128_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_128_S_128_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_128_S_128_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_128_S_128_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_128_S_128_pagedKV_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_128_S_160_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_128_S_160_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_128_S_160_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_128_S_160_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_128_S_256_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_128_S_256_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_128_S_256_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_64_128_S_256_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_128_128_S_16_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_128_128_S_16_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_128_128_S_16_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_128_128_S_16_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_128_128_S_32_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_128_128_S_32_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_128_128_S_32_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_128_128_S_32_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_128_128_S_40_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_128_128_S_40_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_128_128_S_40_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_128_128_S_40_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_128_128_S_64_pagedKV_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_128_128_S_64_pagedKV_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_128_128_S_64_pagedKV_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_v2_flash_attention_fp16_fp32_128_128_S_64_pagedKV_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_bf16_64_32_ldgsts_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_bf16_64_64_ldgsts_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_bf16_128_32_ldgsts_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_bf16_128_64_ldgsts_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_bf16_256_32_ldgsts_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_bf16_256_64_ldgsts_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_bf16_384_32_ldgsts_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_bf16_384_64_ldgsts_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_bf16_512_32_ldgsts_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_bf16_512_64_ldgsts_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_16_S_160_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_16_S_160_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_16_S_160_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_16_S_256_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_16_S_256_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_16_S_256_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_32_S_40_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_32_S_40_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_32_S_40_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_32_S_64_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_32_S_64_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_32_S_64_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_32_S_80_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_32_S_80_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_32_S_80_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_32_S_128_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_32_S_128_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_32_S_128_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_64_S_16_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_64_S_16_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_64_S_16_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_64_S_32_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_64_S_32_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_64_S_32_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_64_S_256_alibi_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_64_S_256_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_128_S_80_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_128_S_80_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_128_S_80_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_128_S_128_alibi_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_128_S_128_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_128_S_128_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_128_S_128_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_128_S_128_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_128_S_160_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_128_S_160_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_128_S_160_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_128_S_256_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_128_S_256_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_128_S_256_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_256_S_32_alibi_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_256_S_32_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_256_S_64_alibi_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_64_256_S_64_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_128_128_S_16_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_128_128_S_16_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_128_128_S_16_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_128_128_S_32_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_128_128_S_32_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_128_128_S_32_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_128_128_S_40_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_128_128_S_40_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_128_128_S_40_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_128_128_S_64_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_128_128_S_64_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_bf16_128_128_S_64_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_16_S_160_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_16_S_160_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_16_S_160_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_16_S_256_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_16_S_256_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_16_S_256_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_32_S_40_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_32_S_40_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_32_S_40_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_32_S_64_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_32_S_64_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_32_S_64_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_32_S_80_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_32_S_80_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_32_S_80_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_32_S_128_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_32_S_128_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_32_S_128_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_64_S_16_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_64_S_16_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_64_S_16_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_64_S_32_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_64_S_32_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_64_S_32_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_64_S_256_alibi_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_64_S_256_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_128_S_80_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_128_S_80_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_128_S_80_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_128_S_128_alibi_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_128_S_128_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_128_S_128_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_128_S_128_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_128_S_128_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_128_S_160_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_128_S_160_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_128_S_160_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_128_S_256_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_128_S_256_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_128_S_256_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_256_S_32_alibi_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_256_S_32_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_256_S_64_alibi_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_64_256_S_64_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_128_128_S_16_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_128_128_S_16_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_128_128_S_16_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_128_128_S_32_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_128_128_S_32_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_128_128_S_32_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_128_128_S_40_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_128_128_S_40_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_128_128_S_40_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_128_128_S_64_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_128_128_S_64_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_128_128_S_64_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_16_S_160_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_16_S_160_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_16_S_160_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_16_S_256_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_16_S_256_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_16_S_256_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_32_S_40_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_32_S_40_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_32_S_40_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_32_S_64_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_32_S_64_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_32_S_64_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_32_S_80_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_32_S_80_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_32_S_80_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_32_S_128_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_32_S_128_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_32_S_128_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_64_S_16_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_64_S_16_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_64_S_16_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_64_S_32_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_64_S_32_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_64_S_32_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_64_S_256_alibi_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_64_S_256_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_128_S_80_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_128_S_80_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_128_S_80_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_128_S_128_alibi_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_128_S_128_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_128_S_128_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_128_S_128_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_128_S_128_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_128_S_160_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_128_S_160_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_128_S_160_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_128_S_256_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_128_S_256_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_128_S_256_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_256_S_32_alibi_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_256_S_32_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_256_S_64_alibi_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_64_256_S_64_tma_ws_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_128_128_S_16_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_128_128_S_16_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_128_128_S_16_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_128_128_S_32_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_128_128_S_32_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_128_128_S_32_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_128_128_S_40_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_128_128_S_40_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_128_128_S_40_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_128_128_S_64_sm80.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_128_128_S_64_sm86.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_flash_attention_fp16_fp32_128_128_S_64_sm89.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_fp16_64_32_ldgsts_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_fp16_64_64_ldgsts_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_fp16_128_32_ldgsts_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_fp16_128_64_ldgsts_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_fp16_256_32_ldgsts_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_fp16_256_64_ldgsts_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_fp16_384_32_ldgsts_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_fp16_384_64_ldgsts_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_fp16_512_32_ldgsts_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_fp16_512_64_ldgsts_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_fp16_fp32_64_32_ldgsts_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_fp16_fp32_64_64_ldgsts_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_fp16_fp32_128_32_ldgsts_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_fp16_fp32_128_64_ldgsts_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_fp16_fp32_256_32_ldgsts_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_fp16_fp32_256_64_ldgsts_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_fp16_fp32_384_32_ldgsts_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_fp16_fp32_384_64_ldgsts_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_fp16_fp32_512_32_ldgsts_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_v2_fp16_fp32_512_64_ldgsts_sm90.cubin.cpp">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decoderMaskedMultiheadAttention\decoderMaskedMultiheadAttention32_bf16.cu">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decoderMaskedMultiheadAttention\decoderMaskedMultiheadAttention32_float.cu">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decoderMaskedMultiheadAttention\decoderMaskedMultiheadAttention32_half.cu">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decoderMaskedMultiheadAttention\decoderMaskedMultiheadAttention48_bf16.cu">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decoderMaskedMultiheadAttention\decoderMaskedMultiheadAttention48_float.cu">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decoderMaskedMultiheadAttention\decoderMaskedMultiheadAttention48_half.cu">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decoderMaskedMultiheadAttention\decoderMaskedMultiheadAttention64_bf16.cu">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decoderMaskedMultiheadAttention\decoderMaskedMultiheadAttention64_float.cu">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decoderMaskedMultiheadAttention\decoderMaskedMultiheadAttention64_half.cu">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decoderMaskedMultiheadAttention\decoderMaskedMultiheadAttention80_bf16.cu">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decoderMaskedMultiheadAttention\decoderMaskedMultiheadAttention80_float.cu">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decoderMaskedMultiheadAttention\decoderMaskedMultiheadAttention80_half.cu">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decoderMaskedMultiheadAttention\decoderMaskedMultiheadAttention96_bf16.cu">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decoderMaskedMultiheadAttention\decoderMaskedMultiheadAttention96_float.cu">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decoderMaskedMultiheadAttention\decoderMaskedMultiheadAttention96_half.cu">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decoderMaskedMultiheadAttention\decoderMaskedMultiheadAttention112_bf16.cu">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decoderMaskedMultiheadAttention\decoderMaskedMultiheadAttention112_float.cu">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decoderMaskedMultiheadAttention\decoderMaskedMultiheadAttention112_half.cu">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decoderMaskedMultiheadAttention\decoderMaskedMultiheadAttention128_bf16.cu">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decoderMaskedMultiheadAttention\decoderMaskedMultiheadAttention128_float.cu">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decoderMaskedMultiheadAttention\decoderMaskedMultiheadAttention128_half.cu">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decoderMaskedMultiheadAttention\decoderMaskedMultiheadAttention144_bf16.cu">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decoderMaskedMultiheadAttention\decoderMaskedMultiheadAttention144_float.cu">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decoderMaskedMultiheadAttention\decoderMaskedMultiheadAttention144_half.cu">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decoderMaskedMultiheadAttention\decoderMaskedMultiheadAttention160_bf16.cu">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decoderMaskedMultiheadAttention\decoderMaskedMultiheadAttention160_float.cu">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decoderMaskedMultiheadAttention\decoderMaskedMultiheadAttention160_half.cu">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decoderMaskedMultiheadAttention\decoderMaskedMultiheadAttention192_bf16.cu">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decoderMaskedMultiheadAttention\decoderMaskedMultiheadAttention192_float.cu">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decoderMaskedMultiheadAttention\decoderMaskedMultiheadAttention192_half.cu">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decoderMaskedMultiheadAttention\decoderMaskedMultiheadAttention224_bf16.cu">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decoderMaskedMultiheadAttention\decoderMaskedMultiheadAttention224_float.cu">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decoderMaskedMultiheadAttention\decoderMaskedMultiheadAttention224_half.cu">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decoderMaskedMultiheadAttention\decoderMaskedMultiheadAttention256_bf16.cu">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decoderMaskedMultiheadAttention\decoderMaskedMultiheadAttention256_float.cu">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decoderMaskedMultiheadAttention\decoderMaskedMultiheadAttention256_half.cu">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decoderMaskedMultiheadAttention\decoderXQARunner.cpp">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\weightOnlyBatchedGemv\kernelLauncher.cu">
+      <Filter>kernels\weightOnlyBatchedGemv</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\weightOnlyBatchedGemv\weightOnlyBatchedGemvBs1Int4b.cu">
+      <Filter>kernels\weightOnlyBatchedGemv</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\weightOnlyBatchedGemv\weightOnlyBatchedGemvBs1Int8b.cu">
+      <Filter>kernels\weightOnlyBatchedGemv</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\weightOnlyBatchedGemv\weightOnlyBatchedGemvBs2Int4b.cu">
+      <Filter>kernels\weightOnlyBatchedGemv</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\weightOnlyBatchedGemv\weightOnlyBatchedGemvBs2Int8b.cu">
+      <Filter>kernels\weightOnlyBatchedGemv</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\weightOnlyBatchedGemv\weightOnlyBatchedGemvBs3Int4b.cu">
+      <Filter>kernels\weightOnlyBatchedGemv</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\weightOnlyBatchedGemv\weightOnlyBatchedGemvBs3Int8b.cu">
+      <Filter>kernels\weightOnlyBatchedGemv</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\weightOnlyBatchedGemv\weightOnlyBatchedGemvBs4Int4b.cu">
+      <Filter>kernels\weightOnlyBatchedGemv</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\weightOnlyBatchedGemv\weightOnlyBatchedGemvBs4Int8b.cu">
+      <Filter>kernels\weightOnlyBatchedGemv</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\onlineSoftmaxBeamsearchKernels\onlineSoftmaxBeamsearchKernels4.cu">
+      <Filter>kernels\onlineSoftmaxBeamsearchKernels</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\onlineSoftmaxBeamsearchKernels\onlineSoftmaxBeamsearchKernels8.cu">
+      <Filter>kernels\onlineSoftmaxBeamsearchKernels</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\onlineSoftmaxBeamsearchKernels\onlineSoftmaxBeamsearchKernels16.cu">
+      <Filter>kernels\onlineSoftmaxBeamsearchKernels</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\onlineSoftmaxBeamsearchKernels\onlineSoftmaxBeamsearchKernels32.cu">
+      <Filter>kernels\onlineSoftmaxBeamsearchKernels</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\onlineSoftmaxBeamsearchKernels\onlineSoftmaxBeamsearchKernels64.cu">
+      <Filter>kernels\onlineSoftmaxBeamsearchKernels</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\banBadWords.cu">
+      <Filter>kernels</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\banRepeatNgram.cu">
+      <Filter>kernels</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\beamSearchPenaltyKernels.cu">
+      <Filter>kernels</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\beamSearchTopkKernels.cu">
+      <Filter>kernels</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decoderMaskedMultiheadAttention.cu">
+      <Filter>kernels</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decodingKernels.cu">
+      <Filter>kernels</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\gptKernels.cu">
+      <Filter>kernels</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\layernormKernels.cu">
+      <Filter>kernels</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\lookupKernels.cu">
+      <Filter>kernels</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\onlineSoftmaxBeamsearchKernels.cu">
+      <Filter>kernels</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\preQuantScaleKernel.cu">
+      <Filter>kernels</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\quantization.cu">
+      <Filter>kernels</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\rmsnormKernels.cu">
+      <Filter>kernels</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\samplingPenaltyKernels.cu">
+      <Filter>kernels</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\stopCriteriaKernels.cu">
+      <Filter>kernels</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\unfusedAttentionKernels.cu">
+      <Filter>kernels</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\unfusedAttentionKernels_2.cu">
+      <Filter>kernels</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\customAllReduceKernels.cu">
+      <Filter>kernels</Filter>
+    </ClCompile>
+    <ClCompile Include="kernels\decodingCommon.cu">
+      <Filter>kernels</Filter>
+    </ClCompile>
+    <ClCompile Include="layers\baseBeamSearchLayer.cu">
+      <Filter>layers</Filter>
+    </ClCompile>
+    <ClCompile Include="layers\dynamicDecodeLayer.cpp">
+      <Filter>layers</Filter>
+    </ClCompile>
+    <ClCompile Include="layers\onlineBeamSearchLayer.cu">
+      <Filter>layers</Filter>
+    </ClCompile>
+    <ClCompile Include="layers\topKSamplingLayer.cu">
+      <Filter>layers</Filter>
+    </ClCompile>
+    <ClCompile Include="common\assert.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\cublasMMWrapper.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\cudaAllocator.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\cudaDriverWrapper.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\cudaFp8Utils.cu">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\envUtils.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\logger.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\memoryUtils.cu">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\mpiUtils.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\stringUtils.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\tensor.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\tllmException.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="runtime\bufferManager.cpp">
+      <Filter>runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="runtime\decodingOutput.cpp">
+      <Filter>runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="runtime\gptDecoder.cpp">
+      <Filter>runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="runtime\gptDecoderBatch.cpp">
+      <Filter>runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="runtime\gptJsonConfig.cpp">
+      <Filter>runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="runtime\gptSession.cpp">
+      <Filter>runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="runtime\iBuffer.cpp">
+      <Filter>runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="runtime\ipcUtils.cpp">
+      <Filter>runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="runtime\iTensor.cpp">
+      <Filter>runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="runtime\memoryCounters.cpp">
+      <Filter>runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="runtime\ncclCommunicator.cpp">
+      <Filter>runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="runtime\promptTuningParams.cpp">
+      <Filter>runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="runtime\runtimeBuffers.cpp">
+      <Filter>runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="runtime\runtimeKernels.cu">
+      <Filter>runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="runtime\statefulGptDecoder.cpp">
+      <Filter>runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="runtime\tllmLogger.cpp">
+      <Filter>runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="runtime\tllmRuntime.cpp">
+      <Filter>runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="runtime\worldConfig.cpp">
+      <Filter>runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="runtime\utils\debugUtils.cu">
+      <Filter>runtime\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="runtime\utils\numpyUtils.cpp">
+      <Filter>runtime\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="runtime\utils\sessionUtils.cpp">
+      <Filter>runtime\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="plugins\api\tllmPlugin.cpp">
+      <Filter>plugins\api</Filter>
+    </ClCompile>
+    <ClCompile Include="plugins\bertAttentionPlugin\bertAttentionPlugin.cpp">
+      <Filter>plugins\bertAttentionPlugin</Filter>
+    </ClCompile>
+    <ClCompile Include="plugins\common\checkMacrosPlugin.cpp">
+      <Filter>plugins\common</Filter>
+    </ClCompile>
+    <ClCompile Include="plugins\common\gemmPluginProfiler.cpp">
+      <Filter>plugins\common</Filter>
+    </ClCompile>
+    <ClCompile Include="plugins\common\plugin.cpp">
+      <Filter>plugins\common</Filter>
+    </ClCompile>
+    <ClCompile Include="plugins\gemmPlugin\gemmPlugin.cpp">
+      <Filter>plugins\gemmPlugin</Filter>
+    </ClCompile>
+    <ClCompile Include="plugins\gptAttentionPlugin\gptAttentionPlugin.cpp">
+      <Filter>plugins\gptAttentionPlugin</Filter>
+    </ClCompile>
+    <ClCompile Include="plugins\identityPlugin\identityPlugin.cpp">
+      <Filter>plugins\identityPlugin</Filter>
+    </ClCompile>
+    <ClCompile Include="plugins\layernormPlugin\layernormPlugin.cpp">
+      <Filter>plugins\layernormPlugin</Filter>
+    </ClCompile>
+    <ClCompile Include="plugins\layernormQuantizationPlugin\layernormQuantizationPlugin.cpp">
+      <Filter>plugins\layernormQuantizationPlugin</Filter>
+    </ClCompile>
+    <ClCompile Include="plugins\lookupPlugin\lookupPlugin.cpp">
+      <Filter>plugins\lookupPlugin</Filter>
+    </ClCompile>
+    <ClCompile Include="plugins\loraPlugin\loraPlugin.cpp">
+      <Filter>plugins\loraPlugin</Filter>
+    </ClCompile>
+    <ClCompile Include="plugins\mixtureOfExperts\mixtureOfExpertsPlugin.cpp">
+      <Filter>plugins\mixtureOfExperts</Filter>
+    </ClCompile>
+    <ClCompile Include="plugins\quantizePerTokenPlugin\quantizePerTokenPlugin.cpp">
+      <Filter>plugins\quantizePerTokenPlugin</Filter>
+    </ClCompile>
+    <ClCompile Include="plugins\quantizeTensorPlugin\quantizeTensorPlugin.cpp">
+      <Filter>plugins\quantizeTensorPlugin</Filter>
+    </ClCompile>
+    <ClCompile Include="plugins\rmsnormPlugin\rmsnormPlugin.cpp">
+      <Filter>plugins\rmsnormPlugin</Filter>
+    </ClCompile>
+    <ClCompile Include="plugins\rmsnormQuantizationPlugin\rmsnormQuantizationPlugin.cpp">
+      <Filter>plugins\rmsnormQuantizationPlugin</Filter>
+    </ClCompile>
+    <ClCompile Include="plugins\smoothQuantGemmPlugin\smoothQuantGemmPlugin.cpp">
+      <Filter>plugins\smoothQuantGemmPlugin</Filter>
+    </ClCompile>
+    <ClCompile Include="plugins\weightOnlyGroupwiseQuantMatmulPlugin\weightOnlyGroupwiseQuantMatmulPlugin.cpp">
+      <Filter>plugins\weightOnlyGroupwiseQuantMatmulPlugin</Filter>
+    </ClCompile>
+    <ClCompile Include="plugins\weightOnlyQuantMatmulPlugin\weightOnlyQuantMatmulPlugin.cpp">
+      <Filter>plugins\weightOnlyQuantMatmulPlugin</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gpuTypes.cpp" />
+    <ClCompile Include="src\activation.cu" />
+    <ClCompile Include="src\layer.cpp" />
+    <ClCompile Include="src\network.cpp" />
+    <ClCompile Include="src\sorting.cu" />
+    <ClCompile Include="src\sparse.cu" />
+    <ClCompile Include="src\types.cpp" />
+    <ClCompile Include="src\weight.cpp" />
+    <ClCompile Include="runtime\utils\cdl.cpp">
+      <Filter>runtime\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="runtime\utils\filters.cpp">
+      <Filter>runtime\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="runtime\utils\main.cpp">
+      <Filter>runtime\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="runtime\utils\netCDFGenerator.cpp">
+      <Filter>runtime\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="runtime\utils\netCDFhelper.cpp">
+      <Filter>runtime\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="runtime\utils\predict.cpp">
+      <Filter>runtime\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="runtime\utils\recommendations.cpp">
+      <Filter>runtime\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="runtime\utils\train.cpp">
+      <Filter>runtime\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="runtime\utils\utils.cpp">
+      <Filter>runtime\utils</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="kernels\contextFusedMultiHeadAttention\fmhaRunner.h">
+      <Filter>kernels\contextFusedMultiHeadAttention</Filter>
+    </ClInclude>
+    <ClInclude Include="kernels\contextFusedMultiHeadAttention\fused_multihead_attention_common.h">
+      <Filter>kernels\contextFusedMultiHeadAttention</Filter>
+    </ClInclude>
+    <ClInclude Include="kernels\contextFusedMultiHeadAttention\fused_multihead_attention_v2.h">
+      <Filter>kernels\contextFusedMultiHeadAttention</Filter>
+    </ClInclude>
+    <ClInclude Include="kernels\contextFusedMultiHeadAttention\tmaDescriptor.h">
+      <Filter>kernels\contextFusedMultiHeadAttention</Filter>
+    </ClInclude>
+    <ClInclude Include="common\assert.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\cudaDriverWrapper.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="kernels\kvCacheUtils.h">
+      <Filter>kernels</Filter>
+    </ClInclude>
+    <ClInclude Include="kernels\multiHeadAttentionCommon.h">
+      <Filter>kernels</Filter>
+    </ClInclude>
+    <ClInclude Include="common\dataType.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\cudaUtils.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="kernels\contextFusedMultiHeadAttention\pagedKVCubin\fmha_cubin.h">
+      <Filter>kernels\contextFusedMultiHeadAttention\pagedKVCubin</Filter>
+    </ClInclude>
+    <ClInclude Include="kernels\contextFusedMultiHeadAttention\cubin\fmha_cubin.h">
+      <Filter>kernels\contextFusedMultiHeadAttention\cubin</Filter>
+    </ClInclude>
+    <ClInclude Include="common\stringUtils.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\tllmException.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\logger.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="kernels\decoderMaskedMultiheadAttention\decoderMaskedMultiheadAttentionLaunch.h">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClInclude>
+    <ClInclude Include="kernels\decoderMaskedMultiheadAttention\decoderMaskedMultiheadAttentionTemplate.h">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClInclude>
+    <ClInclude Include="kernels\decoderMaskedMultiheadAttention\decoderXQARunner.h">
+      <Filter>kernels\decoderMaskedMultiheadAttention</Filter>
+    </ClInclude>
+    <ClInclude Include="kernels\gptKernels.h">
+      <Filter>kernels</Filter>
+    </ClInclude>
+    <ClInclude Include="common\quantization.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\cudaFp8Utils.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="kernels\weightOnlyBatchedGemv\common.h">
+      <Filter>kernels\weightOnlyBatchedGemv</Filter>
+    </ClInclude>
+    <ClInclude Include="kernels\weightOnlyBatchedGemv\enabled.h">
+      <Filter>kernels\weightOnlyBatchedGemv</Filter>
+    </ClInclude>
+    <ClInclude Include="kernels\weightOnlyBatchedGemv\kernel.h">
+      <Filter>kernels\weightOnlyBatchedGemv</Filter>
+    </ClInclude>
+    <ClInclude Include="kernels\weightOnlyBatchedGemv\kernelLauncher.h">
+      <Filter>kernels\weightOnlyBatchedGemv</Filter>
+    </ClInclude>
+    <ClInclude Include="kernels\weightOnlyBatchedGemv\utility.h">
+      <Filter>kernels\weightOnlyBatchedGemv</Filter>
+    </ClInclude>
+    <ClInclude Include="kernels\onlineSoftmaxBeamsearchKernels\onlineSoftmaxBeamsearchKernelsTemplate.h">
+      <Filter>kernels\onlineSoftmaxBeamsearchKernels</Filter>
+    </ClInclude>
+    <ClInclude Include="kernels\decodingCommon.h">
+      <Filter>kernels</Filter>
+    </ClInclude>
+    <ClInclude Include="kernels\onlineSoftmaxBeamsearchKernels.h">
+      <Filter>kernels</Filter>
+    </ClInclude>
+    <ClInclude Include="kernels\beamSearchTopkKernels.h">
+      <Filter>kernels</Filter>
+    </ClInclude>
+    <ClInclude Include="common\reduceKernelUtils.cuh">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="kernels\banBadWords.h">
+      <Filter>kernels</Filter>
+    </ClInclude>
+    <ClInclude Include="kernels\banRepeatNgram.h">
+      <Filter>kernels</Filter>
+    </ClInclude>
+    <ClInclude Include="kernels\beamSearchPenaltyKernels.h">
+      <Filter>kernels</Filter>
+    </ClInclude>
+    <ClInclude Include="kernels\customAllReduceKernels.h">
+      <Filter>kernels</Filter>
+    </ClInclude>
+    <ClInclude Include="kernels\decoderMaskedMultiheadAttention.h">
+      <Filter>kernels</Filter>
+    </ClInclude>
+    <ClInclude Include="kernels\decoderMaskedMultiheadAttentionUtils.h">
+      <Filter>kernels</Filter>
+    </ClInclude>
+    <ClInclude Include="kernels\decodingKernels.h">
+      <Filter>kernels</Filter>
+    </ClInclude>
+    <ClInclude Include="kernels\layernormKernels.h">
+      <Filter>kernels</Filter>
+    </ClInclude>
+    <ClInclude Include="kernels\lookupKernels.h">
+      <Filter>kernels</Filter>
+    </ClInclude>
+    <ClInclude Include="kernels\penaltyTypes.h">
+      <Filter>kernels</Filter>
+    </ClInclude>
+    <ClInclude Include="kernels\preQuantScaleKernel.h">
+      <Filter>kernels</Filter>
+    </ClInclude>
+    <ClInclude Include="kernels\quantization.h">
+      <Filter>kernels</Filter>
+    </ClInclude>
+    <ClInclude Include="kernels\rmsnormKernels.h">
+      <Filter>kernels</Filter>
+    </ClInclude>
+    <ClInclude Include="kernels\samplingPenaltyKernels.h">
+      <Filter>kernels</Filter>
+    </ClInclude>
+    <ClInclude Include="kernels\samplingTopKKernels.h">
+      <Filter>kernels</Filter>
+    </ClInclude>
+    <ClInclude Include="kernels\samplingTopPKernels.h">
+      <Filter>kernels</Filter>
+    </ClInclude>
+    <ClInclude Include="kernels\stopCriteriaKernels.h">
+      <Filter>kernels</Filter>
+    </ClInclude>
+    <ClInclude Include="kernels\unfusedAttentionKernels.h">
+      <Filter>kernels</Filter>
+    </ClInclude>
+    <ClInclude Include="layers\baseBeamSearchLayer.h">
+      <Filter>layers</Filter>
+    </ClInclude>
+    <ClInclude Include="layers\baseLayer.h">
+      <Filter>layers</Filter>
+    </ClInclude>
+    <ClInclude Include="layers\baseSamplingLayer.h">
+      <Filter>layers</Filter>
+    </ClInclude>
+    <ClInclude Include="layers\decodingParams.h">
+      <Filter>layers</Filter>
+    </ClInclude>
+    <ClInclude Include="layers\dynamicDecodeLayer.h">
+      <Filter>layers</Filter>
+    </ClInclude>
+    <ClInclude Include="layers\fillBuffers.h">
+      <Filter>layers</Filter>
+    </ClInclude>
+    <ClInclude Include="layers\onlineBeamSearchLayer.h">
+      <Filter>layers</Filter>
+    </ClInclude>
+    <ClInclude Include="layers\topKSamplingLayer.h">
+      <Filter>layers</Filter>
+    </ClInclude>
+    <ClInclude Include="layers\topPSamplingLayer.h">
+      <Filter>layers</Filter>
+    </ClInclude>
+    <ClInclude Include="common\allocator.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\cublasMMWrapper.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\cublasVersionCheck.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\cudaAllocator.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\cudaBf16Fallbacks.cuh">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\cudaBf16Wrapper.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\cudaTypeUtils.cuh">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\envUtils.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\memoryUtils.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\mpiUtils.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\nvtxUtils.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\stlUtils.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\tensor.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\tensorConversion.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\workspace.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\bufferManager.h">
+      <Filter>runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\bufferView.h">
+      <Filter>runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\common.h">
+      <Filter>runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\cudaEvent.h">
+      <Filter>runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\cudaStream.h">
+      <Filter>runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\decodingInput.h">
+      <Filter>runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\decodingOutput.h">
+      <Filter>runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\generationInput.h">
+      <Filter>runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\generationOutput.h">
+      <Filter>runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\gptDecoder.h">
+      <Filter>runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\gptDecoderBatch.h">
+      <Filter>runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\gptJsonConfig.h">
+      <Filter>runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\gptModelConfig.h">
+      <Filter>runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\gptSession.h">
+      <Filter>runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\iBuffer.h">
+      <Filter>runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\iGptDecoderBatch.h">
+      <Filter>runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\ipcUtils.h">
+      <Filter>runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\iStatefulGptDecoder.h">
+      <Filter>runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\iTensor.h">
+      <Filter>runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\memoryCounters.h">
+      <Filter>runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\ncclCommunicator.h">
+      <Filter>runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\promptTuningParams.h">
+      <Filter>runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\runtimeBuffers.h">
+      <Filter>runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\runtimeKernels.h">
+      <Filter>runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\samplingConfig.h">
+      <Filter>runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\statefulGptDecoder.h">
+      <Filter>runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\tensorView.h">
+      <Filter>runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\tllmBuffers.h">
+      <Filter>runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\tllmLogger.h">
+      <Filter>runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\tllmRuntime.h">
+      <Filter>runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\worldConfig.h">
+      <Filter>runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\utils\debugUtils.h">
+      <Filter>runtime\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\utils\multiDeviceUtils.h">
+      <Filter>runtime\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\utils\numpyUtils.h">
+      <Filter>runtime\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\utils\sessionUtils.h">
+      <Filter>runtime\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="batch_manager\BatchManager.h">
+      <Filter>batch_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="batch_manager\batchScheduler.h">
+      <Filter>batch_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="batch_manager\callbacks.h">
+      <Filter>batch_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="batch_manager\GptManager.h">
+      <Filter>batch_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="batch_manager\inferenceRequest.h">
+      <Filter>batch_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="batch_manager\kvCacheConfig.h">
+      <Filter>batch_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="batch_manager\kvCacheManager.h">
+      <Filter>batch_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="batch_manager\llmRequest.h">
+      <Filter>batch_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="batch_manager\namedTensor.h">
+      <Filter>batch_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="batch_manager\trtGptModelOptionalParams.h">
+      <Filter>batch_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="plugins\api\tllmPlugin.h">
+      <Filter>plugins\api</Filter>
+    </ClInclude>
+    <ClInclude Include="plugins\bertAttentionPlugin\bertAttentionPlugin.h">
+      <Filter>plugins\bertAttentionPlugin</Filter>
+    </ClInclude>
+    <ClInclude Include="plugins\common\checkMacrosPlugin.h">
+      <Filter>plugins\common</Filter>
+    </ClInclude>
+    <ClInclude Include="plugins\common\gemmPluginProfiler.h">
+      <Filter>plugins\common</Filter>
+    </ClInclude>
+    <ClInclude Include="plugins\common\plugin.h">
+      <Filter>plugins\common</Filter>
+    </ClInclude>
+    <ClInclude Include="plugins\gemmPlugin\gemmPlugin.h">
+      <Filter>plugins\gemmPlugin</Filter>
+    </ClInclude>
+    <ClInclude Include="plugins\gptAttentionPlugin\gptAttentionPlugin.h">
+      <Filter>plugins\gptAttentionPlugin</Filter>
+    </ClInclude>
+    <ClInclude Include="plugins\identityPlugin\identityPlugin.h">
+      <Filter>plugins\identityPlugin</Filter>
+    </ClInclude>
+    <ClInclude Include="plugins\layernormPlugin\layernormPlugin.h">
+      <Filter>plugins\layernormPlugin</Filter>
+    </ClInclude>
+    <ClInclude Include="plugins\layernormQuantizationPlugin\layernormQuantizationPlugin.h">
+      <Filter>plugins\layernormQuantizationPlugin</Filter>
+    </ClInclude>
+    <ClInclude Include="plugins\lookupPlugin\lookupPlugin.h">
+      <Filter>plugins\lookupPlugin</Filter>
+    </ClInclude>
+    <ClInclude Include="plugins\loraPlugin\loraPlugin.h">
+      <Filter>plugins\loraPlugin</Filter>
+    </ClInclude>
+    <ClInclude Include="plugins\mixtureOfExperts\mixtureOfExpertsPlugin.h">
+      <Filter>plugins\mixtureOfExperts</Filter>
+    </ClInclude>
+    <ClInclude Include="plugins\ncclPlugin\allgatherPlugin.h">
+      <Filter>plugins\ncclPlugin</Filter>
+    </ClInclude>
+    <ClInclude Include="plugins\ncclPlugin\allreducePlugin.h">
+      <Filter>plugins\ncclPlugin</Filter>
+    </ClInclude>
+    <ClInclude Include="plugins\ncclPlugin\recvPlugin.h">
+      <Filter>plugins\ncclPlugin</Filter>
+    </ClInclude>
+    <ClInclude Include="plugins\ncclPlugin\reduceScatterPlugin.h">
+      <Filter>plugins\ncclPlugin</Filter>
+    </ClInclude>
+    <ClInclude Include="plugins\ncclPlugin\sendPlugin.h">
+      <Filter>plugins\ncclPlugin</Filter>
+    </ClInclude>
+    <ClInclude Include="plugins\quantizePerTokenPlugin\quantizePerTokenPlugin.h">
+      <Filter>plugins\quantizePerTokenPlugin</Filter>
+    </ClInclude>
+    <ClInclude Include="plugins\quantizeTensorPlugin\quantizeTensorPlugin.h">
+      <Filter>plugins\quantizeTensorPlugin</Filter>
+    </ClInclude>
+    <ClInclude Include="plugins\rmsnormPlugin\rmsnormPlugin.h">
+      <Filter>plugins\rmsnormPlugin</Filter>
+    </ClInclude>
+    <ClInclude Include="plugins\rmsnormQuantizationPlugin\rmsnormQuantizationPlugin.h">
+      <Filter>plugins\rmsnormQuantizationPlugin</Filter>
+    </ClInclude>
+    <ClInclude Include="plugins\smoothQuantGemmPlugin\smoothQuantGemmPlugin.h">
+      <Filter>plugins\smoothQuantGemmPlugin</Filter>
+    </ClInclude>
+    <ClInclude Include="plugins\weightOnlyGroupwiseQuantMatmulPlugin\weightOnlyGroupwiseQuantMatmulPlugin.h">
+      <Filter>plugins\weightOnlyGroupwiseQuantMatmulPlugin</Filter>
+    </ClInclude>
+    <ClInclude Include="plugins\weightOnlyQuantMatmulPlugin\weightOnlyQuantMatmulPlugin.h">
+      <Filter>plugins\weightOnlyQuantMatmulPlugin</Filter>
+    </ClInclude>
+    <ClInclude Include="src\constants.h" />
+    <ClInclude Include="src\enum.h" />
+    <ClInclude Include="src\gpuSort.h" />
+    <ClInclude Include="src\gpuTypes.h" />
+    <ClInclude Include="src\kernels.cuh" />
+    <ClInclude Include="src\layer.h" />
+    <ClInclude Include="src\network.h" />
+    <ClInclude Include="src\threadPool.h" />
+    <ClInclude Include="src\types.h" />
+    <ClInclude Include="src\weight.h" />
+    <ClInclude Include="src\bitonicSort.cuh" />
+    <ClInclude Include="runtime\utils\cdl.h">
+      <Filter>runtime\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\utils\filters.h">
+      <Filter>runtime\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\utils\netCDFhelper.h">
+      <Filter>runtime\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\utils\recommendations.h">
+      <Filter>runtime\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\utils\train.h">
+      <Filter>runtime\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="runtime\utils\utils.h">
+      <Filter>runtime\utils</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="plugins\ncclPlugin\CMakeLists.txt">
+      <Filter>plugins\ncclPlugin</Filter>
+    </Text>
+  </ItemGroup>
+</Project>
