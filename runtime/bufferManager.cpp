@@ -4,16 +4,20 @@
 
 #include <cstring>
 #include <cuda_runtime_api.h>
-#include <limits>
 #include <memory>
 #include <unordered_set>
+#include <span>
 
 using namespace bitfusion::runtime;
 
 namespace tc = bitfusion::common;
 
+/// <summary>
+/// Constructor for BufferManager.
+/// </summary>
+/// <param name="stream">A pointer to a CudaStream.</param>
 BufferManager::BufferManager(CudaStreamPtr stream)
-    : mStream{std::move(stream)}
+    : mStream{ std::move(stream) }
 {
     CHECK_WITH_INFO(static_cast<bool>(mStream), "Undefined CUDA stream");
     thread_local static std::unordered_set<int> initializedDevices(8);
@@ -25,36 +29,76 @@ BufferManager::BufferManager(CudaStreamPtr stream)
     }
 }
 
-BufferManager::IBufferPtr BufferManager::gpu(std::size_t size, nvinfer1::DataType type) const
+/// <summary>
+/// Create a GPU buffer.
+/// </summary>
+/// <param name="size">The size of the buffer.</param>
+/// <param name="type">The data type of the buffer.</param>
+/// <returns>A unique pointer to the created IBuffer.</returns>
+auto BufferManager::gpu(std::size_t size, nvinfer1::DataType type) const -> IBufferPtr
 {
-    return std::make_unique<DeviceBuffer>(size, type, CudaAllocatorAsync{mStream});
+    return std::make_unique<DeviceBuffer>(size, type, CudaAllocatorAsync{ mStream });
 }
 
-BufferManager::ITensorPtr BufferManager::gpu(nvinfer1::Dims dims, nvinfer1::DataType type) const
+/// <summary>
+/// Create a GPU tensor.
+/// </summary>
+/// <param name="dims">The dimensions of the tensor.</param>
+/// <param name="type">The data type of the tensor.</param>
+/// <returns>A unique pointer to the created ITensor.</returns>
+auto BufferManager::gpu(nvinfer1::Dims dims, nvinfer1::DataType type) const -> ITensorPtr
 {
-    return std::make_unique<DeviceTensor>(dims, type, CudaAllocatorAsync{mStream});
+    return std::make_unique<DeviceTensor>(dims, type, CudaAllocatorAsync{ mStream });
 }
 
-BufferManager::IBufferPtr BufferManager::cpu(std::size_t size, nvinfer1::DataType type)
+/// <summary>
+/// Create a CPU buffer.
+/// </summary>
+/// <param name="size">The size of the buffer.</param>
+/// <param name="type">The data type of the buffer.</param>
+/// <returns>A unique pointer to the created IBuffer.</returns>
+auto BufferManager::cpu(std::size_t size, nvinfer1::DataType type) -> IBufferPtr
 {
     return std::make_unique<HostBuffer>(size, type);
 }
 
-BufferManager::ITensorPtr BufferManager::cpu(nvinfer1::Dims dims, nvinfer1::DataType type)
+/// <summary>
+/// Create a CPU tensor.
+/// </summary>
+/// <param name="dims">The dimensions of the tensor.</param>
+/// <param name="type">The data type of the tensor.</param>
+/// <returns>A unique pointer to the created ITensor.</returns>
+auto BufferManager::cpu(nvinfer1::Dims dims, nvinfer1::DataType type) -> ITensorPtr
 {
     return std::make_unique<HostTensor>(dims, type);
 }
 
-BufferManager::IBufferPtr BufferManager::pinned(std::size_t size, nvinfer1::DataType type)
+/// <summary>
+/// Create a pinned buffer.
+/// </summary>
+/// <param name="size">The size of the buffer.</param>
+/// <param name="type">The data type of the buffer.</param>
+/// <returns>A unique pointer to the created IBuffer.</returns>
+auto BufferManager::pinned(std::size_t size, nvinfer1::DataType type) -> IBufferPtr
 {
     return std::make_unique<PinnedBuffer>(size, type);
 }
 
-BufferManager::ITensorPtr BufferManager::pinned(nvinfer1::Dims dims, nvinfer1::DataType type)
+/// <summary>
+/// Create a pinned tensor.
+/// </summary>
+/// <param name="dims">The dimensions of the tensor.</param>
+/// <param name="type">The data type of the tensor.</param>
+/// <returns>A unique pointer to the created ITensor.</returns>
+auto BufferManager::pinned(nvinfer1::Dims dims, nvinfer1::DataType type) -> ITensorPtr
 {
     return std::make_unique<PinnedTensor>(dims, type);
 }
 
+/// <summary>
+/// Set all elements of a buffer to zero.
+/// </summary>
+/// <param name="buffer">The buffer to set to zero.</param>
 void BufferManager::setZero(IBuffer& buffer) const
 {
     if (buffer.getMemoryType() == MemoryType::kGPU)
@@ -67,7 +111,13 @@ void BufferManager::setZero(IBuffer& buffer) const
     }
 }
 
-void BufferManager::copy(void const* src, IBuffer& dst, MemoryType srcType) const
+/// <summary>
+/// Copy data from a source buffer to a destination buffer.
+/// </summary>
+/// <param name="src">A pointer to the source data.</param>
+/// <param name="dst">The destination buffer.</param>
+/// <param name="srcType">The memory type of the source data.</param>
+void BufferManager::copy(const void* src, IBuffer& dst, MemoryType srcType) const
 {
     if (dst.getSizeInBytes() > 0)
     {
@@ -82,7 +132,13 @@ void BufferManager::copy(void const* src, IBuffer& dst, MemoryType srcType) cons
     }
 }
 
-void BufferManager::copy(IBuffer const& src, void* dst, MemoryType dstType) const
+/// <summary>
+/// Copy data from a source buffer to a destination pointer.
+/// </summary>
+/// <param name="src">The source buffer.</param>
+/// <param name="dst">A pointer to the destination data.</param>
+/// <param name="dstType">The memory type of the destination data.</param>
+void BufferManager::copy(const IBuffer& src, void* dst, MemoryType dstType) const
 {
     if (src.getSizeInBytes() > 0)
     {
@@ -97,7 +153,12 @@ void BufferManager::copy(IBuffer const& src, void* dst, MemoryType dstType) cons
     }
 }
 
-void BufferManager::copy(IBuffer const& src, IBuffer& dst) const
+/// <summary>
+/// Copy data from a source buffer to a destination buffer.
+/// </summary>
+/// <param name="src">The source buffer.</param>
+/// <param name="dst">The destination buffer.</param>
+void BufferManager::copy(const IBuffer& src, IBuffer& dst) const
 {
     CHECK_WITH_INFO(src.getDataType() == dst.getDataType(),
         tc::fmtstr("Incompatible data types: %s != %s", src.getDataTypeName(), dst.getDataTypeName()));
@@ -106,8 +167,14 @@ void BufferManager::copy(IBuffer const& src, IBuffer& dst) const
     copy(src, dst.data(), dst.getMemoryType());
 }
 
-BufferManager::IBufferPtr BufferManager::allocate(
-    MemoryType memoryType, std::size_t size, nvinfer1::DataType type) const
+/// <summary>
+/// Allocate a buffer with the specified memory type, size, and data type.
+/// </summary>
+/// <param name="memoryType">The memory type for the allocation.</param>
+/// <param name="size">The size of the buffer.</param>
+/// <param name="type">The data type of the buffer.</param>
+/// <returns>A unique pointer to the allocated IBuffer.</returns>
+auto BufferManager::allocate(MemoryType memoryType, std::size_t size, nvinfer1::DataType type) const -> IBufferPtr
 {
     switch (memoryType)
     {
@@ -118,8 +185,14 @@ BufferManager::IBufferPtr BufferManager::allocate(
     }
 }
 
-BufferManager::ITensorPtr BufferManager::allocate(
-    MemoryType memoryType, nvinfer1::Dims dims, nvinfer1::DataType type) const
+/// <summary>
+/// Allocate a tensor with the specified memory type, dimensions, and data type.
+/// </summary>
+/// <param name="memoryType">The memory type for the allocation.</param>
+/// <param name="dims">The dimensions of the tensor.</param>
+/// <param name="type">The data type of the tensor.</param>
+/// <returns>A unique pointer to the allocated ITensor.</returns>
+auto BufferManager::allocate(MemoryType memoryType, nvinfer1::Dims dims, nvinfer1::DataType type) const -> ITensorPtr
 {
     switch (memoryType)
     {
@@ -130,25 +203,45 @@ BufferManager::ITensorPtr BufferManager::allocate(
     }
 }
 
-BufferManager::IBufferPtr BufferManager::copyFrom(IBuffer const& src, MemoryType memoryType) const
+/// <summary>
+/// Copy data from a source buffer to a newly allocated buffer with the specified memory type.
+/// </summary>
+/// <param name="src">The source buffer.</param>
+/// <param name="memoryType">The memory type for the destination buffer.</param>
+/// <returns>A unique pointer to the allocated and copied IBuffer.</returns>
+auto BufferManager::copyFrom(const IBuffer& src, MemoryType memoryType) const -> IBufferPtr
 {
     auto dst = allocate(memoryType, src.getSize(), src.getDataType());
     copy(src, *dst);
     return dst;
 }
 
-BufferManager::ITensorPtr BufferManager::copyFrom(ITensor const& src, MemoryType memoryType) const
+/// <summary>
+/// Copy data from a source tensor to a newly allocated tensor with the specified memory type.
+/// </summary>
+/// <param name="src">The source tensor.</param>
+/// <param name="memoryType">The memory type for the destination tensor.</param>
+/// <returns>A unique pointer to the allocated and copied ITensor.</returns>
+auto BufferManager::copyFrom(const ITensor& src, MemoryType memoryType) const -> ITensorPtr
 {
     auto dst = allocate(memoryType, src.getShape(), src.getDataType());
     copy(src, *dst);
     return dst;
 }
 
-CudaStream const& BufferManager::getStream() const
+/// <summary>
+/// Get the CUDA stream associated with this BufferManager.
+/// </summary>
+/// <returns>A reference to the CudaStream.</returns>
+const CudaStream& BufferManager::getStream() const
 {
     return *mStream;
 }
 
+/// <summary>
+/// Initialize the CUDA memory pool for the specified device.
+/// </summary>
+/// <param name="device">The device for which to initialize the memory pool.</param>
 void BufferManager::initMemoryPool(int device)
 {
     auto const deviceCount = tc::getDeviceCount();
@@ -178,6 +271,11 @@ void BufferManager::initMemoryPool(int device)
     CUDA_CHECK(cudaMemPoolSetAttribute(memPool, cudaMemPoolAttrReleaseThreshold, &maxThreshold));
 }
 
+/// <summary>
+/// Get the current reserved memory size in the CUDA memory pool for the specified device.
+/// </summary>
+/// <param name="device">The device for which to get the reserved memory size.</param>
+/// <returns>The current reserved memory size.</returns>
 std::size_t BufferManager::memoryPoolReserved(int device)
 {
     ::cudaMemPool_t memPool;
@@ -187,6 +285,11 @@ std::size_t BufferManager::memoryPoolReserved(int device)
     return reserved;
 }
 
+/// <summary>
+/// Get the current used memory size in the CUDA memory pool for the specified device.
+/// </summary>
+/// <param name="device">The device for which to get the used memory size.</param>
+/// <returns>The current used memory size.</returns>
 std::size_t BufferManager::memoryPoolUsed(int device)
 {
     ::cudaMemPool_t memPool;
@@ -196,6 +299,11 @@ std::size_t BufferManager::memoryPoolUsed(int device)
     return used;
 }
 
+/// <summary>
+/// Trim the CUDA memory pool for the specified device to the given size.
+/// </summary>
+/// <param name="device">The device for which to trim the memory pool.</param>
+/// <param name="size">The target size to which the memory pool should be trimmed.</param>
 void BufferManager::memoryPoolTrimTo(int device, std::size_t size)
 {
     ::cudaMemPool_t memPool;
@@ -203,21 +311,37 @@ void BufferManager::memoryPoolTrimTo(int device, std::size_t size)
     CUDA_CHECK(cudaMemPoolTrimTo(memPool, size));
 }
 
+/// <summary>
+/// Get the current reserved memory size in the CUDA memory pool for the associated device.
+/// </summary>
+/// <returns>The current reserved memory size.</returns>
 std::size_t BufferManager::memoryPoolReserved() const
 {
     return memoryPoolReserved(mStream->getDevice());
 }
 
+/// <summary>
+/// Get the current used memory size in the CUDA memory pool for the associated device.
+/// </summary>
+/// <returns>The current used memory size.</returns>
 std::size_t BufferManager::memoryPoolUsed() const
 {
     return memoryPoolUsed(mStream->getDevice());
 }
 
+/// <summary>
+/// Get the current free memory size in the CUDA memory pool for the associated device.
+/// </summary>
+/// <returns>The current free memory size.</returns>
 std::size_t BufferManager::memoryPoolFree() const
 {
     return memoryPoolFree(mStream->getDevice());
 }
 
+/// <summary>
+/// Trim the CUDA memory pool for the associated device to the given size.
+/// </summary>
+/// <param name="size">The target size to which the memory pool should be trimmed.</param>
 void BufferManager::memoryPoolTrimTo(std::size_t size)
 {
     mStream->synchronize();
