@@ -44,7 +44,7 @@ extern bool CHECK_DEBUG_ENABLED;
     {                                                                                                                  \
         if (CHECK_DEBUG_ENABLED)                                                                                       \
         {                                                                                                              \
-            TLLM_LIKELY(static_cast<bool>(val)) ? ((void) 0)                                                           \
+            LIKELY(static_cast<bool>(val)) ? ((void) 0)                                                           \
                                                 : bitfusion::common::throwRuntimeError(__FILE__, __LINE__, #val);   \
         }                                                                                                              \
     } while (0)
@@ -54,7 +54,7 @@ extern bool CHECK_DEBUG_ENABLED;
     {                                                                                                                  \
         if (CHECK_DEBUG_ENABLED)                                                                                       \
         {                                                                                                              \
-            TLLM_LIKELY(static_cast<bool>(val)) ? ((void) 0)                                                           \
+            LIKELY(static_cast<bool>(val)) ? ((void) 0)                                                           \
                                                 : bitfusion::common::throwRuntimeError(__FILE__, __LINE__, info);   \
         }                                                                                                              \
     } while (0)
