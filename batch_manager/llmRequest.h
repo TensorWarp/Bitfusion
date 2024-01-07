@@ -70,14 +70,14 @@ namespace bitfusion::batch_manager
                 std::string errStr
                     = "Prompt embedding table and prompt vocab size tensors must both be provided for requests with prompt "
                     "tuning enabled.";
-                TLLM_LOG_ERROR(errStr);
+                LOG_ERROR(errStr);
                 throw std::runtime_error(errStr);
             }
 
             if (draftLogits.has_value() && !draftTokens.has_value())
             {
                 std::string errStr = "Draft tokens must be specified when draft logits are given.";
-                TLLM_LOG_ERROR(errStr);
+                LOG_ERROR(errStr);
                 throw std::runtime_error(errStr);
             }
         }

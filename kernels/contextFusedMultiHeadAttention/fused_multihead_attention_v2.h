@@ -269,7 +269,7 @@ public:
                 launch_params.force_fp32_acc, launch_params.flash_attention, !launch_params.useKernelWithoutAlibi,
                 static_cast<int>(launch_params.attention_mask_type), launch_params.granular_tiling));
 
-        TLLM_CHECK_WITH_INFO(findIter != mFunctions.end(),
+        CHECK_WITH_INFO(findIter != mFunctions.end(),
             "FMHA kernels are not found (kernel meta info: %d %d %d %d %d %d %d %d %d) !", launch_params.kernel_s,
             params.d, launch_params.interleaved, forceUnroll, launch_params.force_fp32_acc,
             launch_params.flash_attention, !launch_params.useKernelWithoutAlibi,
@@ -311,7 +311,7 @@ public:
         else
         {
             int unroll = kernelMeta.mS / kernelMeta.mUnrollStep;
-            TLLM_CHECK_WITH_INFO(kernelMeta.mS == kernelMeta.mUnrollStep * unroll, "Wrong launching sequence length");
+            CHECK_WITH_INFO(kernelMeta.mS == kernelMeta.mUnrollStep * unroll, "Wrong launching sequence length");
             if (launch_params.flash_attention)
             {
                 unroll = (params.s + kernelMeta.mUnrollStep - 1) / kernelMeta.mUnrollStep;
@@ -380,7 +380,7 @@ public:
             launch_params.warp_specialization, !launch_params.useKernelWithoutAlibi,
             static_cast<int>(launch_params.attention_mask_type), launch_params.granular_tiling));
 
-        TLLM_CHECK_WITH_INFO(findIter != mFunctions.end(),
+        CHECK_WITH_INFO(findIter != mFunctions.end(),
             "Paged KV FMHA kernels are not found (kernel meta info: %d %d %d %d %d %d %d %d %d %d) !",
             launch_params.kernel_s, params.d, launch_params.interleaved, launch_params.force_unroll,
             launch_params.force_fp32_acc, launch_params.flash_attention, launch_params.warp_specialization,
@@ -417,7 +417,7 @@ public:
         else
         {
             int unroll = kernelMeta.mS / kernelMeta.mUnrollStep;
-            TLLM_CHECK_WITH_INFO(kernelMeta.mS == kernelMeta.mUnrollStep * unroll, "Wrong launching sequence length");
+            CHECK_WITH_INFO(kernelMeta.mS == kernelMeta.mUnrollStep * unroll, "Wrong launching sequence length");
             if (launch_params.flash_attention)
             {
                 unroll = (params.s + kernelMeta.mUnrollStep - 1) / kernelMeta.mUnrollStep;

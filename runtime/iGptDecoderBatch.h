@@ -67,7 +67,7 @@ public:
         : logits{logits}
         , active{active}
     {
-        TLLM_CHECK_WITH_INFO(
+        CHECK_WITH_INFO(
             this->active.size() == logits.size(), "'active' vector size does not match logits vector size");
     }
 

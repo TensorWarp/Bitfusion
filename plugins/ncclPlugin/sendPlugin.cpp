@@ -20,7 +20,7 @@ SendPlugin::SendPlugin(const void* data, size_t length)
     const char *d = reinterpret_cast<const char*>(data), *a = d;
     read(d, mType);
     read(d, mTgtRank);
-    TLLM_CHECK(d == a + length);
+    CHECK(d == a + length);
 }
 
 nvinfer1::IPluginV2DynamicExt* SendPlugin::clone() const noexcept
@@ -173,12 +173,12 @@ IPluginV2* SendPluginCreator::createPlugin(const char* name, const PluginFieldCo
         const char* attrName = fields[i].name;
         if (!strcmp(attrName, "tgt_rank"))
         {
-            TLLM_CHECK(fields[i].type == PluginFieldType::kINT32);
+            CHECK(fields[i].type == PluginFieldType::kINT32);
             tgtRank = static_cast<int>(*(static_cast<const int*>(fields[i].data)));
         }
         else if (!strcmp(attrName, "type_id"))
         {
-            TLLM_CHECK(fields[i].type == PluginFieldType::kINT32);
+            CHECK(fields[i].type == PluginFieldType::kINT32);
             type = static_cast<nvinfer1::DataType>(*(static_cast<const nvinfer1::DataType*>(fields[i].data)));
         }
     }

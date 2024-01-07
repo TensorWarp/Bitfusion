@@ -8,12 +8,12 @@ namespace bitfusion::plugins
 
 void caughtError(const std::exception& e)
 {
-    TLLM_LOG_EXCEPTION(e);
+    LOG_EXCEPTION(e);
 }
 
 void logError(const char* msg, const char* file, const char* fn, int line)
 {
-    TLLM_LOG_ERROR("Parameter check failed at: %s::%s::%d, condition: %s", file, fn, line, msg);
+    LOG_ERROR("Parameter check failed at: %s::%s::%d, condition: %s", file, fn, line, msg);
 }
 
 }

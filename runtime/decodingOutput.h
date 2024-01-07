@@ -43,7 +43,7 @@ public:
     explicit DecodingOutput(TensorPtr ids)
         : ids{std::move(ids)}
     {
-        TLLM_CHECK_WITH_INFO(static_cast<bool>(this->ids), "Invalid ids tensor");
+        CHECK_WITH_INFO(static_cast<bool>(this->ids), "Invalid ids tensor");
     }
 
     TensorPtr ids;

@@ -55,7 +55,7 @@ void MemoryCounters::allocate(MemoryType memoryType, MemoryCounters::SizeType si
     case MemoryType::kGPU: allocate<MemoryType::kGPU>(size); break;
     case MemoryType::kCPU: allocate<MemoryType::kCPU>(size); break;
     case MemoryType::kPINNED: allocate<MemoryType::kPINNED>(size); break;
-    default: TLLM_THROW("Unknown memory type");
+    default: THROW("Unknown memory type");
     }
 }
 
@@ -66,7 +66,7 @@ void MemoryCounters::deallocate(MemoryType memoryType, MemoryCounters::SizeType 
     case MemoryType::kGPU: deallocate<MemoryType::kGPU>(size); break;
     case MemoryType::kCPU: deallocate<MemoryType::kCPU>(size); break;
     case MemoryType::kPINNED: deallocate<MemoryType::kPINNED>(size); break;
-    default: TLLM_THROW("Unknown memory type");
+    default: THROW("Unknown memory type");
     }
 }
 }

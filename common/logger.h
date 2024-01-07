@@ -140,11 +140,11 @@ namespace bitfusion::common
         }
     }
 
-#define TLLM_LOG(level, ...) bitfusion::common::Logger::getLogger()->log(level, __VA_ARGS__)
-#define TLLM_LOG_TRACE(...) TLLM_LOG(bitfusion::common::Logger::TRACE, __VA_ARGS__)
-#define TLLM_LOG_DEBUG(...) TLLM_LOG(bitfusion::common::Logger::DEBUG, __VA_ARGS__)
-#define TLLM_LOG_INFO(...) TLLM_LOG(bitfusion::common::Logger::INFO, __VA_ARGS__)
-#define TLLM_LOG_WARNING(...) TLLM_LOG(bitfusion::common::Logger::WARNING, __VA_ARGS__)
-#define TLLM_LOG_ERROR(...) TLLM_LOG(bitfusion::common::Logger::ERROR, __VA_ARGS__)
-#define TLLM_LOG_EXCEPTION(ex, ...) bitfusion::common::Logger::getLogger()->log(ex, ##__VA_ARGS__)
+#define LOG(level, ...) bitfusion::common::Logger::getLogger()->log(level, __VA_ARGS__)
+#define LOG_TRACE(...) LOG(bitfusion::common::Logger::TRACE, __VA_ARGS__)
+#define LOG_DEBUG(...) LOG(bitfusion::common::Logger::DEBUG, __VA_ARGS__)
+#define LOG_INFO(...) LOG(bitfusion::common::Logger::INFO, __VA_ARGS__)
+#define LOG_WARNING(...) LOG(bitfusion::common::Logger::WARNING, __VA_ARGS__)
+#define LOG_ERROR(...) LOG(bitfusion::common::Logger::ERROR, __VA_ARGS__)
+#define LOG_EXCEPTION(ex, ...) bitfusion::common::Logger::getLogger()->log(ex, ##__VA_ARGS__)
 }

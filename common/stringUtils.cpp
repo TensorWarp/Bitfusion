@@ -22,7 +22,7 @@ namespace bitfusion::common
             std::string stringBuf(size, char{});
             auto const size2 = std::vsnprintf(&stringBuf[0], size + 1, fmt, args);
 
-            TLLM_CHECK_WITH_INFO(size2 == size, std::string(std::strerror(errno)));
+            CHECK_WITH_INFO(size2 == size, std::string(std::strerror(errno)));
 
             return stringBuf;
         }

@@ -154,7 +154,7 @@ template <typename T>
 void invokeBatchApplyTemperaturePenalty(T* logits, const T* bias, const float* temperatures, const int batchSize,
     const int vocabSize, const int vocabSizePadded, cudaStream_t stream)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     dim3 block(min(vocabSizePadded, 1024));
     dim3 grid(min(batchSize * vocabSizePadded / block.x, 65536));
     if (std::is_same<T, half>::value && vocabSize % 2 == 0 && vocabSizePadded % 2 == 0)
@@ -241,7 +241,7 @@ void invokeBatchApplyRepetitionPenalty(T* logits, const float* penalties, const 
     const int* sequenceLengths, const int batchSize, const int vocabSize, RepetitionPenaltyType penaltyType,
     int maxSeqLen, cudaStream_t stream)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     dim3 block(min(maxSeqLen, 1024));
     dim3 grid(batchSize);
     // FIXME(nkorobov): with long sequences we might hit upper smem limit
@@ -253,7 +253,7 @@ void invokeBatchApplyRepetitionPenalty(T* logits, const float* penalties, const 
             /* Set 46KB threshold here because we have to take static/driver shared memory into consideration. */
             cudaError_t res = cudaFuncSetAttribute(batchApplyRepetitionPenalty<T, RepetitionPenaltyType::Additive>,
                 cudaFuncAttributeMaxDynamicSharedMemorySize, smemSize);
-            TLLM_CHECK_WITH_INFO(res == cudaSuccess,
+            CHECK_WITH_INFO(res == cudaSuccess,
                 "Sequence Length is too long for the batchApplyRepetitionPenalty kernel (not enough shared memory).");
         }
         batchApplyRepetitionPenalty<T, RepetitionPenaltyType::Additive><<<grid, block, smemSize, stream>>>(
@@ -267,7 +267,7 @@ void invokeBatchApplyRepetitionPenalty(T* logits, const float* penalties, const 
             cudaError_t res
                 = cudaFuncSetAttribute(batchApplyRepetitionPenalty<T, RepetitionPenaltyType::Multiplicative>,
                     cudaFuncAttributeMaxDynamicSharedMemorySize, smemSize);
-            TLLM_CHECK_WITH_INFO(res == cudaSuccess,
+            CHECK_WITH_INFO(res == cudaSuccess,
                 "Sequence Length is too long for the batchApplyRepetitionPenalty kernel (not enough shared memory).");
         }
         batchApplyRepetitionPenalty<T, RepetitionPenaltyType::Multiplicative><<<grid, block, smemSize, stream>>>(

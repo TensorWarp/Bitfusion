@@ -470,7 +470,7 @@ void topkGatingSoftmaxKernelLauncher(const float* input, const bool* finished, f
     default:
     {
         static constexpr int TPB = 256;
-        TLLM_CHECK(softmax_temp_output != nullptr);
+        CHECK(softmax_temp_output != nullptr);
         moeSoftmax<TPB><<<num_rows, TPB, 0, stream>>>(input, finished, softmax_temp_output, num_experts);
         moeTopK<TPB><<<num_rows, TPB, 0, stream>>>(
             softmax_temp_output, finished, output, indices, source_row, num_experts, k, start_expert, end_expert);
@@ -513,7 +513,7 @@ void CubKeyValueSorter::run(void* workspace, const size_t workspace_size, const 
     size_t expected_ws_size = getWorkspaceSize(num_key_value_pairs, num_experts_);
     size_t actual_ws_size = workspace_size;
 
-    TLLM_CHECK_WITH_INFO(expected_ws_size <= workspace_size,
+    CHECK_WITH_INFO(expected_ws_size <= workspace_size,
         "[CubKeyValueSorter::run] The allocated workspace is too small to run this problem.");
     cub::DeviceRadixSort::SortPairs(
         workspace, actual_ws_size, keys_in, keys_out, values_in, values_out, num_key_value_pairs, 0, num_bits_, stream);
@@ -861,7 +861,7 @@ size_t CutlassMoeFCRunner<T, WeightType, Enable>::getWorkspaceSize(const int num
     MOEParallelismConfig parallelism_config) const
 {
     const int ep_size = parallelism_config.ep_size;
-    TLLM_CHECK_WITH_INFO(num_experts % ep_size == 0, "Number of experts must be a multiple of tp size");
+    CHECK_WITH_INFO(num_experts % ep_size == 0, "Number of experts must be a multiple of tp size");
     auto workspace = getWorkspaceBufferSizes(
         num_rows, hidden_size, inter_size, num_experts, num_experts / ep_size, k, activation_type);
     return bitfusion::common::calculateTotalWorkspaceSize(workspace.data(), workspace.size());
@@ -926,26 +926,26 @@ void CutlassMoeFCRunner<T, WeightType, Enable>::runMoe(const void* input_activat
     auto* fc2_result = static_cast<T*>(fc2_result_void);
     auto* expert_scales = static_cast<float*>(expert_scales_void);
 
-    TLLM_CHECK(input_activations);
-    TLLM_CHECK(gating_output);
-    TLLM_CHECK(fc1_expert_weights);
-    TLLM_CHECK(fc2_expert_weights);
-    TLLM_CHECK(workspace_ptr);
-    TLLM_CHECK(fc2_result);
-    TLLM_CHECK(expert_scales);
-    TLLM_CHECK(expanded_source_row_to_expanded_dest_row);
-    TLLM_CHECK(expert_for_source_row);
-    TLLM_CHECK(num_experts % parallelism_config.ep_size == 0);
+    CHECK(input_activations);
+    CHECK(gating_output);
+    CHECK(fc1_expert_weights);
+    CHECK(fc2_expert_weights);
+    CHECK(workspace_ptr);
+    CHECK(fc2_result);
+    CHECK(expert_scales);
+    CHECK(expanded_source_row_to_expanded_dest_row);
+    CHECK(expert_for_source_row);
+    CHECK(num_experts % parallelism_config.ep_size == 0);
 
     if (scales_required)
     {
-        TLLM_CHECK_WITH_INFO(fc1_scales != nullptr, "Scales expected but scale for first matmul is a null pointer");
-        TLLM_CHECK_WITH_INFO(fc2_scales != nullptr, "Scales expected but scale for second matmul is a null pointer");
+        CHECK_WITH_INFO(fc1_scales != nullptr, "Scales expected but scale for first matmul is a null pointer");
+        CHECK_WITH_INFO(fc2_scales != nullptr, "Scales expected but scale for second matmul is a null pointer");
     }
     else
     {
-        TLLM_CHECK_WITH_INFO(fc1_scales == nullptr, "Scales are ignored for fp32/fp16/bf16 but received scale for FC1");
-        TLLM_CHECK_WITH_INFO(fc2_scales == nullptr, "Scales are ignored for fp32/fp16/bf16 but received scale for FC2");
+        CHECK_WITH_INFO(fc1_scales == nullptr, "Scales are ignored for fp32/fp16/bf16 but received scale for FC1");
+        CHECK_WITH_INFO(fc2_scales == nullptr, "Scales are ignored for fp32/fp16/bf16 but received scale for FC2");
     }
 
     const int num_experts_per_node = num_experts / parallelism_config.ep_size;

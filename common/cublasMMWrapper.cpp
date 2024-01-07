@@ -248,7 +248,7 @@ namespace bitfusion
         bool CublasMMWrapper::checkTactic(cublasOperation_t transa, cublasOperation_t transb, const int m, const int n,
             const int k, const int lda, const int ldb, const int ldc, const cublasLtMatmulAlgo_t& algo)
         {
-            TLLM_CHECK_WITH_INFO(
+            CHECK_WITH_INFO(
                 descriptorsCreated(), "Descriptors are not created! Call createDescriptors before calling this function");
 
             int workspaceSize = mCublasWorkspace == NULL ? 0 : CUBLAS_WORKSPACE_SIZE;
@@ -271,7 +271,7 @@ namespace bitfusion
         std::vector<cublasLtMatmulHeuristicResult_t> CublasMMWrapper::getTactics(cublasOperation_t transa,
             cublasOperation_t transb, const int m, const int n, const int k, const int lda, const int ldb, const int ldc)
         {
-            TLLM_CHECK_WITH_INFO(
+            CHECK_WITH_INFO(
                 descriptorsCreated(), "Descriptors are not created! Call createDescriptors before calling this function");
 
             const auto heuristics = getTactics(getCublasLtHandle(), mOperationDesc, mADesc, mBDesc, mCDesc, mCDesc);
@@ -285,8 +285,8 @@ namespace bitfusion
             cublasLtMatmulDesc_t computeDesc, cublasLtMatrixLayout_t Adesc, cublasLtMatrixLayout_t Bdesc,
             cublasLtMatrixLayout_t Cdesc, cublasLtMatrixLayout_t Ddesc)
         {
-#if TLLM_CUBLAS_VER_LE(11, 4, 2)
-            TLLM_CHECK_WITH_INFO(false, "CUBLAS version too low, must be > 11.4.2.");
+#if CUBLAS_VER_LE(11, 4, 2)
+            CHECK_WITH_INFO(false, "CUBLAS version too low, must be > 11.4.2.");
             return {};
 #else
             std::vector<cublasLtMatmulHeuristicResult_t> heuristics(200);
@@ -299,7 +299,7 @@ namespace bitfusion
             uint32_t reduction_mask = CUBLASLT_REDUCTION_SCHEME_MASK;
             check_cuda_error(cublasLtMatmulPreferenceSetAttribute(
                 preference, CUBLASLT_MATMUL_PREF_REDUCTION_SCHEME_MASK, &reduction_mask, sizeof(reduction_mask)));
-#if TLLM_CUBLAS_VER_LT(12, 0, 0)
+#if CUBLAS_VER_LT(12, 0, 0)
             uint32_t pointer_mode_mask = 0;
             check_cuda_error(cublasLtMatmulPreferenceSetAttribute(
                 preference, CUBLASLT_MATMUL_PREF_EPILOGUE_MASK, &pointer_mode_mask, sizeof(pointer_mode_mask)));

@@ -17,7 +17,7 @@ void setPeerAccess(WorldConfig worldConfig, bool enable)
         }
 
         int canAccessPeer;
-        TLLM_CUDA_CHECK(cudaDeviceCanAccessPeer(&canAccessPeer, srcNode, destNode));
+        CUDA_CHECK(cudaDeviceCanAccessPeer(&canAccessPeer, srcNode, destNode));
 
         if (enable)
         {
@@ -30,7 +30,7 @@ void setPeerAccess(WorldConfig worldConfig, bool enable)
         const auto error = cudaGetLastError();
         if (error != cudaErrorPeerAccessAlreadyEnabled && error != cudaErrorPeerAccessNotEnabled)
         {
-            TLLM_CUDA_CHECK(error);
+            CUDA_CHECK(error);
         }
     }
 }
@@ -45,11 +45,11 @@ IpcMemory::IpcMemory(WorldConfig worldConfig, std::size_t bufferSize)
 
 void IpcMemory::allocateIpcMemory()
 {
-    TLLM_CUDA_CHECK(cudaMalloc(&mBufferPtr, mBufferSize));
-    TLLM_CUDA_CHECK(cudaMemset(mBufferPtr, 0, mBufferSize));
+    CUDA_CHECK(cudaMalloc(&mBufferPtr, mBufferSize));
+    CUDA_CHECK(cudaMemset(mBufferPtr, 0, mBufferSize));
 
     cudaIpcMemHandle_t localHandle;
-    TLLM_CUDA_CHECK(cudaIpcGetMemHandle(&localHandle, mBufferPtr));
+    CUDA_CHECK(cudaIpcGetMemHandle(&localHandle, mBufferPtr));
 
     const auto tpRank = mWorldConfig.getTensorParallelRank();
     const auto ppRank = mWorldConfig.getPipelineParallelRank();
@@ -73,7 +73,7 @@ void IpcMemory::allocateIpcMemory()
         else
         {
             uint8_t* foreignBuffer;
-            TLLM_CUDA_CHECK(cudaIpcOpenMemHandle(
+            CUDA_CHECK(cudaIpcOpenMemHandle(
                 reinterpret_cast<void**>(&foreignBuffer), handles[nodeId], cudaIpcMemLazyEnablePeerAccess));
             mCommPtrs[nodeId] = foreignBuffer;
         }
@@ -91,11 +91,11 @@ void IpcMemory::destroyIpcMemory()
     {
         if ((int) nodeId == mWorldConfig.getTensorParallelRank())
         {
-            TLLM_CUDA_CHECK(cudaFree(mCommPtrs[nodeId]));
+            CUDA_CHECK(cudaFree(mCommPtrs[nodeId]));
         }
         else
         {
-            TLLM_CUDA_CHECK(cudaIpcCloseMemHandle(mCommPtrs[nodeId]));
+            CUDA_CHECK(cudaIpcCloseMemHandle(mCommPtrs[nodeId]));
         }
     }
     cudaFree(mBufferPtr);

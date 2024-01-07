@@ -10,7 +10,7 @@ namespace bitfusion::common
 {
 [[noreturn]] inline void throwRuntimeError(const char* const file, int const line, std::string const& info = "")
 {
-    throw Exception(file, line, fmtstr("[TensorRT-LLM][ERROR] Assertion failed: %s", info.c_str()));
+    throw Exception(file, line, fmtstr("[ERROR] Assertion failed: %s", info.c_str()));
 }
 
 }
@@ -18,28 +18,28 @@ namespace bitfusion::common
 extern bool CHECK_DEBUG_ENABLED;
 
 #if defined(_WIN32)
-#define TLLM_LIKELY(x) (__assume((x) == 1), (x))
+#define LIKELY(x) (__assume((x) == 1), (x))
 #else
-#define TLLM_LIKELY(x) __builtin_expect((x), 1)
+#define LIKELY(x) __builtin_expect((x), 1)
 #endif
 
-#define TLLM_CHECK(val)                                                                                                \
+#define CHECK(val)                                                                                                \
     do                                                                                                                 \
     {                                                                                                                  \
-        TLLM_LIKELY(static_cast<bool>(val)) ? ((void) 0)                                                               \
+        LIKELY(static_cast<bool>(val)) ? ((void) 0)                                                               \
                                             : bitfusion::common::throwRuntimeError(__FILE__, __LINE__, #val);       \
     } while (0)
 
-#define TLLM_CHECK_WITH_INFO(val, info, ...)                                                                           \
+#define CHECK_WITH_INFO(val, info, ...)                                                                           \
     do                                                                                                                 \
     {                                                                                                                  \
-        TLLM_LIKELY(static_cast<bool>(val))                                                                            \
+        LIKELY(static_cast<bool>(val))                                                                            \
         ? ((void) 0)                                                                                                   \
         : bitfusion::common::throwRuntimeError(                                                                     \
             __FILE__, __LINE__, bitfusion::common::fmtstr(info, ##__VA_ARGS__));                                    \
     } while (0)
 
-#define TLLM_CHECK_DEBUG(val)                                                                                          \
+#define CHECK_DEBUG(val)                                                                                          \
     do                                                                                                                 \
     {                                                                                                                  \
         if (CHECK_DEBUG_ENABLED)                                                                                       \
@@ -49,7 +49,7 @@ extern bool CHECK_DEBUG_ENABLED;
         }                                                                                                              \
     } while (0)
 
-#define TLLM_CHECK_DEBUG_WITH_INFO(val, info)                                                                          \
+#define CHECK_DEBUG_WITH_INFO(val, info)                                                                          \
     do                                                                                                                 \
     {                                                                                                                  \
         if (CHECK_DEBUG_ENABLED)                                                                                       \
@@ -59,7 +59,7 @@ extern bool CHECK_DEBUG_ENABLED;
         }                                                                                                              \
     } while (0)
 
-#define TLLM_THROW(...)                                                                                                \
+#define THROW(...)                                                                                                \
     do                                                                                                                 \
     {                                                                                                                  \
         throw NEW_EXCEPTION(__VA_ARGS__);                                                                         \

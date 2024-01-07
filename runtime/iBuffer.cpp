@@ -15,14 +15,14 @@ using namespace bitfusion::runtime;
 MemoryType IBuffer::memoryType(void const* data)
 {
     cudaPointerAttributes attributes{};
-    TLLM_CUDA_CHECK(::cudaPointerGetAttributes(&attributes, data));
+    CUDA_CHECK(::cudaPointerGetAttributes(&attributes, data));
     switch (attributes.type)
     {
     case cudaMemoryTypeHost: return MemoryType::kPINNED;
     case cudaMemoryTypeDevice:
     case cudaMemoryTypeManaged: return MemoryType::kGPU;
     case cudaMemoryTypeUnregistered: return MemoryType::kCPU;
-    default: TLLM_THROW("Unsupported memory type");
+    default: THROW("Unsupported memory type");
     }
 }
 
@@ -33,7 +33,7 @@ IBuffer::UniquePtr IBuffer::slice(IBuffer::SharedPtr buffer, std::size_t offset,
 
 IBuffer::UniquePtr IBuffer::wrap(void* data, nvinfer1::DataType type, std::size_t size, std::size_t capacity)
 {
-    TLLM_CHECK_WITH_INFO(size <= capacity, "Requested size is larger than capacity");
+    CHECK_WITH_INFO(size <= capacity, "Requested size is larger than capacity");
     auto memoryType = IBuffer::memoryType(data);
 
     IBuffer::UniquePtr result;
@@ -52,7 +52,7 @@ IBuffer::UniquePtr IBuffer::wrap(void* data, nvinfer1::DataType type, std::size_
         result.reset(
             new GenericBuffer<GpuBorrowingAllocator>(capacity, type, GpuBorrowingAllocator(data, capacityInBytes)));
         break;
-    default: TLLM_THROW("Unknown memory type");
+    default: THROW("Unknown memory type");
     }
     result->resize(size);
     return result;
@@ -80,7 +80,7 @@ char const* IBuffer::getDataTypeName() const
     case nvinfer1::DataType::kFP8: return "kFP8";
     case nvinfer1::DataType::kBF16: return "kBF16";
     }
-    TLLM_THROW("Unknown data type");
+    THROW("Unknown data type");
 }
 
 char const* IBuffer::getMemoryTypeName() const
@@ -91,5 +91,5 @@ char const* IBuffer::getMemoryTypeName() const
     case MemoryType::kCPU: return MemoryTypeString<MemoryType::kCPU>::value;
     case MemoryType::kGPU: return MemoryTypeString<MemoryType::kGPU>::value;
     }
-    TLLM_THROW("Unknown memory type");
+    THROW("Unknown memory type");
 }

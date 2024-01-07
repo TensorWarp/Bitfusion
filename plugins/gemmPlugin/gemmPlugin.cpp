@@ -136,7 +136,7 @@ GemmPlugin::GemmPlugin(const void* data, size_t length, const GemmPlugin::Plugin
 
     mPluginProfiler->deserialize(d, mDims, mGemmId);
 
-    TLLM_CHECK(d == a + length);
+    CHECK(d == a + length);
 }
 
 void GemmPlugin::init()
@@ -198,8 +198,8 @@ nvinfer1::DimsExprs GemmPlugin::getOutputDimensions(
 {
     try
     {
-        TLLM_CHECK(nbInputs == 2);
-        TLLM_CHECK(outputIndex == 0);
+        CHECK(nbInputs == 2);
+        CHECK(outputIndex == 0);
         const int nbDimsA = inputs[0].nbDims;
         const int nbDimsB = inputs[1].nbDims;
         DimsExprs ret;
@@ -334,7 +334,7 @@ int GemmPlugin::enqueue(const nvinfer1::PluginTensorDesc* inputDesc, const nvinf
 nvinfer1::DataType GemmPlugin::getOutputDataType(
     int index, const nvinfer1::DataType* inputTypes, int nbInputs) const noexcept
 {
-    TLLM_CHECK(index == 0);
+    CHECK(index == 0);
     return inputTypes[0];
 }
 
@@ -424,22 +424,22 @@ IPluginV2* GemmPluginCreator::createPlugin(const char* name, const PluginFieldCo
         const char* attrName = fields[i].name;
         if (!strcmp(attrName, "transa"))
         {
-            TLLM_CHECK(fields[i].type == PluginFieldType::kINT32);
+            CHECK(fields[i].type == PluginFieldType::kINT32);
             transA = static_cast<int>(*(static_cast<const int*>(fields[i].data)));
         }
         else if (!strcmp(attrName, "transb"))
         {
-            TLLM_CHECK(fields[i].type == PluginFieldType::kINT32);
+            CHECK(fields[i].type == PluginFieldType::kINT32);
             transB = static_cast<int>(*(static_cast<const int*>(fields[i].data)));
         }
         else if (!strcmp(attrName, "type_id"))
         {
-            TLLM_CHECK(fields[i].type == PluginFieldType::kINT32);
+            CHECK(fields[i].type == PluginFieldType::kINT32);
             type = static_cast<nvinfer1::DataType>(*(static_cast<const nvinfer1::DataType*>(fields[i].data)));
         }
         else if (!strcmp(attrName, "use_fp8"))
         {
-            TLLM_CHECK(fields[i].type == PluginFieldType::kINT32);
+            CHECK(fields[i].type == PluginFieldType::kINT32);
             useFp8 = static_cast<int>(*(static_cast<const int*>(fields[i].data)));
         }
     }

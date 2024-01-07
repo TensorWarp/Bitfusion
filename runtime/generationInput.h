@@ -27,8 +27,8 @@ public:
         , packed{packed}
         , maxNewTokens(std::nullopt)
     {
-        TLLM_CHECK_WITH_INFO(static_cast<bool>(this->ids), "Invalid ids tensor");
-        TLLM_CHECK_WITH_INFO(static_cast<bool>(this->lengths), "Invalid lengths tensor");
+        CHECK_WITH_INFO(static_cast<bool>(this->ids), "Invalid ids tensor");
+        CHECK_WITH_INFO(static_cast<bool>(this->lengths), "Invalid lengths tensor");
     }
 
     SizeType endId;

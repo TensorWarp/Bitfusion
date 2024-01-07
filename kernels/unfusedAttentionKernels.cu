@@ -524,7 +524,7 @@ namespace bitfusion
 
             if (block.x > 32768)
             {
-                TLLM_CHECK(false);
+                CHECK(false);
             }
             else if (block.x > 16384)
             {
@@ -575,7 +575,7 @@ namespace bitfusion
 
             if (block.x > 32768)
             {
-                TLLM_CHECK(false);
+                CHECK(false);
             }
             else if (block.x > 16384)
             {
@@ -621,7 +621,7 @@ namespace bitfusion
 
             if (block.x > 32768)
             {
-                TLLM_CHECK(false);
+                CHECK(false);
             }
             else if (block.x > 16384)
             {
@@ -720,7 +720,7 @@ namespace bitfusion
                     seq_per_block *= 2;
                 }
 
-                TLLM_CHECK(grid.x * seq_per_block == (size_t)batch_size * head_num * seq_len);
+                CHECK(grid.x * seq_per_block == (size_t)batch_size * head_num * seq_len);
 
                 if (seq_per_block * size_per_head % 2 == 0)
                 {
@@ -916,7 +916,7 @@ namespace bitfusion
             }
             else
             {
-                TLLM_CHECK(false);
+                CHECK(false);
             }
         }
 
@@ -1396,7 +1396,7 @@ namespace bitfusion
             }
             else
             {
-                TLLM_CHECK_WITH_INFO(int8_mode != 2, "w8a8 not yet implemented with RoPE");
+                CHECK_WITH_INFO(int8_mode != 2, "w8a8 not yet implemented with RoPE");
                 dim3 block((size_per_head / Vec_t<T>::size + 31) / 32 * 32);
                 dim3 grid(token_num, head_num);
                 size_t smem_size
@@ -1566,7 +1566,7 @@ namespace bitfusion
             constexpr int x = (sizeof(T) == 4) ? 4 : 8;
             dim3 gridSz((seqLen * sizePerHead / x + blockSz.x - 1) / blockSz.x, localBatchSize, localHeadNum);
 
-            TLLM_CHECK_WITH_INFO(sizePerHead % x == 0, "Size per head is not a multiple of X");
+            CHECK_WITH_INFO(sizePerHead % x == 0, "Size per head is not a multiple of X");
 
             if (cache_type == KvCacheDataType::INT8)
             {

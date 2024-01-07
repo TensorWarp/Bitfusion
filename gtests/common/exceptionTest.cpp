@@ -28,12 +28,12 @@ TEST(Exception, Logger)
 {
     try
     {
-        TLLM_THROW("TestException %d", 1);
+        THROW("TestException %d", 1);
     }
     catch (const std::exception& e)
     {
         testing::internal::CaptureStdout();
-        TLLM_LOG_EXCEPTION(e);
+        LOG_EXCEPTION(e);
         auto const out = testing::internal::GetCapturedStdout();
         EXPECT_THAT(out, HasSubstr(std::to_string(__LINE__ - 7)));
         EXPECT_THAT(out, HasSubstr("TestException 1"));

@@ -84,7 +84,7 @@ WeightOnlyQuantMatmulPlugin::WeightOnlyQuantMatmulPlugin(
 
     mPluginProfiler->deserialize(d, mDims, mGemmId);
 
-    TLLM_CHECK(d == a + length);
+    CHECK(d == a + length);
 }
 
 void WeightOnlyQuantMatmulPlugin::init(nvinfer1::DataType type, WeightTypeId weightTypeId)
@@ -107,7 +107,7 @@ void WeightOnlyQuantMatmulPlugin::init(nvinfer1::DataType type, WeightTypeId wei
 #endif
         else
         {
-            TLLM_CHECK(false);
+            CHECK(false);
         }
 
         mCudaKernelEnabled
@@ -129,14 +129,14 @@ void WeightOnlyQuantMatmulPlugin::init(nvinfer1::DataType type, WeightTypeId wei
 #endif
         else
         {
-            TLLM_CHECK(false);
+            CHECK(false);
         }
         mCudaKernelEnabled
             = bitfusion::kernels::isWeightOnlyBatchedGemvEnabled(bitfusion::kernels::WeightOnlyQuantType::Int4b);
     }
     else
     {
-        TLLM_CHECK(false);
+        CHECK(false);
     }
 
     mPluginProfiler->setWeightTypeId(mWeightTypeId);
@@ -161,12 +161,12 @@ nvinfer1::DimsExprs WeightOnlyQuantMatmulPlugin::getOutputDimensions(
 
     try
     {
-        TLLM_CHECK(nbInputs == 3);
-        TLLM_CHECK(outputIndex == 0);
+        CHECK(nbInputs == 3);
+        CHECK(outputIndex == 0);
         const int nbDimsA = inputs[0].nbDims;
         const int nbDimsB = inputs[1].nbDims;
-        TLLM_CHECK(nbDimsA >= 2);
-        TLLM_CHECK(nbDimsB == 2);
+        CHECK(nbDimsA >= 2);
+        CHECK(nbDimsB == 2);
         DimsExprs ret;
         ret.nbDims = nbDimsA;
         for (int ii = 0; ii < nbDimsA - 1; ++ii)
@@ -252,10 +252,10 @@ int WeightOnlyQuantMatmulPlugin::enqueue(const nvinfer1::PluginTensorDesc* input
 
     const bool use_cuda_kernel = m < SMALL_M_FAST_PATH && mCudaKernelEnabled;
 #if defined(ENABLE_BF16)
-    TLLM_CHECK_WITH_INFO(mType == nvinfer1::DataType::kHALF || mType == nvinfer1::DataType::kBF16,
+    CHECK_WITH_INFO(mType == nvinfer1::DataType::kHALF || mType == nvinfer1::DataType::kBF16,
         "No valid weightOnlyQuantMatmul configuration");
 #else
-    TLLM_CHECK_WITH_INFO(mType == nvinfer1::DataType::kHALF, "No valid weightOnlyQuantMatmul configuration");
+    CHECK_WITH_INFO(mType == nvinfer1::DataType::kHALF, "No valid weightOnlyQuantMatmul configuration");
 #endif
 
     bitfusion::kernels::WeightOnlyQuantType weight_only_quant_type;
@@ -292,7 +292,7 @@ int WeightOnlyQuantMatmulPlugin::enqueue(const nvinfer1::PluginTensorDesc* input
         const int ws_size = m_weightOnlyGemmRunner->getWorkspaceSize(m, real_n, k);
 
         const auto& bestTactic = mPluginProfiler->getBestConfig(m, mGemmId);
-        TLLM_CHECK_WITH_INFO(bestTactic,
+        CHECK_WITH_INFO(bestTactic,
             "No valid weight only per-channel GEMM tactic(It is usually caused by the failure to execute all candidate "
             "configurations of the CUTLASS kernel, please pay attention to the warning information when building the "
             "engine.)");
@@ -307,7 +307,7 @@ int WeightOnlyQuantMatmulPlugin::enqueue(const nvinfer1::PluginTensorDesc* input
 nvinfer1::DataType WeightOnlyQuantMatmulPlugin::getOutputDataType(
     int index, const nvinfer1::DataType* inputTypes, int nbInputs) const noexcept
 {
-    TLLM_CHECK(index == 0);
+    CHECK(index == 0);
     return mType;
 }
 
@@ -394,12 +394,12 @@ IPluginV2* WeightOnlyQuantMatmulPluginCreator::createPlugin(const char* name, co
         const char* attrName = fields[i].name;
         if (!strcmp(attrName, "weight_type_id"))
         {
-            TLLM_CHECK(fields[i].type == PluginFieldType::kINT32);
+            CHECK(fields[i].type == PluginFieldType::kINT32);
             weightTypeId = static_cast<WeightTypeId>(*(static_cast<const int*>(fields[i].data)));
         }
         else if (!strcmp(attrName, "type_id"))
         {
-            TLLM_CHECK(fields[i].type == PluginFieldType::kINT32);
+            CHECK(fields[i].type == PluginFieldType::kINT32);
             type = static_cast<nvinfer1::DataType>(*(static_cast<const nvinfer1::DataType*>(fields[i].data)));
         }
     }

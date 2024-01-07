@@ -25,8 +25,8 @@ FieldType parseJsonFieldOr(Json const& json, std::string_view name, FieldType de
     }
     catch (nlohmann::json::out_of_range& e)
     {
-        TLLM_LOG_WARNING("Parameter %s cannot be read from json:", std::string(name).c_str());
-        TLLM_LOG_WARNING(e.what());
+        LOG_WARNING("Parameter %s cannot be read from json:", std::string(name).c_str());
+        LOG_WARNING(e.what());
     }
     return value;
 }
@@ -41,13 +41,13 @@ std::optional<FieldType> parseJsonFieldOptional(Json const& json, std::string_vi
     }
     catch (const nlohmann::json::out_of_range& e)
     {
-        TLLM_LOG_WARNING(e.what());
-        TLLM_LOG_WARNING("Optional value for parameter %s will not be set.", std::string(name).c_str());
+        LOG_WARNING(e.what());
+        LOG_WARNING("Optional value for parameter %s will not be set.", std::string(name).c_str());
     }
     catch (const nlohmann::json::type_error& e)
     {
-        TLLM_LOG_WARNING(e.what());
-        TLLM_LOG_WARNING("Optional value for parameter %s will not be set.", std::string(name).c_str());
+        LOG_WARNING(e.what());
+        LOG_WARNING("Optional value for parameter %s will not be set.", std::string(name).c_str());
     }
     return value;
 }
@@ -80,7 +80,7 @@ GptJsonConfig parseJson(InputType&& i)
         else if (!precision.compare("bfloat16"))
             dataType = nvinfer1::DataType::kBF16;
         else
-            TLLM_CHECK_WITH_INFO(false, tc::fmtstr("Model data type '%s' not supported", precision.c_str()));
+            CHECK_WITH_INFO(false, tc::fmtstr("Model data type '%s' not supported", precision.c_str()));
 
         auto const quantMode
             = tc::QuantMode(parseJsonFieldOr(builderConfig, "quant_mode", tc::QuantMode::none().value()));
@@ -161,7 +161,7 @@ GptJsonConfig parseJson(InputType&& i)
         else if (!dtype.compare("bfloat16"))
             dataType = nvinfer1::DataType::kBF16;
         else
-            TLLM_CHECK_WITH_INFO(false, tc::fmtstr("Model data type '%s' not supported", dtype.c_str()));
+            CHECK_WITH_INFO(false, tc::fmtstr("Model data type '%s' not supported", dtype.c_str()));
 
         auto const& quantization = pretrainedConfig.at("quantization");
         auto useSmoothQuant = parseJsonFieldOr(quantization, "use_smooth_quant", false);
@@ -247,8 +247,8 @@ GptJsonConfig parseJson(InputType&& i)
 
 std::string GptJsonConfig::engineFilename(WorldConfig const& worldConfig, std::string const& model) const
 {
-    TLLM_CHECK_WITH_INFO(getTensorParallelism() == worldConfig.getTensorParallelism(), "tensor parallelism mismatch");
-    TLLM_CHECK_WITH_INFO(
+    CHECK_WITH_INFO(getTensorParallelism() == worldConfig.getTensorParallelism(), "tensor parallelism mismatch");
+    CHECK_WITH_INFO(
         getPipelineParallelism() == worldConfig.getPipelineParallelism(), "pipeline parallelism mismatch");
     auto pp = worldConfig.isPipelineParallel() ? "_pp" + std::to_string(worldConfig.getPipelineParallelism()) : "";
     if (getVersion() == std::string("none"))
@@ -274,7 +274,7 @@ GptJsonConfig GptJsonConfig::parse(std::istream& json)
 
 GptJsonConfig GptJsonConfig::parse(std::filesystem::path const& path)
 {
-    TLLM_CHECK_WITH_INFO(std::filesystem::exists(path), std::string("File does not exist: ") + path.string());
+    CHECK_WITH_INFO(std::filesystem::exists(path), std::string("File does not exist: ") + path.string());
     std::ifstream json(path);
     return parse(json);
 }

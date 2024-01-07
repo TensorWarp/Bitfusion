@@ -80,7 +80,7 @@ void safeInsert(tc::TensorMap& map, std::string const& key, DecodingOutput::Tens
 template <typename T>
 typename tl::DynamicDecodeLayer<T>::ForwardParams prepareInputs(DecodingInput const& input)
 {
-    TLLM_CHECK(input.logits->getDataType() == TRTDataType<T>::value);
+    CHECK(input.logits->getDataType() == TRTDataType<T>::value);
 
     auto constexpr ite = 0;
     typename tl::DynamicDecodeLayer<T>::ForwardParams forwardParams{input.step, ite, input.maxLength,
@@ -128,7 +128,7 @@ template <typename T>
 typename tl::DynamicDecodeLayer<T>::OutputParams prepareOutputs(
     DecodingOutput& output, DecodingInput::TensorPtr const& inputLengths, DecodingOutput::TensorPtr& logProbsTiled)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     typename tl::DynamicDecodeLayer<T>::OutputParams outputParams(tcc::toTllmTensor(*output.ids));
 
     outputParams.newTokens = tcc::toTllmTensor(*output.newTokens);
@@ -215,7 +215,7 @@ typename tl::DynamicDecodeLayer<T>::OutputParams prepareOutputs(
 template <typename T>
 bool GptDecoder<T>::forward(DecodingOutput& output, DecodingInput const& input)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     auto forwardParams = prepareInputs<T>(input);
     auto outputParams = prepareOutputs<T>(output, input.lengths, mLogProbsTiled);
 
@@ -241,7 +241,7 @@ bool GptDecoder<T>::forward(DecodingOutput& output, DecodingInput const& input)
     if (finishedSumHost)
     {
         auto const numToFinish = output.finished->getSize();
-        TLLM_CUDA_CHECK(::cudaStreamSynchronize(mDynamicDecodeLayer->getStream()));
+        CUDA_CHECK(::cudaStreamSynchronize(mDynamicDecodeLayer->getStream()));
         return numToFinish == static_cast<std::size_t>(*finishedSumHost);
     }
     else
@@ -253,7 +253,7 @@ bool GptDecoder<T>::forward(DecodingOutput& output, DecodingInput const& input)
 template <typename T>
 void GptDecoder<T>::forwardAsync(DecodingOutput& output, DecodingInput const& input)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     auto forwardParams = prepareInputs<T>(input);
     auto outputParams = prepareOutputs<T>(output, input.lengths, mLogProbsTiled);
 
@@ -264,22 +264,22 @@ template <typename T>
 void GptDecoder<T>::gatherTree(ITensor& finalOutputIds, DecodingOutput const& decodingOutput,
     DecodingInput const& decodingInput, BufferManager const& manager)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     auto const& finalOutputIdsShape = finalOutputIds.getShape();
     auto const& decodingOutputIdsShape = decodingOutput.ids->getShape();
     auto const batchSize = finalOutputIdsShape.d[0];
     auto const beamWidth = finalOutputIdsShape.d[1];
     auto const maxSeqLength = finalOutputIdsShape.d[2];
 
-    TLLM_CHECK_WITH_INFO(beamWidth > 1, "gatherTree is only needed for beam search.");
+    CHECK_WITH_INFO(beamWidth > 1, "gatherTree is only needed for beam search.");
 
-    TLLM_CHECK_WITH_INFO(decodingOutputIdsShape.d[0] == batchSize,
+    CHECK_WITH_INFO(decodingOutputIdsShape.d[0] == batchSize,
         common::fmtstr(
             "Decoder batch size (%d) does not match final batch size (%d)", decodingOutputIdsShape.d[0], batchSize));
-    TLLM_CHECK_WITH_INFO(decodingOutputIdsShape.d[1] == beamWidth,
+    CHECK_WITH_INFO(decodingOutputIdsShape.d[1] == beamWidth,
         common::fmtstr(
             "Decoder beam width (%d) does not match final beam width (%d)", decodingOutputIdsShape.d[1], beamWidth));
-    TLLM_CHECK_WITH_INFO(decodingOutputIdsShape.d[2] <= maxSeqLength,
+    CHECK_WITH_INFO(decodingOutputIdsShape.d[2] <= maxSeqLength,
         common::fmtstr("Decoder seq length size (%d) is too large for final seq length (%d)",
             decodingOutputIdsShape.d[2], maxSeqLength));
 
@@ -322,7 +322,7 @@ void GptDecoder<T>::gatherTree(ITensor& finalOutputIds, DecodingOutput const& de
         batchSize, stream.get());
     sync_check_cuda_error();
 
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
 namespace bitfusion::runtime
@@ -335,7 +335,7 @@ void IGptDecoder::acceptDraftTokensByIds(const ITensor& targetTokenIds, const IT
     const ITensor& contextLengths, const ITensor& numDraftTokens, ITensor& sequenceLengths, const ITensor& finishedVec,
     ITensor& finishedFinal, ITensor& finishedSum, BufferManager::CudaStreamPtr const& stream)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
 
     auto const targetTokenIdsShape = targetTokenIds.getShape();
     auto const batchSize = targetTokenIdsShape.d[0];
@@ -343,22 +343,22 @@ void IGptDecoder::acceptDraftTokensByIds(const ITensor& targetTokenIds, const IT
     auto const maxSeqLength = targetTokenIdsShape.d[2];
     auto const maxDraftTokens = draftTokenIds.getShape().d[2];
 
-    TLLM_CHECK_WITH_INFO(
+    CHECK_WITH_INFO(
         beamWidth == 1, common::fmtstr("Beam width (%d) > 1 is not supported for the speculative decoding", beamWidth));
 
-    TLLM_CHECK_WITH_INFO(draftTokenIds.getShape().d[0] == batchSize,
+    CHECK_WITH_INFO(draftTokenIds.getShape().d[0] == batchSize,
         common::fmtstr("Draft tokens batch size (%d) is not equal to target batch size (%d)",
             draftTokenIds.getShape().d[0], batchSize));
 
-    TLLM_CHECK_WITH_INFO(contextLengths.getShape().d[0] == batchSize,
+    CHECK_WITH_INFO(contextLengths.getShape().d[0] == batchSize,
         common::fmtstr("Context length batch size (%d) is not equal to batch size (%d)", contextLengths.getShape().d[0],
             batchSize));
 
-    TLLM_CHECK_WITH_INFO(numDraftTokens.getShape().d[0] == batchSize,
+    CHECK_WITH_INFO(numDraftTokens.getShape().d[0] == batchSize,
         common::fmtstr("Num draft tokens batch size (%d) is not equal to batch size (%d)",
             numDraftTokens.getShape().d[0], batchSize));
 
-    TLLM_CHECK_WITH_INFO(sequenceLengths.getShape().d[0] == batchSize,
+    CHECK_WITH_INFO(sequenceLengths.getShape().d[0] == batchSize,
         common::fmtstr("Sequence length batch size (%d) is not equal to batch size (%d)",
             sequenceLengths.getShape().d[0], batchSize));
 
@@ -373,7 +373,7 @@ void IGptDecoder::acceptDraftTokensByIds(const ITensor& targetTokenIds, const IT
 
     sync_check_cuda_error();
 
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
 void IGptDecoder::acceptDraftTokensByLogits(ITensor& draftLogits, const ITensor& targetLogits, ITensor& draftProbs,
@@ -381,17 +381,17 @@ void IGptDecoder::acceptDraftTokensByLogits(ITensor& draftLogits, const ITensor&
     SizeType vocabSizePadded, bool useRandomAcceptThreshold, float randomAcceptThreshold, curandState_t* curandState,
     BufferManager::CudaStreamPtr const& stream)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
 
     auto const draftLogitsShape = draftLogits.getShape();
     auto const maxDraftTokens = draftLogitsShape.d[0];
     auto const batchSize = draftLogitsShape.d[1];
     auto const beamWidth = draftLogitsShape.d[2];
 
-    TLLM_CHECK_WITH_INFO(
+    CHECK_WITH_INFO(
         beamWidth == 1, common::fmtstr("Beam width (%d) > 1 is not supported for the speculative decoding", beamWidth));
 
-    TLLM_CHECK(draftLogitsShape.d[3] == vocabSize);
+    CHECK(draftLogitsShape.d[3] == vocabSize);
 
     if (draftLogits.getDataType() == nvinfer1::DataType::kFLOAT)
     {
@@ -415,10 +415,10 @@ void IGptDecoder::acceptDraftTokensByLogits(ITensor& draftLogits, const ITensor&
     }
     else
     {
-        TLLM_THROW("Incorrect logits dtype. Only float32 and float16 are supported");
+        THROW("Incorrect logits dtype. Only float32 and float16 are supported");
     }
 
     sync_check_cuda_error();
 
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }

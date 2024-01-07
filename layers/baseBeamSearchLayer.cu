@@ -78,14 +78,14 @@ BaseBeamSearchLayer<T>::BaseBeamSearchLayer(BaseBeamSearchLayer<T> const& beam_s
 template <typename T>
 BaseBeamSearchLayer<T>::~BaseBeamSearchLayer()
 {
-    TLLM_LOG_TRACE(__PRETTY_FUNCTION__);
+    LOG_TRACE(__PRETTY_FUNCTION__);
     freeBuffer();
 }
 
 template <typename T>
 void BaseBeamSearchLayer<T>::freeBuffer()
 {
-    TLLM_LOG_TRACE("%s start", __PRETTY_FUNCTION__);
+    LOG_TRACE("%s start", __PRETTY_FUNCTION__);
     if (is_allocate_buffer_)
     {
         allocator_->free((void**) (&temperature_buf_));
@@ -93,26 +93,26 @@ void BaseBeamSearchLayer<T>::freeBuffer()
         allocator_->free((void**) (&repetition_penalty_buf_));
         is_allocate_buffer_ = false;
     }
-    TLLM_LOG_TRACE("%s stop", __PRETTY_FUNCTION__);
+    LOG_TRACE("%s stop", __PRETTY_FUNCTION__);
 }
 
 template <typename T>
 void BaseBeamSearchLayer<T>::allocateBuffer(size_t batch_size)
 {
-    TLLM_LOG_TRACE("%s start", __PRETTY_FUNCTION__);
+    LOG_TRACE("%s start", __PRETTY_FUNCTION__);
     temperature_buf_ = allocator_->reMalloc(temperature_buf_, sizeof(float) * batch_size, false);
     min_lengths_buf_ = allocator_->reMalloc(min_lengths_buf_, sizeof(int) * batch_size, false);
     repetition_penalty_buf_ = allocator_->reMalloc(repetition_penalty_buf_, sizeof(float) * batch_size, false);
 
     is_allocate_buffer_ = true;
-    TLLM_LOG_TRACE("%s stop", __PRETTY_FUNCTION__);
+    LOG_TRACE("%s stop", __PRETTY_FUNCTION__);
 }
 
 template <typename T>
 void BaseBeamSearchLayer<T>::setupBase(size_t batch_size, SetupParams const& setupParams)
 {
     allocateBuffer(batch_size);
-    TLLM_LOG_TRACE("%s start", __PRETTY_FUNCTION__);
+    LOG_TRACE("%s start", __PRETTY_FUNCTION__);
     // Setup penalties.
     FillBuffers const fillBuffers{batch_size, stream_};
 
@@ -122,7 +122,7 @@ void BaseBeamSearchLayer<T>::setupBase(size_t batch_size, SetupParams const& set
     mRepetitionPenaltyType = RepetitionPenaltyType::None;
     if (setupParams.repetition_penalty || setupParams.presence_penalty)
     {
-        TLLM_CHECK_WITH_INFO(!(setupParams.repetition_penalty && setupParams.presence_penalty),
+        CHECK_WITH_INFO(!(setupParams.repetition_penalty && setupParams.presence_penalty),
             "Found ambiguous parameters repetition_penalty and presence_penalty "
             "which are mutually exclusive. "
             "Please provide one of repetition_penalty or presence_penalty.");
@@ -137,20 +137,20 @@ void BaseBeamSearchLayer<T>::setupBase(size_t batch_size, SetupParams const& set
             fillBuffers(setupParams.presence_penalty, 1.0f, mRepetitionPenalty, repetition_penalty_buf_);
         }
     }
-    TLLM_LOG_TRACE("%s stop", __PRETTY_FUNCTION__);
+    LOG_TRACE("%s stop", __PRETTY_FUNCTION__);
 }
 
 template <typename T>
 void BaseBeamSearchLayer<T>::forward(BeamSearchOutputParams& outputs, ForwardParams const& params)
 {
-    TLLM_LOG_TRACE("%s", __PRETTY_FUNCTION__);
+    LOG_TRACE("%s", __PRETTY_FUNCTION__);
     Tensor& output_ids_ptr = outputs.output_ids_ptr;
 
     const auto batch_size = static_cast<std::int32_t>(output_ids_ptr.shape[0]);
     const auto beam_width = static_cast<std::int32_t>(output_ids_ptr.shape[1]);
     const auto max_seq_len = static_cast<std::int32_t>(output_ids_ptr.shape[2]);
 
-    TLLM_CHECK_WITH_INFO(params.ite == 0, "Pipeline Parallelism is not supported yet !");
+    CHECK_WITH_INFO(params.ite == 0, "Pipeline Parallelism is not supported yet !");
 
     const int ite{params.ite};
     Tensor const& logits = params.logits;

@@ -22,8 +22,8 @@ public:
         : ids{std::move(ids)}
         , lengths{std::move(lengths)}
     {
-        TLLM_CHECK_WITH_INFO(static_cast<bool>(this->ids), "Invalid ids tensor");
-        TLLM_CHECK_WITH_INFO(static_cast<bool>(this->lengths), "Invalid lengths tensor");
+        CHECK_WITH_INFO(static_cast<bool>(this->ids), "Invalid ids tensor");
+        CHECK_WITH_INFO(static_cast<bool>(this->lengths), "Invalid lengths tensor");
     }
 
     TensorPtr ids;

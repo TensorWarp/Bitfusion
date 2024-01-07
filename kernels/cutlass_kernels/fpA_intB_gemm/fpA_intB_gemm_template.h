@@ -42,7 +42,7 @@ void generic_mixed_gemm_kernelLauncher(const T* A, const WeightType* B, const T*
     tkc::CutlassGemmConfig gemm_config, char* workspace, size_t workspace_bytes, cudaStream_t stream,
     int* occupancy = nullptr)
 {
-    TLLM_LOG_DEBUG(__PRETTY_FUNCTION__);
+    LOG_DEBUG(__PRETTY_FUNCTION__);
 
 #ifdef ENABLE_BF16
     static_assert(cutlass::platform::is_same<T, __nv_bfloat16>::value || cutlass::platform::is_same<T, half>::value
@@ -179,7 +179,7 @@ void generic_mixed_gemm_kernelLauncher(const T* A, const WeightType* B, const T*
     Gemm gemm;
     if (gemm.get_workspace_size(args) > workspace_bytes)
     {
-        TLLM_LOG_WARNING(
+        LOG_WARNING(
             "Requested split-k but workspace size insufficient. Falling back to non-split-k implementation.");
         // If requested split-k factor will require more workspace bytes, revert to standard gemm.
         args.batch_count = 1;
@@ -220,7 +220,7 @@ void filter_and_run_mixed_gemm(const T* A, const WeightType* B, const T* weight_
     char* workspace, size_t workspace_bytes, cudaStream_t stream, int* occupancy = nullptr)
 {
 
-    TLLM_LOG_DEBUG(__PRETTY_FUNCTION__);
+    LOG_DEBUG(__PRETTY_FUNCTION__);
     if constexpr (cutlass::isFinegrained(QuantOp) && arch::kMinComputeCapability < 80)
     {
         // Finegrained only supported on Ampere
@@ -250,7 +250,7 @@ void dispatch_gemm_config(const T* A, const WeightType* B, const T* weight_scale
     char* workspace, size_t workspace_bytes, cudaStream_t stream, int* occupancy = nullptr)
 {
 
-    TLLM_LOG_DEBUG(__PRETTY_FUNCTION__);
+    LOG_DEBUG(__PRETTY_FUNCTION__);
     switch (gemm_config.stages)
     {
     case 2:
@@ -281,7 +281,7 @@ void dispatch_gemm_to_cutlass(const T* A, const WeightType* B, const T* weight_s
     tkc::CutlassGemmConfig gemm_config, cudaStream_t stream, int* occupancy = nullptr)
 {
 
-    TLLM_LOG_DEBUG(__PRETTY_FUNCTION__);
+    LOG_DEBUG(__PRETTY_FUNCTION__);
 
     // Note that SIMT configs are omitted here since they are not supported for fpA_intB.
     // We also only instantiate configs here where threadblockShapeM == warpShapeM since those usually perform the best
@@ -301,7 +301,7 @@ void dispatch_gemm_to_cutlass(const T* A, const WeightType* B, const T* weight_s
     case tkc::CutlassTileConfig::CtaShape128x128x64_WarpShape128x32x64:
         if (arch::kMinComputeCapability < 75)
         {
-            TLLM_CHECK_WITH_INFO(false, "Invalid config on Volta");
+            CHECK_WITH_INFO(false, "Invalid config on Volta");
         }
         else
         {
@@ -328,7 +328,7 @@ void dispatch_gemm_to_cutlass(const T* A, const WeightType* B, const T* weight_s
 template <typename T, typename WeightType, cutlass::WeightOnlyQuantOp QuantOp>
 CutlassFpAIntBGemmRunner<T, WeightType, QuantOp>::CutlassFpAIntBGemmRunner()
 {
-    TLLM_LOG_DEBUG(__PRETTY_FUNCTION__);
+    LOG_DEBUG(__PRETTY_FUNCTION__);
     int device{-1};
     tk::check_cuda_error(cudaGetDevice(&device));
     sm_ = tk::getSMVersion();
@@ -338,7 +338,7 @@ CutlassFpAIntBGemmRunner<T, WeightType, QuantOp>::CutlassFpAIntBGemmRunner()
 template <typename T, typename WeightType, cutlass::WeightOnlyQuantOp QuantOp>
 CutlassFpAIntBGemmRunner<T, WeightType, QuantOp>::~CutlassFpAIntBGemmRunner()
 {
-    TLLM_LOG_DEBUG(__PRETTY_FUNCTION__);
+    LOG_DEBUG(__PRETTY_FUNCTION__);
 }
 
 template <typename T, typename WeightType, cutlass::WeightOnlyQuantOp QuantOp>
@@ -348,7 +348,7 @@ void CutlassFpAIntBGemmRunner<T, WeightType, QuantOp>::dispatch_to_arch<Epilogue
     const int group_size, tkc::CutlassGemmConfig gemm_config, char* workspace_ptr, const size_t workspace_bytes,
     cudaStream_t stream, int* occupancy)
 {
-    TLLM_LOG_DEBUG(__PRETTY_FUNCTION__);
+    LOG_DEBUG(__PRETTY_FUNCTION__);
     if (sm_ >= 70 && sm_ < 75)
     {
         dispatch_gemm_to_cutlass<T, WeightType, cutlass::arch::Sm70, QuantOp, EpilogueTag>(A, B, weight_scales,
@@ -383,7 +383,7 @@ void CutlassFpAIntBGemmRunner<T, WeightType, QuantOp>::dispatch_to_arch<Epilogue
 //     const T* biases, T* C, int m, int n, int k, ActivationType activation_type, char* workspace_ptr,
 //     const size_t workspace_bytes, cudaStream_t stream)
 // {
-//     TLLM_LOG_DEBUG(__PRETTY_FUNCTION__);
+//     LOG_DEBUG(__PRETTY_FUNCTION__);
 
 //     switch (activation_type)
 //     {
@@ -402,10 +402,10 @@ void CutlassFpAIntBGemmRunner<T, WeightType, QuantOp>::dispatch_to_arch<Epilogue
 //     case ActivationType::Identity:
 //         run_gemm<tkc::EpilogueOpBias>(A, B, weight_scales, biases, C, m, n, k, workspace_ptr, workspace_bytes,
 //         stream); break;
-//     case ActivationType::InvalidType: TLLM_CHECK_WITH_INFO(false, "Activation type for fpA_intB must be
+//     case ActivationType::InvalidType: CHECK_WITH_INFO(false, "Activation type for fpA_intB must be
 //     valid."); break; default:
 //     {
-//         TLLM_CHECK_WITH_INFO(false, "Invalid activation type.");
+//         CHECK_WITH_INFO(false, "Invalid activation type.");
 //     }
 //     }
 // }
@@ -415,7 +415,7 @@ void CutlassFpAIntBGemmRunner<T, WeightType, QuantOp>::gemm(const void* A, const
     const void* weight_zero_points, const void* biases, void* C, int m, int n, int k, const int group_size,
     tkc::CutlassGemmConfig gemmConfig, char* workspace_ptr, const size_t workspace_bytes, cudaStream_t stream)
 {
-    TLLM_LOG_DEBUG(__PRETTY_FUNCTION__);
+    LOG_DEBUG(__PRETTY_FUNCTION__);
     if constexpr ((QuantOp == cutlass::WeightOnlyQuantOp::FINEGRAINED_SCALE_AND_ZEROS)
         || (QuantOp == cutlass::WeightOnlyQuantOp::FINEGRAINED_SCALE_ONLY))
     {
@@ -435,7 +435,7 @@ void CutlassFpAIntBGemmRunner<T, WeightType, QuantOp>::gemm(const void* A, const
     void* C, int m, int n, int k, tkc::CutlassGemmConfig gemmConfig, char* workspace_ptr, const size_t workspace_bytes,
     cudaStream_t stream)
 {
-    TLLM_LOG_DEBUG(__PRETTY_FUNCTION__);
+    LOG_DEBUG(__PRETTY_FUNCTION__);
 
     if constexpr (QuantOp == cutlass::WeightOnlyQuantOp::PER_COLUMN_SCALE_ONLY)
     {
@@ -460,7 +460,7 @@ std::vector<tkc::CutlassGemmConfig> CutlassFpAIntBGemmRunner<T, WeightType, Quan
 template <typename T, typename WeightType, cutlass::WeightOnlyQuantOp QuantOp>
 size_t CutlassFpAIntBGemmRunner<T, WeightType, QuantOp>::getWorkspaceSize(const int m, const int n, const int k)
 {
-    TLLM_LOG_DEBUG(__PRETTY_FUNCTION__);
+    LOG_DEBUG(__PRETTY_FUNCTION__);
     // These are the min tile sizes for each config, which would launch the maximum number of blocks
     const int max_grid_m = cutlass::ceil_div(m, MIN_M_TILE);
     const int max_grid_n = cutlass::ceil_div(n, MIN_N_TILE);

@@ -109,7 +109,7 @@ int buildXQALaunchParams(XQALaunchParam<HasBeam>& launchParams, const XQAParams&
 {
     if (start_batch_idx >= params.batch_size)
         return 0;
-    TLLM_CHECK_WITH_INFO(params.data_type == DATA_TYPE_FP16, "Only fp16 supported now.");
+    CHECK_WITH_INFO(params.data_type == DATA_TYPE_FP16, "Only fp16 supported now.");
     size_t elt_size = 0;
     if (params.data_type == DATA_TYPE_FP16)
     {
@@ -177,7 +177,7 @@ public:
         , mKernelMeta(&sXqaKernelMetaInfo[0])
         , mSM(sm)
     {
-        const char* enable_xqa_env_var = getenv("TRTLLM_FORCE_XQA");
+        const char* enable_xqa_env_var = getenv("TRFORCE_XQA");
         if (enable_xqa_env_var != nullptr)
         {
             if (enable_xqa_env_var[0] == '1' && enable_xqa_env_var[1] == '\0')
@@ -238,7 +238,7 @@ public:
         unsigned int head_size = xqaParams.head_size;
         int num_q_heads = xqaParams.num_q_heads;
         int num_kv_heads = xqaParams.num_kv_heads;
-        TLLM_CHECK_WITH_INFO(num_q_heads % num_kv_heads == 0, "numQHeads should be multiple of numKVHeads.");
+        CHECK_WITH_INFO(num_q_heads % num_kv_heads == 0, "numQHeads should be multiple of numKVHeads.");
         unsigned int num_q_heads_over_kv = num_q_heads / num_kv_heads;
         unsigned int beam_width = xqaParams.beam_width;
 
@@ -273,7 +273,7 @@ public:
         unsigned int head_size = xqaParams.head_size;
         int num_q_heads = xqaParams.num_q_heads;
         int num_kv_heads = xqaParams.num_kv_heads;
-        TLLM_CHECK_WITH_INFO(num_q_heads % num_kv_heads == 0, "numQHeads should be multiple of numKVHeads.");
+        CHECK_WITH_INFO(num_q_heads % num_kv_heads == 0, "numQHeads should be multiple of numKVHeads.");
         unsigned int num_q_heads_over_kv = num_q_heads / num_kv_heads;
         unsigned int beam_width = xqaParams.beam_width;
 
@@ -292,7 +292,7 @@ public:
         XQAKernelRuntimeHashKey hash_key{xqaParams.kv_cache_data_type, head_size, num_q_heads_over_kv, beam_width};
         const auto findIter = mFunctions.find(hash_key);
 
-        TLLM_CHECK_WITH_INFO(findIter != mFunctions.end(), "XQAKernelFunc not found.");
+        CHECK_WITH_INFO(findIter != mFunctions.end(), "XQAKernelFunc not found.");
 
         const auto& kernelMeta = mKernelMeta[findIter->second.mMetaInfoIndex];
         const CUfunction func = findIter->second.mDeviceFunction;
@@ -350,7 +350,7 @@ public:
         }
         multi_block_count = std::min(multiprocessor_count, multi_block_count);
 
-        TLLM_CHECK_WITH_INFO(multi_block_count >= 1, "MultiBlock count should be larger than 1");
+        CHECK_WITH_INFO(multi_block_count >= 1, "MultiBlock count should be larger than 1");
         return multi_block_count;
     }
 

@@ -163,7 +163,7 @@ private:
             }
             catch (std::exception& e)
             {
-                TLLM_LOG_EXCEPTION(e);
+                LOG_EXCEPTION(e);
             }
         }
 

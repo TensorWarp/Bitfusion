@@ -26,7 +26,7 @@ ReduceScatterPlugin::ReduceScatterPlugin(const void* data, size_t length)
         read(d, groupItem);
         mGroup.insert(groupItem);
     }
-    TLLM_CHECK(d == a + length);
+    CHECK(d == a + length);
 }
 
 nvinfer1::IPluginV2DynamicExt* ReduceScatterPlugin::clone() const noexcept
@@ -221,7 +221,7 @@ IPluginV2* ReduceScatterPluginCreator::createPlugin(const char* name, const Plug
         const char* attrName = fields[i].name;
         if (!strcmp(attrName, "group"))
         {
-            TLLM_CHECK(fields[i].type == PluginFieldType::kINT32);
+            CHECK(fields[i].type == PluginFieldType::kINT32);
             const auto* r = static_cast<const int*>(fields[i].data);
             for (int j = 0; j < fields[i].length; ++j)
             {
@@ -231,7 +231,7 @@ IPluginV2* ReduceScatterPluginCreator::createPlugin(const char* name, const Plug
         }
         else if (!strcmp(attrName, "type_id"))
         {
-            TLLM_CHECK(fields[i].type == PluginFieldType::kINT32);
+            CHECK(fields[i].type == PluginFieldType::kINT32);
             type = static_cast<nvinfer1::DataType>(*(static_cast<const nvinfer1::DataType*>(fields[i].data)));
         }
     }

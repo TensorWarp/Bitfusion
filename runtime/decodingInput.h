@@ -23,8 +23,8 @@ public:
         , logits{std::move(logits)}
         , endIds{std::move(endIds)}
     {
-        TLLM_CHECK_WITH_INFO(static_cast<bool>(this->logits), "Invalid logits tensor");
-        TLLM_CHECK_WITH_INFO(static_cast<bool>(this->endIds), "Invalid endIds tensor");
+        CHECK_WITH_INFO(static_cast<bool>(this->logits), "Invalid logits tensor");
+        CHECK_WITH_INFO(static_cast<bool>(this->endIds), "Invalid endIds tensor");
     }
 
     SizeType step;

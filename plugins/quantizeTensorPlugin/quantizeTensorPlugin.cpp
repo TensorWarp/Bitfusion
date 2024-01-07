@@ -16,7 +16,7 @@ QuantizeTensorPlugin::QuantizeTensorPlugin() {}
 QuantizeTensorPlugin::QuantizeTensorPlugin(const void* data, size_t length)
 {
     const char *d = reinterpret_cast<const char*>(data), *a = d;
-    TLLM_CHECK(d == a + length);
+    CHECK(d == a + length);
 }
 
 nvinfer1::IPluginV2DynamicExt* QuantizeTensorPlugin::clone() const noexcept
@@ -29,8 +29,8 @@ nvinfer1::DimsExprs QuantizeTensorPlugin::getOutputDimensions(
 {
     try
     {
-        TLLM_CHECK(nbInputs == 2);
-        TLLM_CHECK(outputIndex < 1);
+        CHECK(nbInputs == 2);
+        CHECK(outputIndex < 1);
         return inputs[0];
     }
     catch (const std::exception& e)
@@ -53,7 +53,7 @@ bool QuantizeTensorPlugin::supportsFormatCombination(
     case 2:
         return inOut[pos].type == nvinfer1::DataType::kINT8 && inOut[pos].format == TensorFormat::kLINEAR;
     default:
-        TLLM_CHECK(false);
+        CHECK(false);
         return false;
     }
 }
@@ -97,8 +97,8 @@ int QuantizeTensorPlugin::enqueue(const nvinfer1::PluginTensorDesc* inputDesc,
 nvinfer1::DataType QuantizeTensorPlugin::getOutputDataType(
     int index, const nvinfer1::DataType* inputTypes, int nbInputs) const noexcept
 {
-    TLLM_CHECK(nbInputs == 2);
-    TLLM_CHECK(index == 0);
+    CHECK(nbInputs == 2);
+    CHECK(index == 0);
     return nvinfer1::DataType::kINT8;
 }
 

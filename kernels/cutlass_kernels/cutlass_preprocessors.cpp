@@ -22,7 +22,7 @@ int get_bits_in_quant_type(QuantType quant_type)
     {
     case QuantType::INT8_WEIGHT_ONLY: return 8;
     case QuantType::PACKED_INT4_WEIGHT_ONLY: return 4;
-    default: TLLM_CHECK_WITH_INFO(false, "Invalid quant_type"); return -1;
+    default: CHECK_WITH_INFO(false, "Invalid quant_type"); return -1;
     }
 }
 
@@ -108,7 +108,7 @@ LayoutDetails getLayoutDetailsForArch(QuantType quant_type)
     }
     else
     {
-        TLLM_CHECK_WITH_INFO(false, "Unsupported quantization type");
+        CHECK_WITH_INFO(false, "Unsupported quantization type");
     }
     return details;
 }
@@ -130,7 +130,7 @@ LayoutDetails getLayoutDetailsForTransform(QuantType quant_type)
     }
     else
     {
-        TLLM_CHECK_WITH_INFO(false, "Unsupported Arch");
+        CHECK_WITH_INFO(false, "Unsupported Arch");
         return LayoutDetails();
     }
 }
@@ -146,9 +146,9 @@ void permute_B_rows_for_mixed_gemm(int8_t* permuted_quantized_tensor, const int8
 {
 
     // We only want to run this step for weight only quant.
-    TLLM_CHECK(quant_type == QuantType::PACKED_INT4_WEIGHT_ONLY || quant_type == QuantType::INT8_WEIGHT_ONLY);
+    CHECK(quant_type == QuantType::PACKED_INT4_WEIGHT_ONLY || quant_type == QuantType::INT8_WEIGHT_ONLY);
 
-    TLLM_CHECK_WITH_INFO(shape.size() == 2 || shape.size() == 3, "Shape must be 2-D or 3-D");
+    CHECK_WITH_INFO(shape.size() == 2 || shape.size() == 3, "Shape must be 2-D or 3-D");
     const size_t num_experts = shape.size() == 2 ? 1 : shape[0];
     const size_t num_rows = shape.size() == 2 ? shape[0] : shape[1];
     const size_t num_cols = shape.size() == 2 ? shape[1] : shape[2];
@@ -167,13 +167,13 @@ void permute_B_rows_for_mixed_gemm(int8_t* permuted_quantized_tensor, const int8
 
     const int num_vec_cols = num_cols / elts_in_int32;
 
-    TLLM_CHECK_WITH_INFO(
+    CHECK_WITH_INFO(
         arch_version >= 75, "Unsupported Arch. Pre-volta not supported. Column interleave not needed on Volta.");
 
-    TLLM_CHECK_WITH_INFO(num_rows % B_ROWS_PER_MMA == 0,
+    CHECK_WITH_INFO(num_rows % B_ROWS_PER_MMA == 0,
         fmtstr("Invalid shape for quantized tensor. Number of rows of quantized matrix must be a multiple of %d",
             B_ROWS_PER_MMA));
-    TLLM_CHECK_WITH_INFO(num_cols % MMA_SHAPE_N == 0,
+    CHECK_WITH_INFO(num_cols % MMA_SHAPE_N == 0,
         fmtstr("Invalid shape for quantized tensor. On turing/Ampere, the number of cols must be a multiple of %d.",
             MMA_SHAPE_N));
 
@@ -214,7 +214,7 @@ void subbyte_transpose_impl(
 {
     const int bits_per_elt = get_bits_in_quant_type(quant_type);
 
-    TLLM_CHECK_WITH_INFO(shape.size() == 2 || shape.size() == 3, "Shape must be 2-D or 3-D");
+    CHECK_WITH_INFO(shape.size() == 2 || shape.size() == 3, "Shape must be 2-D or 3-D");
     const size_t num_experts = shape.size() == 2 ? 1 : shape[0];
     const size_t num_rows = shape.size() == 2 ? shape[0] : shape[1];
     const size_t num_cols = shape.size() == 2 ? shape[1] : shape[2];
@@ -238,7 +238,7 @@ void subbyte_transpose_impl(
     // We assume the dims are a multiple of vector width. Our kernels only handle dims which are multiples
     // of 64 for weight-only quantization. As a result, this seemed like a reasonable tradeoff because it
     // allows GCC to emit vector instructions.
-    TLLM_CHECK_WITH_INFO(!(col_bytes_trans % VECTOR_WIDTH) && !(col_bytes % VECTOR_WIDTH),
+    CHECK_WITH_INFO(!(col_bytes_trans % VECTOR_WIDTH) && !(col_bytes % VECTOR_WIDTH),
         fmtstr("Number of bytes for rows and cols must be a multiple of %d. However, num_rows_bytes = %ld and "
                "num_col_bytes = %ld.",
             VECTOR_WIDTH, col_bytes_trans, col_bytes));
@@ -315,7 +315,7 @@ void subbyte_transpose_impl(
                 }
                 else
                 {
-                    TLLM_CHECK_WITH_INFO(false, "Unsupported quantization type.");
+                    CHECK_WITH_INFO(false, "Unsupported quantization type.");
                 }
 
                 const size_t row_tile_start_trans = col_tile_start_byte * ELTS_PER_BYTE;
@@ -362,7 +362,7 @@ void subbyte_transpose(int8_t* transposed_quantized_tensor, const int8_t* quanti
     }
     else
     {
-        TLLM_CHECK_WITH_INFO(false, "Invalid quant_tye");
+        CHECK_WITH_INFO(false, "Invalid quant_tye");
     }
 }
 
@@ -383,7 +383,7 @@ void add_bias_and_interleave_int8s_inplace(int8_t* int8_tensor, const size_t num
     // bit 32                                                      0
     //      [elt_3  elt_1  elt_2  elt_0] (each elt occupies 8 bits)
 
-    TLLM_CHECK_WITH_INFO(num_elts % 4 == 0, "Dimensions of int8 tensor must be a multiple of 4 for register relayout");
+    CHECK_WITH_INFO(num_elts % 4 == 0, "Dimensions of int8 tensor must be a multiple of 4 for register relayout");
     for (size_t base = 0; base < num_elts; base += 4)
     {
         std::swap(int8_tensor[base + 1], int8_tensor[base + 2]);
@@ -403,9 +403,9 @@ void add_bias_and_interleave_int4s_inplace(int8_t* packed_int4_tensor, const siz
             = (int8_t(packed_int4_tensor[ii] << 4) >> 4) + 8; // The double shift here is to ensure sign extension
         int8_t transformed_second_elt = (packed_int4_tensor[ii] >> 4) + 8;
 
-        TLLM_CHECK_WITH_INFO(
+        CHECK_WITH_INFO(
             transformed_first_elt >= 0 && transformed_first_elt <= 15, "Illegal result for int4 transform (first elt)");
-        TLLM_CHECK_WITH_INFO(transformed_second_elt >= 0 && transformed_second_elt <= 15,
+        CHECK_WITH_INFO(transformed_second_elt >= 0 && transformed_second_elt <= 15,
             "Illegal result for int4 transform (second elt)");
 
         // We don't need to mask in these ops since everything should be in the range 0-15
@@ -423,7 +423,7 @@ void add_bias_and_interleave_int4s_inplace(int8_t* packed_int4_tensor, const siz
     // bit 32                                                      0
     //      [elt_7  elt_5  elt_3  elt_1  elt_6  elt_4  elt_2  elt_0] (each elt occupies 4 bits)
 
-    TLLM_CHECK_WITH_INFO(num_bytes % 4 == 0, "Dimensions of int4 tensor must be a multiple of 8 for register relayout");
+    CHECK_WITH_INFO(num_bytes % 4 == 0, "Dimensions of int4 tensor must be a multiple of 8 for register relayout");
     const size_t num_registers = num_bytes / 4;
 
     uint32_t* register_ptr = reinterpret_cast<uint32_t*>(packed_int4_tensor);
@@ -457,7 +457,7 @@ void add_bias_and_interleave_quantized_tensor_inplace(int8_t* tensor, const size
     }
     else
     {
-        TLLM_CHECK_WITH_INFO(false, "Invalid quantization type for interleaving.");
+        CHECK_WITH_INFO(false, "Invalid quantization type for interleaving.");
     }
 }
 
@@ -466,9 +466,9 @@ void interleave_column_major_tensor(int8_t* interleaved_quantized_tensor, const 
 {
 
     // We only want to run this step for weight only quant.
-    TLLM_CHECK(quant_type == QuantType::PACKED_INT4_WEIGHT_ONLY || quant_type == QuantType::INT8_WEIGHT_ONLY);
+    CHECK(quant_type == QuantType::PACKED_INT4_WEIGHT_ONLY || quant_type == QuantType::INT8_WEIGHT_ONLY);
 
-    TLLM_CHECK_WITH_INFO(shape.size() == 2 || shape.size() == 3, "Shape must be 2-D or 3-D");
+    CHECK_WITH_INFO(shape.size() == 2 || shape.size() == 3, "Shape must be 2-D or 3-D");
     const size_t num_experts = shape.size() == 2 ? 1 : shape[0];
     const size_t num_rows = shape.size() == 2 ? shape[0] : shape[1];
     const size_t num_cols = shape.size() == 2 ? shape[1] : shape[2];
@@ -478,13 +478,13 @@ void interleave_column_major_tensor(int8_t* interleaved_quantized_tensor, const 
 
     const int rows_per_tile = details.rows_per_column_tile;
 
-    TLLM_CHECK_WITH_INFO(!(num_rows % elts_in_int32),
+    CHECK_WITH_INFO(!(num_rows % elts_in_int32),
         fmtstr("The number of rows must be a multiple of %d but the number of rows is %ld.", elts_in_int32, num_rows));
 
     const uint32_t* input_byte_ptr = reinterpret_cast<const uint32_t*>(quantized_tensor);
     uint32_t* output_byte_ptr = reinterpret_cast<uint32_t*>(interleaved_quantized_tensor);
 
-    TLLM_CHECK_WITH_INFO(!(num_rows % rows_per_tile),
+    CHECK_WITH_INFO(!(num_rows % rows_per_tile),
         fmtstr("The number of rows must be a multiple of %d but the number of rows is %ld.", rows_per_tile, num_rows));
 
     const int num_vec_rows = num_rows / elts_in_int32;
@@ -520,7 +520,7 @@ void preprocess_weights_for_mixed_gemm(int8_t* preprocessed_quantized_weight, co
 {
     LayoutDetails details = getLayoutDetailsForTransform(quant_type);
 
-    TLLM_CHECK_WITH_INFO(shape.size() == 2 || shape.size() == 3, "Shape must be 2-D or 3-D");
+    CHECK_WITH_INFO(shape.size() == 2 || shape.size() == 3, "Shape must be 2-D or 3-D");
 
     size_t num_elts = 1;
     for (const auto& dim : shape)
@@ -598,11 +598,11 @@ void symmetric_quantize(int8_t* processed_quantized_weight, int8_t* unprocessed_
     ComputeType* scale_ptr, const WeightType* input_weight_ptr, const std::vector<size_t>& shape, QuantType quant_type)
 {
 
-    TLLM_CHECK_WITH_INFO(processed_quantized_weight, "Processed quantized tensor is NULL");
-    TLLM_CHECK_WITH_INFO(scale_ptr, "Scale output pointer is NULL");
-    TLLM_CHECK_WITH_INFO(input_weight_ptr, "Input weight pointer is NULL");
+    CHECK_WITH_INFO(processed_quantized_weight, "Processed quantized tensor is NULL");
+    CHECK_WITH_INFO(scale_ptr, "Scale output pointer is NULL");
+    CHECK_WITH_INFO(input_weight_ptr, "Input weight pointer is NULL");
 
-    TLLM_CHECK_WITH_INFO(shape.size() == 2 || shape.size() == 3, "Shape must be 2-D or 3-D");
+    CHECK_WITH_INFO(shape.size() == 2 || shape.size() == 3, "Shape must be 2-D or 3-D");
     const size_t num_experts = shape.size() == 2 ? 1 : shape[0];
     const size_t num_rows = shape.size() == 2 ? shape[0] : shape[1];
     const size_t num_cols = shape.size() == 2 ? shape[1] : shape[2];
@@ -692,7 +692,7 @@ void symmetric_quantize(int8_t* processed_quantized_weight, int8_t* unprocessed_
                 }
                 else
                 {
-                    TLLM_CHECK_WITH_INFO(false, "Unsupported quantization type");
+                    CHECK_WITH_INFO(false, "Unsupported quantization type");
                 }
             }
         }

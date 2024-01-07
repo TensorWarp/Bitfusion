@@ -314,7 +314,7 @@ static __global__ void twoShotAllReduceKernel(AllReduceParams params)
 
 std::tuple<int, int> kernelLaunchConfig(AllReduceStrategyType algo, AllReduceParams& param, size_t elts_per_thread)
 {
-    TLLM_CHECK(param.elts_total % elts_per_thread == 0);
+    CHECK(param.elts_total % elts_per_thread == 0);
 
     int blocks_per_grid = 1, threads_per_block = DEFAULT_BLOCK_SIZE;
 
@@ -341,11 +341,11 @@ std::tuple<int, int> kernelLaunchConfig(AllReduceStrategyType algo, AllReducePar
     case AllReduceStrategyType::TWOSHOT:
     { // two stage all reduce algo
         const size_t elts_per_rank = param.elts_total / param.ranks_per_node;
-        TLLM_CHECK(elts_per_rank % elts_per_thread == 0);
+        CHECK(elts_per_rank % elts_per_thread == 0);
 
         size_t total_threads = elts_per_rank / elts_per_thread;
         total_threads = WARP_SIZE * ((total_threads + WARP_SIZE - 1) / WARP_SIZE);
-        TLLM_CHECK(total_threads % WARP_SIZE == 0);
+        CHECK(total_threads % WARP_SIZE == 0);
 
         while (total_threads % blocks_per_grid != 0 || total_threads / blocks_per_grid > DEFAULT_BLOCK_SIZE)
         {
@@ -370,7 +370,7 @@ std::tuple<int, int> kernelLaunchConfig(AllReduceStrategyType algo, AllReducePar
         param.rank_offset = param.rank * param.elts_per_rank;
         break;
     }
-    default: TLLM_THROW("Algorithm not supported here.");
+    default: THROW("Algorithm not supported here.");
     }
 
     return std::make_tuple(blocks_per_grid, threads_per_block);
@@ -395,7 +395,7 @@ void dispatchARKernels(
 template <typename T>
 void invokeOneOrTwoShotAllReduceKernel(AllReduceParams& param, AllReduceStrategyType strat, cudaStream_t stream)
 {
-    TLLM_CHECK(strat == AllReduceStrategyType::ONESHOT || strat == AllReduceStrategyType::TWOSHOT);
+    CHECK(strat == AllReduceStrategyType::ONESHOT || strat == AllReduceStrategyType::TWOSHOT);
     sync_check_cuda_error();
 
     size_t elts_per_thread = 16 / sizeof(T);
@@ -464,7 +464,7 @@ void customAllReduce(kernels::AllReduceParams& params, void* data, size_t elts, 
     }
     else
     {
-        TLLM_THROW("Unsupported dataType for customAllReduce");
+        THROW("Unsupported dataType for customAllReduce");
     }
 }
 

@@ -15,7 +15,7 @@ IdentityPlugin::IdentityPlugin() {}
 IdentityPlugin::IdentityPlugin(const void* data, size_t length)
 {
     const char *d = reinterpret_cast<const char*>(data), *a = d;
-    TLLM_CHECK(d == a + length);
+    CHECK(d == a + length);
 }
 
 nvinfer1::IPluginV2DynamicExt* IdentityPlugin::clone() const noexcept

@@ -22,7 +22,7 @@ namespace bitfusion::common::conversion
         case nvinfer1::DataType::kINT32: return DataType::TYPE_INT32;
         case nvinfer1::DataType::kINT64: return DataType::TYPE_INT64;
         case nvinfer1::DataType::kBOOL: return DataType::TYPE_BOOL;
-        default: TLLM_THROW("Unsupported data type: %d", static_cast<int>(type));
+        default: THROW("Unsupported data type: %d", static_cast<int>(type));
         }
     }
 
@@ -33,7 +33,7 @@ namespace bitfusion::common::conversion
         case runtime::MemoryType::kGPU: return MemoryType::MEMORY_GPU;
         case runtime::MemoryType::kCPU: return MemoryType::MEMORY_CPU;
         case runtime::MemoryType::kPINNED: return MemoryType::MEMORY_CPU_PINNED;
-        default: TLLM_THROW("Unsupported memory type: %d", static_cast<int>(type));
+        default: THROW("Unsupported memory type: %d", static_cast<int>(type));
         }
     }
 

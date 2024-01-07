@@ -17,7 +17,7 @@ namespace layers
 template <typename T>
 void BaseSamplingLayer<T>::allocateBuffer(size_t batch_size)
 {
-    TLLM_LOG_TRACE(__PRETTY_FUNCTION__);
+    LOG_TRACE(__PRETTY_FUNCTION__);
     curandstate_buf_ = allocator_->reMalloc(curandstate_buf_, sizeof(curandState_t) * batch_size, false);
     random_seeds_buf_ = allocator_->reMalloc(random_seeds_buf_, sizeof(unsigned long long) * batch_size, false);
     temperature_buf_ = allocator_->reMalloc(temperature_buf_, sizeof(float) * batch_size, false);
@@ -27,7 +27,7 @@ void BaseSamplingLayer<T>::allocateBuffer(size_t batch_size)
     skip_decode_buf_ = allocator_->reMalloc(skip_decode_buf_, sizeof(bool) * batch_size, false);
 
     skip_decode_ = (bool*) std::realloc(skip_decode_, sizeof(bool) * batch_size);
-    TLLM_CHECK(skip_decode_ != nullptr);
+    CHECK(skip_decode_ != nullptr);
 
     is_allocate_buffer_ = true;
 }
@@ -35,7 +35,7 @@ void BaseSamplingLayer<T>::allocateBuffer(size_t batch_size)
 template <typename T>
 void BaseSamplingLayer<T>::freeBuffer()
 {
-    TLLM_LOG_TRACE(__PRETTY_FUNCTION__);
+    LOG_TRACE(__PRETTY_FUNCTION__);
     if (is_allocate_buffer_)
     {
         allocator_->free((void**) (&curandstate_buf_));
@@ -76,7 +76,7 @@ BaseSamplingLayer<T>::~BaseSamplingLayer()
 template <typename T>
 void BaseSamplingLayer<T>::setupBase(const size_t batch_size, SetupParams const& setupParams)
 {
-    TLLM_LOG_TRACE(__PRETTY_FUNCTION__);
+    LOG_TRACE(__PRETTY_FUNCTION__);
     allocateBuffer(batch_size);
 
     if (setupParams.random_seed)
@@ -88,7 +88,7 @@ void BaseSamplingLayer<T>::setupBase(const size_t batch_size, SetupParams const&
         }
         else
         {
-            TLLM_CHECK_WITH_INFO(setupParams.random_seed->size() == batch_size, "Random seed vector size mismatch.");
+            CHECK_WITH_INFO(setupParams.random_seed->size() == batch_size, "Random seed vector size mismatch.");
             cudaAutoCpy(random_seeds_buf_, setupParams.random_seed->data(), batch_size, stream_);
             invokeCurandBatchInitialize(curandstate_buf_, batch_size, random_seeds_buf_, stream_);
             sync_check_cuda_error();
@@ -113,7 +113,7 @@ void BaseSamplingLayer<T>::setupBase(const size_t batch_size, SetupParams const&
         }
         else
         {
-            TLLM_CHECK_WITH_INFO(optParam->size() == batch_size, "Argument vector size mismatch.");
+            CHECK_WITH_INFO(optParam->size() == batch_size, "Argument vector size mismatch.");
             std::copy(optParam->begin(), optParam->end(), std::begin(hostBuffer));
         }
         cudaAutoCpy(deviceBuffer, hostBuffer.data(), batch_size, stream_);
@@ -124,7 +124,7 @@ void BaseSamplingLayer<T>::setupBase(const size_t batch_size, SetupParams const&
 
     if ((setupParams.repetition_penalty) || (setupParams.presence_penalty))
     {
-        TLLM_CHECK_WITH_INFO(!((setupParams.repetition_penalty) && (setupParams.presence_penalty)),
+        CHECK_WITH_INFO(!((setupParams.repetition_penalty) && (setupParams.presence_penalty)),
             "Found ambiguous parameters repetition_penalty and presence_penalty "
             "which are mutually exclusive. "
             "Please provide one of repetition_penalty or presence_penalty.");
@@ -145,7 +145,7 @@ void BaseSamplingLayer<T>::setupBase(const size_t batch_size, SetupParams const&
 template <typename T>
 void BaseSamplingLayer<T>::forward(DecodingOutputParams& outputs, ForwardParams const& params)
 {
-    TLLM_LOG_TRACE("%s start", __PRETTY_FUNCTION__);
+    LOG_TRACE("%s start", __PRETTY_FUNCTION__);
 
     auto const batch_size = outputs.output_ids_ptr.shape[0];
     auto const local_batch_size = params.logits.shape[0];
@@ -165,7 +165,7 @@ void BaseSamplingLayer<T>::forward(DecodingOutputParams& outputs, ForwardParams 
     skip_any_ = std::any_of(skip_decode, skip_decode + local_batch_size, [](bool b) { return b; });
     if (skip_any_)
     {
-        TLLM_CHECK(params.logits.size() == local_batch_size * vocab_size_padded_);
+        CHECK(params.logits.size() == local_batch_size * vocab_size_padded_);
         cudaD2Dcpy(runtime_logits_buf_, logits, params.logits.size());
         logits = runtime_logits_buf_;
     }
@@ -204,7 +204,7 @@ void BaseSamplingLayer<T>::forward(DecodingOutputParams& outputs, ForwardParams 
         freeBuffer();
     }
     sync_check_cuda_error();
-    TLLM_LOG_TRACE("%s stop", __PRETTY_FUNCTION__);
+    LOG_TRACE("%s stop", __PRETTY_FUNCTION__);
 }
 
 template class BaseSamplingLayer<float>;

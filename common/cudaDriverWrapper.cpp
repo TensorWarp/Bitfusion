@@ -25,7 +25,7 @@ namespace bitfusion
         CUDADriverWrapper::CUDADriverWrapper()
         {
             handle = dllOpen(L"CUDA_LIB_NAME");
-            TLLM_CHECK_WITH_INFO(handle != nullptr, "CUDA driver library is not open correctly.");
+            CHECK_WITH_INFO(handle != nullptr, "CUDA driver library is not open correctly.");
 
             auto load_sym = [](void* handle, const char* name)
                 {

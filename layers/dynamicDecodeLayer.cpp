@@ -22,7 +22,7 @@ namespace layers
 template <typename T>
 void DynamicDecodeLayer<T>::initialize()
 {
-    TLLM_LOG_TRACE(__PRETTY_FUNCTION__);
+    LOG_TRACE(__PRETTY_FUNCTION__);
     mOnlineBeamsearchDecode = std::make_unique<OnlineBeamSearchLayer<T>>(
         vocab_size_, vocab_size_padded_, stream_, allocator_, is_free_buffer_after_forward_);
 
@@ -43,14 +43,14 @@ DynamicDecodeLayer<T>::DynamicDecodeLayer(size_t vocab_size, size_t vocab_size_p
     , vocab_size_padded_(vocab_size_padded)
     , cuda_device_prop_(cuda_device_prop)
 {
-    TLLM_LOG_TRACE(__PRETTY_FUNCTION__);
+    LOG_TRACE(__PRETTY_FUNCTION__);
     initialize();
 }
 
 template <typename T>
 DynamicDecodeLayer<T>::~DynamicDecodeLayer()
 {
-    TLLM_LOG_TRACE(__PRETTY_FUNCTION__);
+    LOG_TRACE(__PRETTY_FUNCTION__);
     freeBuffer();
 }
 
@@ -61,7 +61,7 @@ DynamicDecodeLayer<T>::DynamicDecodeLayer(DynamicDecodeLayer const& dynamic_deco
     , vocab_size_padded_(dynamic_decode_layer.vocab_size_padded_)
     , cuda_device_prop_(dynamic_decode_layer.cuda_device_prop_)
 {
-    TLLM_LOG_TRACE(__PRETTY_FUNCTION__);
+    LOG_TRACE(__PRETTY_FUNCTION__);
     initialize();
 }
 
@@ -102,7 +102,7 @@ bool hasDiffRuntimeArgs(DecodingSetupParams const& params)
 template <typename T>
 void DynamicDecodeLayer<T>::setup(size_t batch_size, size_t beam_width, SetupParams const& setupParams)
 {
-    TLLM_LOG_TRACE(__PRETTY_FUNCTION__);
+    LOG_TRACE(__PRETTY_FUNCTION__);
 
     if (beam_width == 1)
     {
@@ -144,7 +144,7 @@ void DynamicDecodeLayer<T>::setup(size_t batch_size, size_t beam_width, SetupPar
 template <typename T>
 void DynamicDecodeLayer<T>::allocateBuffer(size_t batch_size, size_t beam_width, size_t max_seq_len)
 {
-    TLLM_LOG_TRACE(__PRETTY_FUNCTION__);
+    LOG_TRACE(__PRETTY_FUNCTION__);
     mIdsPtrHost->resize(2 * batch_size);
     zero_parent_ids = allocator_->reMalloc(zero_parent_ids, sizeof(int*) * 2 * batch_size, false);
 }
@@ -152,26 +152,26 @@ void DynamicDecodeLayer<T>::allocateBuffer(size_t batch_size, size_t beam_width,
 template <typename T>
 void DynamicDecodeLayer<T>::freeBuffer()
 {
-    TLLM_LOG_TRACE(__PRETTY_FUNCTION__);
+    LOG_TRACE(__PRETTY_FUNCTION__);
     allocator_->free((void**) &zero_parent_ids);
 }
 
 template <typename T>
 void DynamicDecodeLayer<T>::forward(OutputParams& outputs, ForwardParams const& params)
 {
-    TLLM_LOG_TRACE(__PRETTY_FUNCTION__);
+    LOG_TRACE(__PRETTY_FUNCTION__);
 
     const auto ite = params.ite;
     const auto step = params.step;
     auto const& logits = params.logits;
-    TLLM_CHECK(logits.shape.size() == 3);
+    CHECK(logits.shape.size() == 3);
 
     auto const batch_size = logits.shape[0];
     auto const beam_width = logits.shape[1];
     auto const local_batch_size = static_cast<std::size_t>(params.local_batch_size);
 
     auto const max_seq_len = outputs.output_ids.shape[outputs.output_ids.shape.size() - 1];
-    TLLM_CHECK_WITH_INFO(
+    CHECK_WITH_INFO(
         outputs.sequence_length.has_value(), "sequence_length tensor is mandatory in DynamicDecoderLayer.");
     allocateBuffer(batch_size, beam_width, max_seq_len);
 
@@ -220,13 +220,13 @@ void DynamicDecodeLayer<T>::forward(OutputParams& outputs, ForwardParams const& 
     {
         const auto& bad_words = params.bad_words_list.value();
         const int* bad_words_ptr = bad_words.template getPtr<const int>();
-        TLLM_CHECK_WITH_INFO(
+        CHECK_WITH_INFO(
             bad_words.shape.size() == 2 || bad_words.shape.size() == 3, "Bad words dimension must be 2 or 3.");
 
         const bool is_matrix = bad_words.shape.size() == 2;
         if (bad_words.shape.size() == 3)
         {
-            TLLM_CHECK_WITH_INFO(bad_words.shape[0] == batch_size,
+            CHECK_WITH_INFO(bad_words.shape[0] == batch_size,
                 fmtstr("Shape of dim 0 of bad words is invalid. It "
                        "must be equal to batch size."
                        " However, it is %ld and the batch size is %ld.",
@@ -253,13 +253,13 @@ void DynamicDecodeLayer<T>::forward(OutputParams& outputs, ForwardParams const& 
 
     if (beam_width > 1)
     {
-        TLLM_CHECK_WITH_INFO(
+        CHECK_WITH_INFO(
             params.src_cache_indirection.has_value(), "src_cache_indirection is mandatory in beam search.");
-        TLLM_CHECK_WITH_INFO(
+        CHECK_WITH_INFO(
             outputs.tgt_cache_indirection.has_value(), "tgt_cache_indirection is mandatory in beam search.");
-        TLLM_CHECK_WITH_INFO(outputs.parent_ids.has_value(), "parent_ids tensor is mandatory in beam search.");
-        TLLM_CHECK_WITH_INFO(outputs.finished.has_value(), "finished tensor is mandatory in beam search.");
-        TLLM_CHECK_WITH_INFO(outputs.cum_log_probs.has_value(), "cum_log_probs tensor is mandatory in beam search.");
+        CHECK_WITH_INFO(outputs.parent_ids.has_value(), "parent_ids tensor is mandatory in beam search.");
+        CHECK_WITH_INFO(outputs.finished.has_value(), "finished tensor is mandatory in beam search.");
+        CHECK_WITH_INFO(outputs.cum_log_probs.has_value(), "cum_log_probs tensor is mandatory in beam search.");
 
         const size_t dynamic_decode_batch_size = has_diff_runtime_args_ ? 1 : local_batch_size;
         const int dynamic_decode_total_iteration = local_batch_size / dynamic_decode_batch_size;
@@ -344,7 +344,7 @@ void DynamicDecodeLayer<T>::forward(OutputParams& outputs, ForwardParams const& 
         if (outputs.output_log_probs_tiled)
         {
             auto const generationStep = step - params.max_input_length;
-            TLLM_CHECK(generationStep >= 0);
+            CHECK(generationStep >= 0);
             Tensor& output_log_probs = outputs.output_log_probs_tiled.value();
             size_t step_offset = generationStep * batch_size * beam_width;
             decode_outputs.output_log_probs

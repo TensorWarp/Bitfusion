@@ -62,13 +62,13 @@ public:
 protected:
     void allocateImpl(PointerType* ptr, SizeType n)
     {
-        TLLM_CUDA_CHECK(::cudaMalloc(ptr, n));
+        CUDA_CHECK(::cudaMalloc(ptr, n));
     }
 
     void deallocateImpl(
         PointerType ptr, [[gnu::unused]] SizeType n)
     {
-        TLLM_CUDA_CHECK(::cudaFree(ptr));
+        CUDA_CHECK(::cudaFree(ptr));
     }
 };
 
@@ -82,7 +82,7 @@ public:
     explicit CudaAllocatorAsync(CudaStreamPtr stream)
         : mCudaStream(std::move(stream))
     {
-        TLLM_CHECK_WITH_INFO(static_cast<bool>(mCudaStream), "Undefined CUDA stream");
+        CHECK_WITH_INFO(static_cast<bool>(mCudaStream), "Undefined CUDA stream");
     }
 
     [[nodiscard]] CudaStreamPtr getCudaStream() const
@@ -93,12 +93,12 @@ public:
 protected:
     void allocateImpl(PointerType* ptr, SizeType n)
     {
-        TLLM_CUDA_CHECK(::cudaMallocAsync(ptr, n, mCudaStream->get()));
+        CUDA_CHECK(::cudaMallocAsync(ptr, n, mCudaStream->get()));
     }
 
     void deallocateImpl(PointerType ptr, [[gnu::unused]] SizeType n)
     {
-        TLLM_CUDA_CHECK(::cudaFreeAsync(ptr, mCudaStream->get()));
+        CUDA_CHECK(::cudaFreeAsync(ptr, mCudaStream->get()));
     }
 
 private:
@@ -115,13 +115,13 @@ public:
 protected:
     void allocateImpl(PointerType* ptr, SizeType n)
     {
-        TLLM_CUDA_CHECK(::cudaHostAlloc(ptr, n, cudaHostAllocDefault));
+        CUDA_CHECK(::cudaHostAlloc(ptr, n, cudaHostAllocDefault));
     }
 
     void deallocateImpl(
         PointerType ptr, [[gnu::unused]] SizeType n)
     {
-        TLLM_CUDA_CHECK(::cudaFreeHost(ptr));
+        CUDA_CHECK(::cudaFreeHost(ptr));
     }
 };
 
@@ -163,8 +163,8 @@ public:
         : mPtr(ptr)
         , mCapacity(capacity)
     {
-        TLLM_CHECK_WITH_INFO(capacity == 0 || static_cast<bool>(mPtr), "Undefined pointer");
-        TLLM_CHECK_WITH_INFO(mCapacity >= 0, "Capacity must be non-negative");
+        CHECK_WITH_INFO(capacity == 0 || static_cast<bool>(mPtr), "Undefined pointer");
+        CHECK_WITH_INFO(mCapacity >= 0, "Capacity must be non-negative");
     }
 
 protected:
@@ -239,12 +239,12 @@ public:
 
     void* data() override
     {
-        return TLLM_LIKELY(mSize > 0) ? mBuffer : nullptr;
+        return LIKELY(mSize > 0) ? mBuffer : nullptr;
     }
 
     [[nodiscard]] void const* data() const override
     {
-        return TLLM_LIKELY(mSize > 0) ? mBuffer : nullptr;
+        return LIKELY(mSize > 0) ? mBuffer : nullptr;
     }
 
     [[nodiscard]] std::size_t getSize() const override
@@ -294,7 +294,7 @@ public:
         }
         catch (std::exception& e)
         {
-            TLLM_LOG_EXCEPTION(e);
+            LOG_EXCEPTION(e);
         }
     }
 
@@ -306,8 +306,8 @@ protected:
         , mAllocator{std::move(allocator)}
         , mBuffer{capacity > 0 ? mAllocator.allocate(toBytes(capacity)) : nullptr}
     {
-        TLLM_CHECK(size <= capacity);
-        TLLM_CHECK(capacity == 0 || size > 0);
+        CHECK(size <= capacity);
+        CHECK(capacity == 0 || size > 0);
     }
 
 private:
@@ -324,7 +324,7 @@ using PinnedBuffer = GenericBuffer<PinnedAllocator>;
 template <typename T>
 typename std::make_unsigned<T>::type nonNegative(T value)
 {
-    TLLM_CHECK_WITH_INFO(value >= 0, "Value must be non-negative");
+    CHECK_WITH_INFO(value >= 0, "Value must be non-negative");
     return static_cast<typename std::make_unsigned<T>::type>(value);
 }
 

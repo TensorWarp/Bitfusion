@@ -53,11 +53,11 @@ template <typename T>
 void invokeQuantization(
     int8_t* dst, const T* src, const int64_t size, const float* scalePtr, cudaStream_t stream, int maxGridSize)
 {
-    TLLM_CHECK_WITH_INFO(size % 4 == 0, "[ERROR][invokeQuantization] size should be a multiple of 4.\n");
+    CHECK_WITH_INFO(size % 4 == 0, "[ERROR][invokeQuantization] size should be a multiple of 4.\n");
 
     int numBlocks{static_cast<int>((size + 255) / 256)};
     dim3 grid(std::min(numBlocks, maxGridSize));
-    TLLM_CHECK_WITH_INFO(grid.x <= maxGridSize, "[ERROR][invokeQuantization] grid max size is exceeded\n");
+    CHECK_WITH_INFO(grid.x <= maxGridSize, "[ERROR][invokeQuantization] grid max size is exceeded\n");
     dim3 block(64);
     if (std::is_same_v<T, float>)
     {

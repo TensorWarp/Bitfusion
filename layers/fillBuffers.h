@@ -36,7 +36,7 @@ struct FillBuffers
         }
         else
         {
-            TLLM_CHECK_WITH_INFO(optParam->size() == batch_size, "Argument vector size mismatch.");
+            CHECK_WITH_INFO(optParam->size() == batch_size, "Argument vector size mismatch.");
             std::copy(optParam->begin(), optParam->end(), std::begin(hostBuffer));
         }
         cudaAutoCpy(deviceBuffer, hostBuffer.data(), batch_size, stream);

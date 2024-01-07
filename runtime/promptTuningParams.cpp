@@ -9,20 +9,20 @@ void PromptTuningParams::fillTasksTensor(TensorPtr tasksHost, const SizeType bat
     const std::vector<SizeType>& reqPromptLengths, BufferManager const& manager, bool packedInput)
 {
     auto const& tasksHostShape = tasksHost->getShape();
-    TLLM_CHECK_WITH_INFO(tasksHostShape.nbDims == 1, "tasksHost expected to have dimension [batchSize]");
-    TLLM_CHECK_WITH_INFO(tasksHostShape.d[0] == batchSize, "tasksHost expected to have dimension [batchSize]");
+    CHECK_WITH_INFO(tasksHostShape.nbDims == 1, "tasksHost expected to have dimension [batchSize]");
+    CHECK_WITH_INFO(tasksHostShape.d[0] == batchSize, "tasksHost expected to have dimension [batchSize]");
 
     auto const tasksHostPtr = bufferCast<SizeType const>(*tasksHost);
 
     bool validInput = packedInput || numContextRequests == batchSize || numContextRequests == 0;
-    TLLM_CHECK_WITH_INFO(validInput,
+    CHECK_WITH_INFO(validInput,
         "fillTasksTensor function with packed inputs must be called with only context requests or only generation "
         "requests.");
 
     bool validShapes = (static_cast<SizeType>(reqBeamWidths.size()) == batchSize
         && static_cast<SizeType>(reqPromptLengths.size()) == numContextRequests
         && static_cast<SizeType>(promptTuningEnabled.size()) == batchSize);
-    TLLM_CHECK_WITH_INFO(validShapes,
+    CHECK_WITH_INFO(validShapes,
         "Invalid inputs to fillTasksTensor function. reqBeamWidths and reqPtuningEnabled size must be batchSize and "
         "propmtLenghts size must be numContextRequests");
 

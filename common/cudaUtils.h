@@ -294,7 +294,7 @@ namespace bitfusion::common
     {
         if (buf == nullptr)
         {
-            TLLM_LOG_WARNING("%s is an nullptr, skip!", name.c_str());
+            LOG_WARNING("%s is an nullptr, skip!", name.c_str());
             return;
         }
         cudaDeviceSynchronize();
@@ -321,7 +321,7 @@ namespace bitfusion::common
             }
             max_val = max_val > abs(float(h_tmp[i])) ? max_val : abs(float(h_tmp[i]));
         }
-        TLLM_LOG_INFO("%20s size: %u, abs mean: %f, abs sum: %f, abs max: %f, find inf: %s", name.c_str(), size, sum / size,
+        LOG_INFO("%20s size: %u, abs mean: %f, abs sum: %f, abs max: %f, find inf: %s", name.c_str(), size, sum / size,
             sum, max_val, find_inf ? "true" : "false");
         delete[] h_tmp;
         cudaDeviceSynchronize();
@@ -334,7 +334,7 @@ namespace bitfusion::common
         const bool split_rows = (strm == stdout);
         if (result == nullptr)
         {
-            TLLM_LOG_WARNING("It is an nullptr, skip! \n");
+            LOG_WARNING("It is an nullptr, skip! \n");
             return;
         }
         T* tmp = reinterpret_cast<T*>(malloc(sizeof(T) * size));
@@ -363,7 +363,7 @@ namespace bitfusion::common
     {
         if (result == nullptr)
         {
-            TLLM_LOG_WARNING("It is an nullptr, skip! \n");
+            LOG_WARNING("It is an nullptr, skip! \n");
             return;
         }
         for (int ri = 0; ri < r; ++ri)
@@ -487,7 +487,7 @@ namespace bitfusion::common
 
 }
 
-#define TLLM_CUDA_CHECK(stat)                                                                                          \
+#define CUDA_CHECK(stat)                                                                                          \
     do                                                                                                                 \
     {                                                                                                                  \
         bitfusion::common::check((stat), #stat, __FILE__, __LINE__);                                                \

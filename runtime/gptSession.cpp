@@ -41,7 +41,7 @@ GptSession::GptSession(Config const& sessionConfig, GptModelConfig const& modelC
         mCommStream = std::make_shared<CudaStream>();
     }
 
-    TLLM_CHECK_WITH_INFO(!(mModelConfig.usePromptTuning() && !mModelConfig.useGptAttentionPlugin()),
+    CHECK_WITH_INFO(!(mModelConfig.usePromptTuning() && !mModelConfig.useGptAttentionPlugin()),
         "Prompt tuning is only enabled with GPT attention plugin.");
 
 
@@ -60,7 +60,7 @@ BufferManager const& GptSession::getBufferManager() const
 
 void GptSession::createContexts(SizeType numCtxBatches, SizeType numGenBatches, bool useCudaGraphs)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     mRuntime->clearContexts();
 
     if (useCudaGraphs)
@@ -69,7 +69,7 @@ void GptSession::createContexts(SizeType numCtxBatches, SizeType numGenBatches, 
     }
 
     auto const numProfiles = mRuntime->getNbProfiles();
-    TLLM_CHECK_WITH_INFO(
+    CHECK_WITH_INFO(
         numProfiles == 1 || numProfiles == 2, "GPT only expects one optimization profile or two optimization profiles");
 
     auto constexpr ctxContextId = 0;
@@ -79,12 +79,12 @@ void GptSession::createContexts(SizeType numCtxBatches, SizeType numGenBatches, 
     for (auto i = 0; i < numCtxBatches; ++i)
         mRuntime->addContext(ctxContextId);
 
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
 void GptSession::createBuffers(SizeType numMicroBatches)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     mBuffers.clear();
 
     for (SizeType i = 0; i < numMicroBatches; ++i)
@@ -92,13 +92,13 @@ void GptSession::createBuffers(SizeType numMicroBatches)
         mBuffers.emplace_back(std::make_shared<RuntimeBuffers>());
         mBuffers.back()->create(*mRuntime, mModelConfig, mWorldConfig);
     }
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
 void GptSession::createDecoders(SizeType batchSize, SizeType beamWidth, SizeType maxAttentionWindow,
     SizeType maxSequenceLength, nvinfer1::DataType logitsType, bool decoderPerRequest, SizeType numMicroBatches)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     auto const vocabSize = mModelConfig.getVocabSize();
     auto const vocabSizePadded = mModelConfig.getVocabSizePadded(mWorldConfig.getSize());
     auto const& stream = mRuntime->getStreamPtr();
@@ -116,13 +116,13 @@ void GptSession::createDecoders(SizeType batchSize, SizeType beamWidth, SizeType
             batchSize, beamWidth, maxAttentionWindow, maxSequenceLength, maxTokensPerStep, logitsType);
     }
 
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
 void GptSession::createKvCacheManager(SizeType batchSize, SizeType beamWidth, SizeType maxAttentionWindow,
     SizeType maxSequenceLength, KvCacheConfig const& config)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     auto const localNbLayers = mModelConfig.getNbLayers(mWorldConfig.getPipelineParallelism());
     auto const nbHeads = mModelConfig.getNbHeads();
     auto const nbKvHeads = mModelConfig.getNbKvHeads();
@@ -145,14 +145,14 @@ void GptSession::createKvCacheManager(SizeType batchSize, SizeType beamWidth, Si
 
     auto const maxNumTokens
         = bmkv::KVCacheManager::getMaxNumTokens(config, kvDtype, mModelConfig, mWorldConfig, getBufferManager());
-    TLLM_LOG_INFO("Using %d tokens in paged KV cache.", maxNumTokens);
+    LOG_INFO("Using %d tokens in paged KV cache.", maxNumTokens);
     auto const maxNumBlocks = tc::ceilDiv(maxNumTokens, tokensPerBlock);
     auto const maxBlocksPerSeq = tc::ceilDiv(std::min(maxSequenceLength, maxAttentionWindow), tokensPerBlock);
 
     mKvCacheManager
         = std::make_shared<bmkv::KVCacheManager>(localNbLayers, nbHeads, nbKvHeads, hiddenSize, tokensPerBlock,
             maxNumBlocks, batchSize, beamWidth, maxBlocksPerSeq, maxAttentionWindow, kvDtype, mRuntime->getStreamPtr());
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
 void GptSession::createCustomAllReduceWorkspace(
@@ -189,9 +189,9 @@ GptSession::MicroBatchConfig::MicroBatchConfig(SizeType maxBatchSize, SizeType p
     if (genMicroBatchSize || ctxMicroBatchSize)
     {
         genBatchSize = genMicroBatchSize.value_or(maxBatchSize);
-        TLLM_CHECK(genBatchSize <= maxBatchSize);
+        CHECK(genBatchSize <= maxBatchSize);
         ctxBatchSize = ctxMicroBatchSize.value_or(genBatchSize);
-        TLLM_CHECK_WITH_INFO(genBatchSize % ctxBatchSize == 0,
+        CHECK_WITH_INFO(genBatchSize % ctxBatchSize == 0,
             "Generation batch size (%d) must be divisible by context batch size (%d)", genBatchSize, ctxBatchSize);
         numGenBatches = tc::ceilDiv(maxBatchSize, genBatchSize);
         numCtxBatches = numGenBatches * (genBatchSize / ctxBatchSize);
@@ -205,7 +205,7 @@ GptSession::MicroBatchConfig::MicroBatchConfig(SizeType maxBatchSize, SizeType p
 
 void GptSession::setup(Config const& sessionConfig)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
 
     mCudaGraphMode = sessionConfig.cudaGraphMode;
 
@@ -256,16 +256,16 @@ void GptSession::setup(Config const& sessionConfig)
             mMicroBatchConfig.genBatchSize, maxBeamWidth, 0, maxAttentionWindow, maxSequenceLength};
         buffers->reshape(mModelConfig, mWorldConfig);
     }
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
 void GptSession::kvCacheAddSequences(SizeType beamWidth, SizeType microBatchId, SizeType firstBatchIdx)
 {
     if (mModelConfig.usePagedKvCache())
     {
-        TLLM_CHECK(mKvCacheManager);
+        CHECK(mKvCacheManager);
         auto contextLengthsHost = mBuffers.at(microBatchId)->contextLengthsHost;
-        TLLM_CHECK(contextLengthsHost);
+        CHECK(contextLengthsHost);
         auto const contextLengthsPtr = bufferCast<SizeType const>(*contextLengthsHost);
         auto const contextLengthsSize = static_cast<SizeType>(contextLengthsHost->getSize());
         for (SizeType batchIdx = 0; batchIdx < contextLengthsSize; ++batchIdx)
@@ -367,7 +367,7 @@ std::tuple<std::vector<ITensor::SharedPtr>, std::vector<ITensor::SharedPtr>, std
 
 std::vector<GenerationInput> splitInputs(GenerationInput const& inputs, SizeType microBatchSize, BufferManager& manager)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     auto [inputIds, inputLengths, microBatchOffsets] = splitInputIds(inputs, microBatchSize, manager);
 
     std::vector<GenerationInput> inputBatches;
@@ -414,7 +414,7 @@ std::vector<GenerationInput> splitInputs(GenerationInput const& inputs, SizeType
             batch.promptTuningParams.vocabSize = inputs.promptTuningParams.vocabSize;
     }
 
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
     return inputBatches;
 }
 
@@ -467,12 +467,12 @@ void updateOutputIds(ITensor::SharedPtr const& outputIds, ITensor::SharedPtr con
 void GptSession::generate(
     GenerationOutput& outputs, GenerationInput const& inputs, SamplingConfig const& samplingConfig)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
 
-    TLLM_CHECK_WITH_INFO(inputs.packed == mModelConfig.usePackedInput(),
+    CHECK_WITH_INFO(inputs.packed == mModelConfig.usePackedInput(),
         "The chosen model requires a packed input tensor (did you set packed?).");
     auto const& inputLengths = inputs.lengths;
-    TLLM_CHECK_WITH_INFO(inputLengths->getShape().nbDims == 1, "Input lengths tensor must be one-dimensional.");
+    CHECK_WITH_INFO(inputLengths->getShape().nbDims == 1, "Input lengths tensor must be one-dimensional.");
 
     auto& manager = mRuntime->getBufferManager();
 
@@ -484,19 +484,19 @@ void GptSession::generate(
     {
         if (outputs.cumLogProbs)
         {
-            TLLM_CHECK_WITH_INFO(outputs.cumLogProbs,
+            CHECK_WITH_INFO(outputs.cumLogProbs,
                 "outputs.cumLogProbs is nullptr. It must be allocated when computeLogProbs is true");
             outputs.cumLogProbs->reshape(ITensor::makeShape({batchSize, beamWidth}));
         }
         if (outputs.logProbs)
         {
-            TLLM_CHECK_WITH_INFO(
+            CHECK_WITH_INFO(
                 outputs.logProbs, "outputs.logProbs is nullptr. It must be allocated when computeLogProbs is true");
             outputs.logProbs->reshape(ITensor::makeShape({batchSize, beamWidth, mDecoderMaxSequenceLength}));
         }
         if (mModelConfig.computeContextLogits() || mModelConfig.computeGenerationLogits())
         {
-            TLLM_CHECK_WITH_INFO(outputs.contextLogits,
+            CHECK_WITH_INFO(outputs.contextLogits,
                 "outputs.contextLogits is nullptr. It must be allocated when computeContextLogits() is enabled.");
             auto const vocabSizePadded = mModelConfig.getVocabSizePadded(mWorldConfig.getSize());
             auto const inputLengthsHost = manager.copyFrom(*inputLengths, MemoryType::kCPU);
@@ -523,18 +523,18 @@ void GptSession::generate(
                     }
                 }
 
-                TLLM_CHECK_WITH_INFO(maxNewTokens, "maxNewTokens is null");
+                CHECK_WITH_INFO(maxNewTokens, "maxNewTokens is null");
 
-                TLLM_CHECK_WITH_INFO(outputs.generationLogits,
+                CHECK_WITH_INFO(outputs.generationLogits,
                     "outputs.generationLogits is nullptr. It must be allocated when computeGenerationLogits() is "
                     "enabled.");
                 outputs.generationLogits->reshape(
                     ITensor::makeShape({batchSize, beamWidth, maxNewTokens - 1, vocabSizePadded}));
                 auto const generationLogitsShape = outputs.generationLogits->getShape();
-                TLLM_CHECK_WITH_INFO(generationLogitsShape.d[0] == batchSize, "Invalid dim[0]");
-                TLLM_CHECK_WITH_INFO(generationLogitsShape.d[1] == beamWidth, "Invalid dim[1]");
-                TLLM_CHECK_WITH_INFO(generationLogitsShape.d[2] == maxNewTokens - 1, "Invalid dim[2]");
-                TLLM_CHECK_WITH_INFO(generationLogitsShape.d[3] == vocabSizePadded, "Invalid dim[3]");
+                CHECK_WITH_INFO(generationLogitsShape.d[0] == batchSize, "Invalid dim[0]");
+                CHECK_WITH_INFO(generationLogitsShape.d[1] == beamWidth, "Invalid dim[1]");
+                CHECK_WITH_INFO(generationLogitsShape.d[2] == maxNewTokens - 1, "Invalid dim[2]");
+                CHECK_WITH_INFO(generationLogitsShape.d[3] == vocabSizePadded, "Invalid dim[3]");
             };
         }
     }
@@ -554,7 +554,7 @@ void GptSession::generate(
         generateBatched(microBatchesOutputs, microBatchesInputs, samplingConfig, onTokenGenerated);
     }
 
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
 GptSession::TokenGeneratedCallback GptSession::createOnTokenGeneratedCallback(GenerationOutput& outputs)
@@ -577,13 +577,13 @@ void GptSession::generateBatched(std::vector<GenerationOutput>& microBatchesOutp
     std::vector<GenerationInput> const& microBatchesInputs, SamplingConfig const& samplingConfig,
     TokenGeneratedCallback const& onTokenGenerated)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
 
     auto& manager = mRuntime->getBufferManager();
-    TLLM_CHECK(microBatchesInputs.size() == microBatchesOutputs.size());
+    CHECK(microBatchesInputs.size() == microBatchesOutputs.size());
     auto const numMicroBatches = static_cast<SizeType>(microBatchesInputs.size());
-    TLLM_CHECK(numMicroBatches > 0);
-    TLLM_CHECK(numMicroBatches <= mMicroBatchConfig.numGenBatches);
+    CHECK(numMicroBatches > 0);
+    CHECK(numMicroBatches <= mMicroBatchConfig.numGenBatches);
     SizeType const beamWidth{samplingConfig.beamWidth};
 
     for (auto microBatchId = 0; microBatchId < numMicroBatches; ++microBatchId)
@@ -698,13 +698,13 @@ void GptSession::generateBatched(std::vector<GenerationOutput>& microBatchesOutp
     }
 
     manager.getStream().synchronize();
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
 void GptSession::executeContextStep(std::vector<GenerationInput> const& generationBatches,
     std::vector<SizeType> const& generationBatchOffsets, KvCacheManager const* kvCacheManager)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     auto& manager = mRuntime->getBufferManager();
 
     auto const numGenerationBatches = static_cast<SizeType>(generationBatches.size());
@@ -718,7 +718,7 @@ void GptSession::executeContextStep(std::vector<GenerationInput> const& generati
         auto [inputIds, inputLengths, contextBatchOffsets]
             = splitInputIds(generationBatchInputs, contextBatchSize, manager);
         auto contextBuffers = generationBuffers.split(contextBatchSize, mModelConfig, mWorldConfig);
-        TLLM_CHECK(inputIds.size() == contextBuffers.size());
+        CHECK(inputIds.size() == contextBuffers.size());
         auto const numContextBatches = static_cast<SizeType>(contextBuffers.size());
 
         for (auto contextBatchId = 0; contextBatchId < numContextBatches; ++contextBatchId)
@@ -737,7 +737,7 @@ void GptSession::executeContextStep(std::vector<GenerationInput> const& generati
             mRuntime->setInputTensors(contextId, inputBuffer);
             mRuntime->setOutputTensors(contextId, outputBuffer);
 
-            TLLM_CHECK_WITH_INFO(mRuntime->executeContext(contextId), "Executing TRT engine in context step failed!");
+            CHECK_WITH_INFO(mRuntime->executeContext(contextId), "Executing TRT engine in context step failed!");
             sync_check_cuda_error();
         }
 
@@ -749,15 +749,15 @@ void GptSession::executeContextStep(std::vector<GenerationInput> const& generati
         auto const decoderStep = generationBuffers.generationConfig.maxInputLength + step;
         decoderStepAsync(decoderStep, generationBatchId);
     }
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
 SizeType GptSession::executeGenerationStep(SizeType step, std::vector<GenerationInput> const& microBatchesInputs,
     std::vector<GenerationOutput>& microBatchesOutputs, std::vector<SizeType> const& microBatchOffsets,
     KvCacheManager* kvCacheManager, std::vector<bool>& microBatchesFinished)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
-    TLLM_CHECK(microBatchesInputs.size() == microBatchesOutputs.size());
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    CHECK(microBatchesInputs.size() == microBatchesOutputs.size());
     auto& manager = mRuntime->getBufferManager();
 
     auto const numMicroBatches = static_cast<SizeType>(microBatchesInputs.size());
@@ -799,12 +799,12 @@ SizeType GptSession::executeGenerationStep(SizeType step, std::vector<Generation
         if (useCudaGraphs())
         {
             auto& cudaGraphInstance = mCudaGraphInstances.at(contextId);
-            TLLM_CHECK(cudaGraphInstance.hasInstance());
+            CHECK(cudaGraphInstance.hasInstance());
             cudaGraphInstance.launch(mRuntime->getStream());
         }
         else
         {
-            TLLM_CHECK_WITH_INFO(
+            CHECK_WITH_INFO(
                 mRuntime->executeContext(contextId), tc::fmtstr("Executing TRT engine in step %d failed!", step));
         }
         sync_check_cuda_error();
@@ -827,13 +827,13 @@ SizeType GptSession::executeGenerationStep(SizeType step, std::vector<Generation
         decoderStepAsync(decoderStep, generationBatchId);
     }
 
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
     return numBatchesFinished;
 }
 
 void GptSession::decoderStepAsync(SizeType decoderStep, SizeType microBatchId)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     auto& stream = mRuntime->getStream();
     auto& buffers = *mBuffers.at(microBatchId);
     auto const& outputIds = buffers.outputIds;
@@ -902,12 +902,12 @@ void GptSession::decoderStepAsync(SizeType decoderStep, SizeType microBatchId)
     }
 
     sync_check_cuda_error();
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
 bool GptSession::shouldStopSync(SizeType batchSize, SizeType beamWidth, SizeType microBatchId)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
 
     SizeType nbFinished = 0;
 
@@ -928,13 +928,13 @@ bool GptSession::shouldStopSync(SizeType batchSize, SizeType beamWidth, SizeType
         nbFinished = *bufferCast<SizeType>(*mBuffers.at(microBatchId)->nbFinished);
     }
     sync_check_cuda_error();
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
     return nbFinished == batchSize * beamWidth;
 }
 
 void GptSession::finalize(SizeType microBatchId)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     auto& manager = mRuntime->getBufferManager();
     auto& buffers = *mBuffers.at(microBatchId);
     auto& decoder = mDecoders.at(microBatchId);
@@ -1004,58 +1004,58 @@ void GptSession::finalize(SizeType microBatchId)
     }
 
     sync_check_cuda_error();
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
 void GptSession::CudaGraphExecutor::create(cudaGraph_t const& graph)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     assert(mInstance == nullptr);
-    TLLM_CUDA_CHECK(cudaGraphInstantiate(&mInstance, graph, nullptr, nullptr, 0));
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    CUDA_CHECK(cudaGraphInstantiate(&mInstance, graph, nullptr, nullptr, 0));
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
 void GptSession::CudaGraphExecutor::uploadToStream(CudaStream const& stream)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     assert(hasInstance());
-    TLLM_CUDA_CHECK(cudaGraphUpload(mInstance, stream.get()));
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    CUDA_CHECK(cudaGraphUpload(mInstance, stream.get()));
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
 void GptSession::CudaGraphExecutor::launch(CudaStream const& stream)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
-    TLLM_CUDA_CHECK(cudaGraphLaunch(mInstance, stream.get()));
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    CUDA_CHECK(cudaGraphLaunch(mInstance, stream.get()));
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
 bool GptSession::CudaGraphExecutor::update(cudaGraph_t const& graph)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     return cudaGraphExecUpdate(mInstance, graph, nullptr) != cudaSuccess;
 }
 
 void GptSession::CudaGraphExecutor::clear()
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     if (mInstance != nullptr)
     {
-        TLLM_CUDA_CHECK(cudaGraphExecDestroy(mInstance));
+        CUDA_CHECK(cudaGraphExecDestroy(mInstance));
         mInstance = nullptr;
     }
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
 void GptSession::CudaGraphExecutor::prepareNextGraph(TllmRuntime const& runtime, SizeType nextContextId)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     auto& stream = runtime.getStream();
 
     cudaGraph_t nextGraph;
-    TLLM_CUDA_CHECK(cudaStreamBeginCapture(stream.get(), cudaStreamCaptureModeThreadLocal));
+    CUDA_CHECK(cudaStreamBeginCapture(stream.get(), cudaStreamCaptureModeThreadLocal));
     runtime.executeContext(nextContextId);
-    TLLM_CUDA_CHECK(cudaStreamEndCapture(stream.get(), &nextGraph));
+    CUDA_CHECK(cudaStreamEndCapture(stream.get(), &nextGraph));
 
     if (hasInstance())
     {
@@ -1070,7 +1070,7 @@ void GptSession::CudaGraphExecutor::prepareNextGraph(TllmRuntime const& runtime,
         create(nextGraph);
     }
 
-    TLLM_CUDA_CHECK(cudaGraphDestroy(nextGraph));
+    CUDA_CHECK(cudaGraphDestroy(nextGraph));
     uploadToStream(stream);
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }

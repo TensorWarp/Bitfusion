@@ -226,8 +226,8 @@ __global__ void reduceSum(T* output, T const* input, std::size_t size)
 template <typename T>
 void invokeReduce(IBuffer& output, IBuffer const& input, CudaStream const& stream)
 {
-    TLLM_CHECK_WITH_INFO(input.getDataType() == output.getDataType(), "Input and output have different data types");
-    TLLM_CHECK_WITH_INFO(output.getSize() == 1, common::fmtstr("Output size (%ld) has to be 1", output.getSize()));
+    CHECK_WITH_INFO(input.getDataType() == output.getDataType(), "Input and output have different data types");
+    CHECK_WITH_INFO(output.getSize() == 1, common::fmtstr("Output size (%ld) has to be 1", output.getSize()));
 
     auto outputPtr = bufferCast<T>(output);
     auto inputPtr = bufferCast<T>(input);
@@ -247,7 +247,7 @@ void reduce(IBuffer& output, IBuffer const& input, CudaStream const& stream)
     case nvinfer1::DataType::kFLOAT: invokeReduce<float>(output, input, stream); break;
     case nvinfer1::DataType::kHALF: invokeReduce<half>(output, input, stream); break;
     case nvinfer1::DataType::kINT8: invokeReduce<int8_t>(output, input, stream); break;
-    default: TLLM_CHECK_WITH_INFO(false, "data type not supported");
+    default: CHECK_WITH_INFO(false, "data type not supported");
     }
 }
 
@@ -272,12 +272,12 @@ __global__ void transpose(SizeType* output, SizeType const* input, SizeType cons
 
 void invokeTranspose(ITensor& output, ITensor const& input, CudaStream const& stream)
 {
-    TLLM_CHECK_WITH_INFO(input.getDataType() == output.getDataType(), "Input and output have different data types");
-    TLLM_CHECK_WITH_INFO(input.getSize() == output.getSize(),
+    CHECK_WITH_INFO(input.getDataType() == output.getDataType(), "Input and output have different data types");
+    CHECK_WITH_INFO(input.getSize() == output.getSize(),
         common::fmtstr("Input size (%ld) and output size (%ld) differ", input.getSize(), output.getSize()));
 
     auto const& inputShape = input.getShape();
-    TLLM_CHECK_WITH_INFO(
+    CHECK_WITH_INFO(
         inputShape.nbDims == 2, common::fmtstr("Input shape must have 2 dimensions, but has %d", inputShape.nbDims));
 
     SizeType const batchSize = inputShape.d[0];
@@ -313,23 +313,23 @@ __global__ void transposeWithOutputOffset(SizeType* output, SizeType const* inpu
 void invokeTransposeWithOutputOffset(
     ITensor& output, ITensor const& input, SizeType const outputOffset, CudaStream const& stream)
 {
-    TLLM_CHECK_WITH_INFO(input.getDataType() == output.getDataType(), "Input and output have different data types");
+    CHECK_WITH_INFO(input.getDataType() == output.getDataType(), "Input and output have different data types");
 
     auto const& inputShape = input.getShape();
-    TLLM_CHECK_WITH_INFO(
+    CHECK_WITH_INFO(
         inputShape.nbDims == 2, common::fmtstr("Input shape must have 2 dimensions, but has %d", inputShape.nbDims));
     SizeType const nbInputRows = inputShape.d[0];
     SizeType const inputRowSize = inputShape.d[1];
 
     auto const& outputShape = output.getShape();
-    TLLM_CHECK_WITH_INFO(
+    CHECK_WITH_INFO(
         outputShape.nbDims == 2, common::fmtstr("Output shape must have 2 dimensions, but has %d", outputShape.nbDims));
     SizeType const nbOutputRows = outputShape.d[0];
     SizeType const outputRowSize = outputShape.d[1];
 
-    TLLM_CHECK_WITH_INFO(inputRowSize == nbOutputRows,
+    CHECK_WITH_INFO(inputRowSize == nbOutputRows,
         common::fmtstr("Input dim 1 (%d) and output dim 0 (%d) differ", inputRowSize, nbOutputRows));
-    TLLM_CHECK_WITH_INFO(outputOffset + nbInputRows <= outputRowSize,
+    CHECK_WITH_INFO(outputOffset + nbInputRows <= outputRowSize,
         common::fmtstr("Input (%d rows) does not fit into output (%d columns, offset %d)", nbInputRows, inputRowSize,
             outputOffset));
 
@@ -363,23 +363,23 @@ __global__ void transposeWithInputOffset(SizeType* output, SizeType const* input
 void invokeTransposeWithInputOffset(
     ITensor& output, ITensor const& input, SizeType const inputOffset, CudaStream const& stream)
 {
-    TLLM_CHECK_WITH_INFO(input.getDataType() == output.getDataType(), "Input and output have different data types");
+    CHECK_WITH_INFO(input.getDataType() == output.getDataType(), "Input and output have different data types");
 
     auto const& inputShape = input.getShape();
-    TLLM_CHECK_WITH_INFO(
+    CHECK_WITH_INFO(
         inputShape.nbDims == 2, common::fmtstr("Input shape must have 2 dimensions, but has %d", inputShape.nbDims));
     SizeType const nbInputRows = inputShape.d[0];
     SizeType const inputRowSize = inputShape.d[1];
 
     auto const& outputShape = output.getShape();
-    TLLM_CHECK_WITH_INFO(
+    CHECK_WITH_INFO(
         outputShape.nbDims == 2, common::fmtstr("Output shape must have 2 dimensions, but has %d", outputShape.nbDims));
     SizeType const nbOutputRows = outputShape.d[0];
     SizeType const outputRowSize = outputShape.d[1];
 
-    TLLM_CHECK_WITH_INFO(nbInputRows == outputRowSize,
+    CHECK_WITH_INFO(nbInputRows == outputRowSize,
         common::fmtstr("Input dim 0 (%d) and output dim 1 (%d) differ", nbInputRows, outputRowSize));
-    TLLM_CHECK_WITH_INFO(inputOffset + nbOutputRows <= inputRowSize,
+    CHECK_WITH_INFO(inputOffset + nbOutputRows <= inputRowSize,
         common::fmtstr("Cannot extract output (%d rows) from input (%d columns, offset %d)", nbOutputRows, inputRowSize,
             inputOffset));
 
@@ -426,15 +426,15 @@ __global__ void buildTokenMask(SizeType* tokenMask, SizeType const* inputLengths
 void invokeBuildTokenMask(
     ITensor& tokenMask, ITensor const& inputLengths, SizeType const maxInputLength, CudaStream const& stream)
 {
-    TLLM_CHECK_WITH_INFO(TRTDataType<SizeType>::value == tokenMask.getDataType(), "tokenMask has wrong data type");
-    TLLM_CHECK_WITH_INFO(
+    CHECK_WITH_INFO(TRTDataType<SizeType>::value == tokenMask.getDataType(), "tokenMask has wrong data type");
+    CHECK_WITH_INFO(
         TRTDataType<SizeType>::value == inputLengths.getDataType(), "inputLengths has wrong data type");
 
     auto const& shape = tokenMask.getShape();
     SizeType const batchSize = shape.d[0];
     SizeType const maxSeqLength = shape.d[1];
 
-    TLLM_CHECK_WITH_INFO(maxInputLength < maxSeqLength,
+    CHECK_WITH_INFO(maxInputLength < maxSeqLength,
         common::fmtstr(
             "TtokenMask dimension 1 (%d) is smaller than max input length (%d)", maxSeqLength, maxInputLength));
 
@@ -461,7 +461,7 @@ __global__ void buildAttentionMask(SizeType* attentionMask, SizeType const size,
 
 void invokeBuildAttentionMask(ITensor& attentionMask, SizeType const padId, CudaStream const& stream)
 {
-    TLLM_CHECK_WITH_INFO(
+    CHECK_WITH_INFO(
         TRTDataType<SizeType>::value == attentionMask.getDataType(), "attentionMask has wrong data type");
 
     auto const size = attentionMask.getSize();
@@ -493,8 +493,8 @@ __global__ void extendAttentionMask(
 
 void invokeExtendAttentionMask(ITensor& newMask, ITensor const& oldMask, CudaStream const& stream)
 {
-    TLLM_CHECK_WITH_INFO(TRTDataType<SizeType>::value == newMask.getDataType(), "attentionMask has wrong data type");
-    TLLM_CHECK_WITH_INFO(TRTDataType<SizeType>::value == oldMask.getDataType(), "attentionMask has wrong data type");
+    CHECK_WITH_INFO(TRTDataType<SizeType>::value == newMask.getDataType(), "attentionMask has wrong data type");
+    CHECK_WITH_INFO(TRTDataType<SizeType>::value == oldMask.getDataType(), "attentionMask has wrong data type");
 
     auto const& shape = oldMask.getShape();
     SizeType const batchSize = shape.d[0];
@@ -534,7 +534,7 @@ __global__ void copyInputToOutputTransposed(SizeType* outputIds, SizeType const*
 void invokeCopyInputToOutputTransposed(ITensor& outputIds, ITensor const& inputIds, ITensor const& inputLengths,
     SizeType const padId, CudaStream const& stream)
 {
-    TLLM_CHECK_WITH_INFO(
+    CHECK_WITH_INFO(
         inputIds.getDataType() == outputIds.getDataType(), "Input and output have different data types");
 
     auto const batchSize = static_cast<SizeType>(inputLengths.getSize());
@@ -545,13 +545,13 @@ void invokeCopyInputToOutputTransposed(ITensor& outputIds, ITensor const& inputI
     SizeType const beamWidth = outputShape.d[2];
 
     auto const inputBatchSize = inputIds.getSize() / maxInputLength;
-    TLLM_CHECK_WITH_INFO(std::size_t(batchSize) == inputBatchSize,
+    CHECK_WITH_INFO(std::size_t(batchSize) == inputBatchSize,
         common::fmtstr("Input ids batch size (%ld) does not match inputLengths size (%ld)", inputBatchSize,
             std::size_t(batchSize)));
-    TLLM_CHECK_WITH_INFO(batchSize == outputShape.d[1],
+    CHECK_WITH_INFO(batchSize == outputShape.d[1],
         common::fmtstr(
             "Output ids batch size (%d) does not match inputLengths size (%d)", outputShape.d[1], batchSize));
-    TLLM_CHECK_WITH_INFO(maxInputLength < maxSeqLength,
+    CHECK_WITH_INFO(maxInputLength < maxSeqLength,
         common::fmtstr(
             "Output sequence length (%d) has to be larger than max input length (%d)", maxSeqLength, maxInputLength));
 
@@ -594,7 +594,7 @@ __global__ void copyPackedInputToOutputTransposed(SizeType* outputIds, SizeType 
 void invokeCopyPackedInputToOutputTransposed(ITensor& outputIds, ITensor const& inputIds, ITensor const& inputOffsets,
     SizeType const maxInputLength, SizeType const padId, CudaStream const& stream)
 {
-    TLLM_CHECK_WITH_INFO(
+    CHECK_WITH_INFO(
         inputIds.getDataType() == outputIds.getDataType(), "Input and output have different data types");
 
     auto const batchSize = static_cast<SizeType>(inputOffsets.getSize()) - 1;
@@ -602,10 +602,10 @@ void invokeCopyPackedInputToOutputTransposed(ITensor& outputIds, ITensor const& 
     SizeType const maxSeqLength = outputShape.d[0];
     SizeType const beamWidth = outputShape.d[2];
 
-    TLLM_CHECK_WITH_INFO(batchSize == outputShape.d[1],
+    CHECK_WITH_INFO(batchSize == outputShape.d[1],
         common::fmtstr(
             "Output ids batch size (%d) does not match inputOffsets batch size (%d)", outputShape.d[1], batchSize));
-    TLLM_CHECK_WITH_INFO(maxInputLength < maxSeqLength,
+    CHECK_WITH_INFO(maxInputLength < maxSeqLength,
         common::fmtstr(
             "Output sequence length (%d) has to be larger than max input length (%d)", maxSeqLength, maxInputLength));
 
@@ -645,12 +645,12 @@ __global__ void copyInputToOutput(SizeType* outputIds, SizeType const* inputIds,
 void invokeCopyInputToOutput(ITensor& outputIds, ITensor const& inputIds, ITensor const& inputLengths,
     SizeType const padId, CudaStream const& stream)
 {
-    TLLM_CHECK_WITH_INFO(
+    CHECK_WITH_INFO(
         inputIds.getDataType() == outputIds.getDataType(), "Input and output have different data types");
 
     auto const& inputShape = inputIds.getShape();
     auto const& outputShape = outputIds.getShape();
-    TLLM_CHECK_WITH_INFO(
+    CHECK_WITH_INFO(
         outputShape.nbDims == 3, common::fmtstr("Output shape must have 3 dimensions, but has %d", outputShape.nbDims));
 
     auto const batchSize = static_cast<SizeType>(inputLengths.getSize());
@@ -659,13 +659,13 @@ void invokeCopyInputToOutput(ITensor& outputIds, ITensor const& inputIds, ITenso
     SizeType const maxSeqLength = outputShape.d[2];
 
     auto const inputBatchSize = inputIds.getSize() / maxInputLength;
-    TLLM_CHECK_WITH_INFO(std::size_t(batchSize) == inputBatchSize,
+    CHECK_WITH_INFO(std::size_t(batchSize) == inputBatchSize,
         common::fmtstr("Input ids batch size (%ld) does not match inputLengths size (%ld)", inputBatchSize,
             std::size_t(batchSize)));
-    TLLM_CHECK_WITH_INFO(batchSize == outputShape.d[0],
+    CHECK_WITH_INFO(batchSize == outputShape.d[0],
         common::fmtstr(
             "Output ids batch size (%d) does not match inputLengths size (%d)", outputShape.d[0], batchSize));
-    TLLM_CHECK_WITH_INFO(maxInputLength < maxSeqLength,
+    CHECK_WITH_INFO(maxInputLength < maxSeqLength,
         common::fmtstr(
             "Output sequence length (%d) has to be larger than max input length (%d)", maxSeqLength, maxInputLength));
 
@@ -708,21 +708,21 @@ __global__ void copyPackedInputToOutput(SizeType* outputIds, SizeType const* inp
 void invokeCopyPackedInputToOutput(ITensor& outputIds, ITensor const& inputIds, ITensor const& inputOffsets,
     SizeType const maxInputLength, SizeType const padId, CudaStream const& stream)
 {
-    TLLM_CHECK_WITH_INFO(
+    CHECK_WITH_INFO(
         inputIds.getDataType() == outputIds.getDataType(), "Input and output have different data types");
 
     auto const& outputShape = outputIds.getShape();
-    TLLM_CHECK_WITH_INFO(
+    CHECK_WITH_INFO(
         outputShape.nbDims == 3, common::fmtstr("Output shape must have 3 dimensions, but has %d", outputShape.nbDims));
 
     auto const batchSize = static_cast<SizeType>(inputOffsets.getSize()) - 1;
     SizeType const beamWidth = outputShape.d[1];
     SizeType const maxSeqLength = outputShape.d[2];
 
-    TLLM_CHECK_WITH_INFO(batchSize == outputShape.d[0],
+    CHECK_WITH_INFO(batchSize == outputShape.d[0],
         common::fmtstr(
             "Output ids batch size (%d) does not match inputOffsets batch size (%d)", outputShape.d[0], batchSize));
-    TLLM_CHECK_WITH_INFO(maxInputLength < maxSeqLength,
+    CHECK_WITH_INFO(maxInputLength < maxSeqLength,
         common::fmtstr(
             "Output sequence length (%d) has to be larger than max input length (%d)", maxSeqLength, maxInputLength));
 
@@ -738,7 +738,7 @@ void initOutputIds(ITensor& outputIds, ITensor const& inputIds, ITensor const& i
     ITensor const& inputOffsets, TokenIdType const padId, TokenIdType const endId, SizeType const maxInputLength,
     bool const inputPacked, CudaStream const& stream)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     kernels::invokeFill(outputIds, endId, stream);
 
     if (inputPacked)
@@ -749,7 +749,7 @@ void initOutputIds(ITensor& outputIds, ITensor const& inputIds, ITensor const& i
     {
         kernels::invokeCopyInputToOutput(outputIds, inputIds, inputLengths, padId, stream);
     }
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
 namespace
@@ -836,10 +836,10 @@ void invokeScatterTensor(ITensor& output, ITensor const& input, SizeType beamWid
     auto const nbOutputRows = static_cast<std::uint32_t>(outputShape.d[0]);
     auto const outputRowSize = output.getSize() / static_cast<std::size_t>(nbOutputRows);
 
-    TLLM_CHECK_WITH_INFO(nbOutputRows == beamWidth * nbInputRows,
+    CHECK_WITH_INFO(nbOutputRows == beamWidth * nbInputRows,
         common::fmtstr(
             "nbOutputRows (%d) must be beamWidth (%d) times nbInputRows (%d)", nbOutputRows, beamWidth, nbInputRows));
-    TLLM_CHECK_WITH_INFO(outputRowSize >= inputRowSize,
+    CHECK_WITH_INFO(outputRowSize >= inputRowSize,
         common::fmtstr("output row size (%ld) must be at least input row size (%ld)", outputRowSize, inputRowSize));
 
     dim3 const blockSize{256, 1};
@@ -859,7 +859,7 @@ void scatterTensor(ITensor& output, ITensor const& input, SizeType beamWidth, Cu
     case nvinfer1::DataType::kHALF: invokeScatterTensor<half>(output, input, beamWidth, stream); break;
     case nvinfer1::DataType::kINT8: invokeScatterTensor<int8_t>(output, input, beamWidth, stream); break;
     case nvinfer1::DataType::kFP8: invokeScatterTensor<__nv_fp8_e4m3>(output, input, beamWidth, stream); break;
-    default: TLLM_CHECK_WITH_INFO(false, "data type not supported");
+    default: CHECK_WITH_INFO(false, "data type not supported");
     }
 }
 
@@ -873,10 +873,10 @@ void invokeTileTensor(ITensor& output, ITensor const& input, SizeType const beam
     auto const nbOutputRows = static_cast<std::uint32_t>(outputShape.d[0]);
     auto const outputRowSize = output.getSize() / static_cast<std::size_t>(nbOutputRows);
 
-    TLLM_CHECK_WITH_INFO(nbOutputRows == beamWidth * nbInputRows,
+    CHECK_WITH_INFO(nbOutputRows == beamWidth * nbInputRows,
         common::fmtstr(
             "nbOutputRows (%d) must be beamWidth (%d) times nbInputRows (%d)", nbOutputRows, beamWidth, nbInputRows));
-    TLLM_CHECK_WITH_INFO(outputRowSize >= inputRowSize,
+    CHECK_WITH_INFO(outputRowSize >= inputRowSize,
         common::fmtstr("output row size (%ld) must be at least input row size (%ld)", outputRowSize, inputRowSize));
 
     dim3 const blockSize{256, 1};
@@ -897,7 +897,7 @@ void tileTensor(ITensor& output, ITensor const& input, SizeType beamWidth, CudaS
     case nvinfer1::DataType::kBF16: invokeTileTensor<__nv_bfloat16>(output, input, beamWidth, stream); break;
     case nvinfer1::DataType::kINT8: invokeTileTensor<int8_t>(output, input, beamWidth, stream); break;
     case nvinfer1::DataType::kFP8: invokeTileTensor<__nv_fp8_e4m3>(output, input, beamWidth, stream); break;
-    default: TLLM_CHECK_WITH_INFO(false, "data type not supported");
+    default: CHECK_WITH_INFO(false, "data type not supported");
     }
 }
 
@@ -926,7 +926,7 @@ void tileTensorInplace(ITensor& tensor, SizeType beamWidth, CudaStream const& st
     case nvinfer1::DataType::kHALF: invokeTileTensorInPlace<half>(tensor, beamWidth, stream); break;
     case nvinfer1::DataType::kINT8: invokeTileTensorInPlace<int8_t>(tensor, beamWidth, stream); break;
     case nvinfer1::DataType::kFP8: invokeTileTensorInPlace<__nv_fp8_e4m3>(tensor, beamWidth, stream); break;
-    default: TLLM_CHECK_WITH_INFO(false, "data type not supported");
+    default: CHECK_WITH_INFO(false, "data type not supported");
     }
 }
 
@@ -975,8 +975,8 @@ void invokeGatherLastTokenLogits(
     auto const& inputShape = input.getShape();
     auto const maxInputLength = static_cast<std::uint32_t>(inputShape.d[1]);
 
-    TLLM_CHECK_WITH_INFO(inputShape.d[0] == batchSize, "Invalid input shape: dim[0]");
-    TLLM_CHECK_WITH_INFO(inputShape.d[2] == vocabSizePadded, "Invalid input shape: dim[2]");
+    CHECK_WITH_INFO(inputShape.d[0] == batchSize, "Invalid input shape: dim[0]");
+    CHECK_WITH_INFO(inputShape.d[2] == vocabSizePadded, "Invalid input shape: dim[2]");
 
     dim3 const blockSize{256, 1};
     dim3 const gridSize{static_cast<std::uint32_t>(batchSize), 1};
@@ -997,7 +997,7 @@ void gatherLastTokenLogits(ITensor& output, ITensor const& input, ITensor const&
     case nvinfer1::DataType::kFP8:
         invokeGatherLastTokenLogits<__nv_fp8_e4m3>(output, input, lastTokenIds, stream);
         break;
-    default: TLLM_CHECK_WITH_INFO(false, "data type not supported");
+    default: CHECK_WITH_INFO(false, "data type not supported");
     }
 }
 
@@ -1043,14 +1043,14 @@ void invokeCopyLatestTokenLogitsInGeneration(ITensor& output, ITensor const& inp
     auto const outPutLen = static_cast<std::uint32_t>(outputShape.d[2]);
     auto const vocabSizePadded = static_cast<std::uint32_t>(outputShape.d[3]);
 
-    TLLM_CHECK_WITH_INFO(maxBatchSize >= microBatchSize, "Invalid output shape: dim[0]");
-    TLLM_CHECK_WITH_INFO(_beamWidth == beamWidth, "Invalid output shape: dim[1]");
-    TLLM_CHECK_WITH_INFO(outPutLen >= step, "Invalid output shape: dim[2]");
+    CHECK_WITH_INFO(maxBatchSize >= microBatchSize, "Invalid output shape: dim[0]");
+    CHECK_WITH_INFO(_beamWidth == beamWidth, "Invalid output shape: dim[1]");
+    CHECK_WITH_INFO(outPutLen >= step, "Invalid output shape: dim[2]");
 
     auto const& inputShape = input.getShape();
-    TLLM_CHECK_WITH_INFO(inputShape.d[0] == microBatchSize, "Invalid input shape: dim[0]");
-    TLLM_CHECK_WITH_INFO(inputShape.d[1] == beamWidth, "Invalid input shape: dim[1]");
-    TLLM_CHECK_WITH_INFO(inputShape.d[2] == vocabSizePadded, "Invalid input shape: dim[2]");
+    CHECK_WITH_INFO(inputShape.d[0] == microBatchSize, "Invalid input shape: dim[0]");
+    CHECK_WITH_INFO(inputShape.d[1] == beamWidth, "Invalid input shape: dim[1]");
+    CHECK_WITH_INFO(inputShape.d[2] == vocabSizePadded, "Invalid input shape: dim[2]");
 
     dim3 const blockSize{256, 1};
     dim3 const gridSize{static_cast<std::uint32_t>(microBatchSize * beamWidth), 1};
@@ -1080,7 +1080,7 @@ void copyLatestTokenLogitsInGeneration(ITensor& output, ITensor const& input, Si
         invokeCopyLatestTokenLogitsInGeneration<__nv_fp8_e4m3>(
             output, input, step, firstBatchSlotIdx, microBatchSize, beamWidth, stream);
         break;
-    default: TLLM_CHECK_WITH_INFO(false, "data type not supported");
+    default: CHECK_WITH_INFO(false, "data type not supported");
     }
 }
 

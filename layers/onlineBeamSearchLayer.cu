@@ -83,7 +83,7 @@ void invokeUpdate(FinishedState* finished, int** parent_ids_ptr, int* sequence_l
 template <typename T>
 void OnlineBeamSearchLayer<T>::setup(size_t batch_size, SetupParams const& setupParams)
 {
-    TLLM_LOG_TRACE("%s start", __PRETTY_FUNCTION__);
+    LOG_TRACE("%s start", __PRETTY_FUNCTION__);
     BaseBeamSearchLayer<T>::setupBase(batch_size, setupParams);
     allocateBuffer(batch_size);
 
@@ -94,13 +94,13 @@ void OnlineBeamSearchLayer<T>::setup(size_t batch_size, SetupParams const& setup
 
     fillBuffers(setupParams.beam_search_diversity_rate, 0.0f, mDiversityRate, diversity_rates_buf_);
     fillBuffers(setupParams.length_penalty, 0.0f, mLengthPenalty, length_penalties_buf_);
-    TLLM_LOG_TRACE("%s stop", __PRETTY_FUNCTION__);
+    LOG_TRACE("%s stop", __PRETTY_FUNCTION__);
 }
 
 template <typename T>
 void OnlineBeamSearchLayer<T>::invokeSoftMax(BeamSearchOutputParams& outputs, SoftmaxParams const& params)
 {
-    TLLM_LOG_TRACE("%s", __PRETTY_FUNCTION__);
+    LOG_TRACE("%s", __PRETTY_FUNCTION__);
     Tensor const& output_ids_ptr = outputs.output_ids_ptr;
     const auto batch_size = static_cast<std::int32_t>(output_ids_ptr.shape[0]);
     const auto beam_width = static_cast<std::int32_t>(output_ids_ptr.shape[1]);
@@ -145,7 +145,7 @@ void OnlineBeamSearchLayer<T>::invokeSoftMax(BeamSearchOutputParams& outputs, So
 template <typename T>
 void OnlineBeamSearchLayer<T>::allocateBuffer(size_t batch_size)
 {
-    TLLM_LOG_TRACE("%s start", __PRETTY_FUNCTION__);
+    LOG_TRACE("%s start", __PRETTY_FUNCTION__);
     // we need to check 2 * beam_width candidates each time
     // 64 is the max beam width we support now.
     topk_softmax_workspace_size_ = (size_t) (ceil(batch_size * 64 * (64 * 2) / 4.) * 4 * 2
@@ -157,13 +157,13 @@ void OnlineBeamSearchLayer<T>::allocateBuffer(size_t batch_size)
     length_penalties_buf_ = allocator_->reMalloc(length_penalties_buf_, sizeof(float) * batch_size, false);
 
     is_allocate_buffer_ = true;
-    TLLM_LOG_TRACE("%s stop", __PRETTY_FUNCTION__);
+    LOG_TRACE("%s stop", __PRETTY_FUNCTION__);
 }
 
 template <typename T>
 void OnlineBeamSearchLayer<T>::freeBuffer()
 {
-    TLLM_LOG_TRACE("%s start", __PRETTY_FUNCTION__);
+    LOG_TRACE("%s start", __PRETTY_FUNCTION__);
     if (is_allocate_buffer_)
     {
         allocator_->free((void**) (&topk_softmax_workspace_));
@@ -171,7 +171,7 @@ void OnlineBeamSearchLayer<T>::freeBuffer()
         allocator_->free((void**) (&length_penalties_buf_));
         is_allocate_buffer_ = false;
     }
-    TLLM_LOG_TRACE("%s stop", __PRETTY_FUNCTION__);
+    LOG_TRACE("%s stop", __PRETTY_FUNCTION__);
 }
 
 template <typename T>
@@ -185,13 +185,13 @@ template <typename T>
 OnlineBeamSearchLayer<T>::OnlineBeamSearchLayer(OnlineBeamSearchLayer<T> const& beam_search_layer)
     : BaseBeamSearchLayer<T>(beam_search_layer)
 {
-    TLLM_LOG_TRACE(__PRETTY_FUNCTION__);
+    LOG_TRACE(__PRETTY_FUNCTION__);
 }
 
 template <typename T>
 OnlineBeamSearchLayer<T>::~OnlineBeamSearchLayer()
 {
-    TLLM_LOG_TRACE(__PRETTY_FUNCTION__);
+    LOG_TRACE(__PRETTY_FUNCTION__);
 }
 
 template class OnlineBeamSearchLayer<float>;

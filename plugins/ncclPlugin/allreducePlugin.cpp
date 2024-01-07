@@ -36,7 +36,7 @@ AllreducePlugin::AllreducePlugin(const void* data, size_t length)
         read(d, groupItem);
         mGroup.insert(groupItem);
     }
-    TLLM_CHECK(d == a + length);
+    CHECK(d == a + length);
 }
 
 nvinfer1::IPluginV2DynamicExt* AllreducePlugin::clone() const noexcept
@@ -57,11 +57,11 @@ bool AllreducePlugin::supportsFormatCombination(
 {
     if (mStrategy == AllReduceStrategyType::RING)
     {
-        TLLM_CHECK_WITH_INFO(nbInputs == 1, "RING (aka. NCCL) strategy only accepts one input.");
+        CHECK_WITH_INFO(nbInputs == 1, "RING (aka. NCCL) strategy only accepts one input.");
     }
     else
     {
-        TLLM_CHECK_WITH_INFO(nbInputs == 2, "Non-RING (aka. NCCL) strategies require a workspace tensor.");
+        CHECK_WITH_INFO(nbInputs == 2, "Non-RING (aka. NCCL) strategies require a workspace tensor.");
     }
 
     if (nbInputs == 2 && pos == 1)
@@ -349,7 +349,7 @@ IPluginV2* AllreducePluginCreator::createPlugin(const char* name, const PluginFi
         const char* attrName = fields[i].name;
         if (!strcmp(attrName, "group"))
         {
-            TLLM_CHECK(fields[i].type == PluginFieldType::kINT32);
+            CHECK(fields[i].type == PluginFieldType::kINT32);
             const auto* r = static_cast<const int*>(fields[i].data);
             for (int j = 0; j < fields[i].length; ++j)
             {
@@ -359,17 +359,17 @@ IPluginV2* AllreducePluginCreator::createPlugin(const char* name, const PluginFi
         }
         else if (!strcmp(attrName, "type_id"))
         {
-            TLLM_CHECK(fields[i].type == PluginFieldType::kINT32);
+            CHECK(fields[i].type == PluginFieldType::kINT32);
             type = static_cast<nvinfer1::DataType>(*(static_cast<const nvinfer1::DataType*>(fields[i].data)));
         }
         else if (!strcmp(attrName, "strategy"))
         {
-            TLLM_CHECK(fields[i].type == PluginFieldType::kINT8);
+            CHECK(fields[i].type == PluginFieldType::kINT8);
             strategy = static_cast<AllReduceStrategyType>(*static_cast<const int8_t*>(fields[i].data));
         }
         else if (!strcmp(attrName, "counter"))
         {
-            TLLM_CHECK(fields[i].type == PluginFieldType::kINT32);
+            CHECK(fields[i].type == PluginFieldType::kINT32);
             counter = *static_cast<const int32_t*>(fields[i].data);
         }
     }

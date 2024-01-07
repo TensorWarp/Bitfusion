@@ -20,15 +20,15 @@ public:
     explicit CudaEvent(unsigned int flags = cudaEventDisableTiming)
     {
         pointer event;
-        TLLM_CUDA_CHECK(::cudaEventCreate(&event, flags));
-        TLLM_LOG_TRACE("Created event %p", event);
+        CUDA_CHECK(::cudaEventCreate(&event, flags));
+        LOG_TRACE("Created event %p", event);
         bool constexpr ownsEvent{true};
         mEvent = EventPtr{event, Deleter{ownsEvent}};
     }
 
     explicit CudaEvent(pointer event, bool ownsEvent = true)
     {
-        TLLM_CHECK_WITH_INFO(event != nullptr, "event is nullptr");
+        CHECK_WITH_INFO(event != nullptr, "event is nullptr");
         mEvent = EventPtr{event, Deleter{ownsEvent}};
     }
 
@@ -39,7 +39,7 @@ public:
 
     void synchronize() const
     {
-        TLLM_CUDA_CHECK(::cudaEventSynchronize(get()));
+        CUDA_CHECK(::cudaEventSynchronize(get()));
     }
 
 private:
@@ -60,8 +60,8 @@ private:
         {
             if (mOwnsEvent && event != nullptr)
             {
-                TLLM_CUDA_CHECK(::cudaEventDestroy(event));
-                TLLM_LOG_TRACE("Destroyed event %p", event);
+                CUDA_CHECK(::cudaEventDestroy(event));
+                LOG_TRACE("Destroyed event %p", event);
             }
         }
 

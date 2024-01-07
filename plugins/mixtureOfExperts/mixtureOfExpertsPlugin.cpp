@@ -103,7 +103,7 @@ MixtureOfExpertsPlugin::MixtureOfExpertsPlugin(
 
     init();
     mPluginProfiler->deserialize(d, mDims, mGemmId);
-    TLLM_CHECK(d == a + length);
+    CHECK(d == a + length);
 }
 
 void MixtureOfExpertsPlugin::serialize(void* buffer) const noexcept
@@ -172,7 +172,7 @@ void MixtureOfExpertsPlugin::init()
 #endif
     else
     {
-        TLLM_THROW("Could not construct the mixture of experts plugin with the requested input combination");
+        THROW("Could not construct the mixture of experts plugin with the requested input combination");
     }
 
     mGemmId = GemmIDMoe{mNumExperts, mK, mExpertHiddenSize, mExpertInterSize, mActivationType, mType, mWeightType,
@@ -196,9 +196,9 @@ nvinfer1::DimsExprs MixtureOfExpertsPlugin::getOutputDimensions(
 bool MixtureOfExpertsPlugin::supportsFormatCombination(
     int pos, const nvinfer1::PluginTensorDesc* inOut, int nbInputs, int nbOutputs) noexcept
 {
-    TLLM_CHECK(0 <= pos && pos < getNbInputs() + getNbOutputs());
-    TLLM_CHECK(nbInputs == getNbInputs());
-    TLLM_CHECK(nbOutputs == getNbOutputs());
+    CHECK(0 <= pos && pos < getNbInputs() + getNbOutputs());
+    CHECK(nbInputs == getNbInputs());
+    CHECK(nbOutputs == getNbOutputs());
 
     if (inOut[pos].format != TensorFormat::kLINEAR)
     {
@@ -243,10 +243,10 @@ void MixtureOfExpertsPlugin::configurePlugin(const nvinfer1::DynamicPluginTensor
     const int minK = weights_1.min.d[inner_dim_idx];
     const int minN = weights_2.min.d[inner_dim_idx];
 
-    TLLM_CHECK_WITH_INFO(minN == maxN, "Variable out channels is not allowed");
-    TLLM_CHECK_WITH_INFO(minK == maxK, "Variable in channels is not allowed");
-    TLLM_CHECK_WITH_INFO(maxK == mExpertHiddenSize, "Configured tensor sizes does not match constructor param size");
-    TLLM_CHECK_WITH_INFO(maxN == mExpertInterSize, "Configured tensor sizes does not match constructor param size");
+    CHECK_WITH_INFO(minN == maxN, "Variable out channels is not allowed");
+    CHECK_WITH_INFO(minK == maxK, "Variable in channels is not allowed");
+    CHECK_WITH_INFO(maxK == mExpertHiddenSize, "Configured tensor sizes does not match constructor param size");
+    CHECK_WITH_INFO(maxN == mExpertInterSize, "Configured tensor sizes does not match constructor param size");
 
     if (!mDims.isInitialized())
     {
@@ -335,27 +335,27 @@ int MixtureOfExpertsPlugin::enqueue(const nvinfer1::PluginTensorDesc* inputDesc,
 
     auto w1_desc = inputDesc[getExpertWeights1Index()];
     auto w2_desc = inputDesc[getExpertWeights2Index()];
-    TLLM_CHECK(w1_desc.dims.nbDims == 3);
+    CHECK(w1_desc.dims.nbDims == 3);
     size_t experts_per_node = mNumExperts / parallelism_config.ep_size;
-    TLLM_CHECK(w1_desc.dims.d[0] == experts_per_node);
-    TLLM_CHECK(w2_desc.dims.nbDims == 3);
-    TLLM_CHECK(w2_desc.dims.d[0] == experts_per_node);
+    CHECK(w1_desc.dims.d[0] == experts_per_node);
+    CHECK(w2_desc.dims.nbDims == 3);
+    CHECK(w2_desc.dims.d[0] == experts_per_node);
 
     int packed_elements = getWeightPackedElements();
     int inner_dim_idx = getGemmShapeInnerDimIndex();
     int outer_dim_idx = getGemmShapeOuterDimIndex();
-    TLLM_CHECK(w1_desc.dims.d[inner_dim_idx] == mExpertHiddenSize);
+    CHECK(w1_desc.dims.d[inner_dim_idx] == mExpertHiddenSize);
     if (isGatedActivation(mActivationType))
     {
-        TLLM_CHECK(w1_desc.dims.d[outer_dim_idx] * packed_elements == mExpertInterSize * 2);
+        CHECK(w1_desc.dims.d[outer_dim_idx] * packed_elements == mExpertInterSize * 2);
     }
     else
     {
-        TLLM_CHECK(w1_desc.dims.d[outer_dim_idx] * packed_elements == mExpertInterSize);
+        CHECK(w1_desc.dims.d[outer_dim_idx] * packed_elements == mExpertInterSize);
     }
 
-    TLLM_CHECK(w2_desc.dims.d[inner_dim_idx] == mExpertInterSize);
-    TLLM_CHECK(w2_desc.dims.d[outer_dim_idx] * packed_elements == mExpertHiddenSize);
+    CHECK(w2_desc.dims.d[inner_dim_idx] == mExpertInterSize);
+    CHECK(w2_desc.dims.d[outer_dim_idx] * packed_elements == mExpertHiddenSize);
 
     mMOERunner->setTactic(mPluginProfiler->getBestConfig(num_tokens, mGemmId));
     mMOERunner->runMoe(inputs[getInputTensorIndex()], static_cast<const float*>(inputs[getRoutingTensorIndex()]),
@@ -500,7 +500,7 @@ IPluginV2* MixtureOfExpertsPluginCreator::createPlugin(
         {
             if (!strcmp(item.first, attrName))
             {
-                TLLM_CHECK(fields[i].type == nvinfer1::PluginFieldType::kINT32);
+                CHECK(fields[i].type == nvinfer1::PluginFieldType::kINT32);
                 item.second.get() = static_cast<int>(*(static_cast<const int*>(fields[i].data)));
             }
         }

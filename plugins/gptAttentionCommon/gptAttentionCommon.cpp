@@ -341,8 +341,8 @@ GPTAttentionPluginCommon::GPTAttentionPluginCommon(int num_heads, int num_kv_hea
         && MHARunner::fmha_supported(getHeadSize(), mSM) && !mCrossAttention
         && mPositionEmbeddingType != bitfusion::kernels::PositionEmbeddingType::kRELATIVE;
 
-    TLLM_CHECK(isRoPE() == (rotary_embedding_dim != 0));
-    TLLM_CHECK_WITH_INFO((mSM >= 80) || (mType != nvinfer1::DataType::kBF16),
+    CHECK(isRoPE() == (rotary_embedding_dim != 0));
+    CHECK_WITH_INFO((mSM >= 80) || (mType != nvinfer1::DataType::kBF16),
         "Unsupported data type, pre SM 80 GPUs do not support bfloat16");
 }
 
@@ -350,7 +350,7 @@ const int GPTAttentionPluginCommon::getHeadSize(bool checkInit) const
 {
     if (checkInit)
     {
-        TLLM_CHECK_WITH_INFO(mHeadSize > 0, "Trying to read mHeadSize before it's been initialized");
+        CHECK_WITH_INFO(mHeadSize > 0, "Trying to read mHeadSize before it's been initialized");
     }
     return mHeadSize;
 }
@@ -391,8 +391,8 @@ GPTAttentionPluginCommon::GPTAttentionPluginCommon(const void* data, size_t leng
 
     mKVCacheQuantMode = tc::QuantMode(kvCacheQuantMode);
 
-    TLLM_CHECK(d == a + length);
-    TLLM_CHECK_WITH_INFO((mSM >= 80) || (mType != nvinfer1::DataType::kBF16),
+    CHECK(d == a + length);
+    CHECK_WITH_INFO((mSM >= 80) || (mType != nvinfer1::DataType::kBF16),
         "Unsupported data type, pre SM 80 GPUs do not support bfloat16");
 }
 
@@ -548,7 +548,7 @@ int GPTAttentionPluginCommon::enqueueContext(const EnqueueContextParams<T, KVCac
     int* block_counter = nullptr;
 
     auto cublasHandle = mCublasWrapper->getCublasHandle();
-    TLLM_CUDA_CHECK(cublasSetStream(cublasHandle, stream));
+    CUDA_CHECK(cublasSetStream(cublasHandle, stream));
     mCublasWrapper->setStream(stream);
     mCublasWrapper->setWorkspace(params.workspace);
     if constexpr (std::is_same_v<T, half>)
@@ -1012,7 +1012,7 @@ int GPTAttentionPluginCommon::enqueueGeneration(
     if (!mMultiBlockMode && !mForceMultiBlockWarned && estimated_min_multi_block_count > 1)
     {
         mForceMultiBlockWarned = true;
-        TLLM_LOG_WARNING(
+        LOG_WARNING(
             "Force using MultiBlockMode in MMHA as shared memory is not enough, "
             "MultiBlockMode may have different accuracy compared to non-MultiBlockMode.");
     }
@@ -1037,7 +1037,7 @@ int GPTAttentionPluginCommon::enqueueGeneration(
     int* block_counter = reinterpret_cast<int*>(nextWorkspacePtr(workspace_byte_ptr, offset, block_counter_size));
     if (enable_multi_block)
     {
-        TLLM_CUDA_CHECK(cudaMemsetAsync(block_counter, 0, block_counter_size, stream));
+        CUDA_CHECK(cudaMemsetAsync(block_counter, 0, block_counter_size, stream));
     }
 
     FusedQKVMaskedAttentionDispatchParams<T, KVCacheBuffer> dispatch_params;
@@ -1150,7 +1150,7 @@ int GPTAttentionPluginCommon::initialize() noexcept
         }
         else
         {
-            TLLM_CHECK_WITH_INFO(false, "GPTAttentionPlugin received wrong data type.");
+            CHECK_WITH_INFO(false, "GPTAttentionPlugin received wrong data type.");
         }
 
         mFMHARunner.reset(new FusedMHARunnerV2(data_type, mNumHeads, getHeadSize(false), mQScaling));
@@ -1160,7 +1160,7 @@ int GPTAttentionPluginCommon::initialize() noexcept
     {
         Data_type xqa_runner_data_type = DATA_TYPE_FP16;
 
-        const char* enable_xqa_env_var = getenv("TRTLLM_ENABLE_XQA");
+        const char* enable_xqa_env_var = getenv("TRENABLE_XQA");
         bool use_xqa = false;
         if (enable_xqa_env_var != nullptr)
         {

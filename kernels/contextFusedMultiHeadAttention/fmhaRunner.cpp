@@ -65,9 +65,9 @@ public:
         , mQScaling(qScaling)
         , sm(sm_)
     {
-        TLLM_CHECK_WITH_INFO(
+        CHECK_WITH_INFO(
             (sm == kSM_80 || sm == kSM_86 || sm == kSM_89 || sm == kSM_90), "Unsupported architecture");
-        TLLM_CHECK_WITH_INFO((mDataType == DATA_TYPE_FP16 || mDataType == DATA_TYPE_BF16), "Unsupported data type");
+        CHECK_WITH_INFO((mDataType == DATA_TYPE_FP16 || mDataType == DATA_TYPE_BF16), "Unsupported data type");
 
         pagedKVXmmaKernel = getPagedKVXMMAKernelsV2(mDataType, sm);
         xmmaKernel = getXMMAKernelsV2(mDataType, sm);
@@ -184,7 +184,7 @@ public:
 
         mLaunchParams.set_default_kernel_selection_params();
 
-        TLLM_CHECK_WITH_INFO(tokens_per_kv_block >= 128, "FMHA with paged kv cache needs tokens_per_block >= 128 !");
+        CHECK_WITH_INFO(tokens_per_kv_block >= 128, "FMHA with paged kv cache needs tokens_per_block >= 128 !");
         mLaunchParams.blocks_per_context_sequence = blocks_per_context_sequence;
 
         const bool isSm90 = (sm == kSM_90);
@@ -401,7 +401,7 @@ public:
             = causal_mask ? ContextAttentionMaskType::CAUSAL : ContextAttentionMaskType::PADDING;
 
         mPagedKVParams.h_kv = num_kv_heads;
-        TLLM_CHECK_WITH_INFO(mNumHeads % num_kv_heads == 0, "number of Query heads should be multiple of KV heads !");
+        CHECK_WITH_INFO(mNumHeads % num_kv_heads == 0, "number of Query heads should be multiple of KV heads !");
         mPagedKVParams.h_q_per_kv = mNumHeads / num_kv_heads;
         mPagedKVParams.is_s_padded = is_s_padded;
 

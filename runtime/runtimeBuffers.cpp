@@ -17,7 +17,7 @@ RuntimeBuffers::GenerationConfig RuntimeBuffers::GenerationConfig::fromInput(ITe
     ITensor const& inputLengthsHost, bool const inputPacked, SizeType const beamWidth,
     SizeType const maxAttentionWindow, SizeType const maxSequenceLength)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     auto const batchSize = static_cast<SizeType>(inputLengthsHost.getSize());
 
     auto const* inputLengthsPtr = bufferCast<SizeType>(inputLengthsHost);
@@ -28,28 +28,28 @@ RuntimeBuffers::GenerationConfig RuntimeBuffers::GenerationConfig::fromInput(ITe
     if (inputPacked)
     {
         inputLengthSum = std::accumulate(inputLengthsPtr, inputLengthsPtr + batchSize, 0);
-        TLLM_CHECK_WITH_INFO(inputShape.d[0] == 1 && inputShape.d[1] == inputLengthSum,
+        CHECK_WITH_INFO(inputShape.d[0] == 1 && inputShape.d[1] == inputLengthSum,
             "Packed input must have shape [1, <sum of input lengths>].");
     }
     else
     {
-        TLLM_CHECK_WITH_INFO(inputShape.d[0] == batchSize && inputShape.d[1] >= maxInputLength,
+        CHECK_WITH_INFO(inputShape.d[0] == batchSize && inputShape.d[1] >= maxInputLength,
             "Padded input must have shape [batch size, max input length]");
         maxInputLength = inputShape.d[1];
     }
 
-    TLLM_CHECK_WITH_INFO(maxInputLength < maxSequenceLength,
+    CHECK_WITH_INFO(maxInputLength < maxSequenceLength,
         "Max input length is equal to or larger that maxSequenceLength given in setup. No new tokens can be "
         "generated.");
 
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
     return GenerationConfig{
         batchSize, beamWidth, maxInputLength, maxAttentionWindow, maxSequenceLength, inputLengthSum};
 }
 
 void RuntimeBuffers::clear()
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     contextLengthsHost = nullptr;
     contextLengthsDevice = nullptr;
 
@@ -75,22 +75,22 @@ void RuntimeBuffers::clear()
     hiddenStates = nullptr;
 
     allocated = false;
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
 void RuntimeBuffers::clearTensorMaps()
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     for (auto& buffer : inputBuffers)
         buffer.clear();
     for (auto& buffer : outputBuffers)
         buffer.clear();
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
 void RuntimeBuffers::create(TllmRuntime& runtime, GptModelConfig const& modelConfig, WorldConfig const& worldConfig)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     auto& manager = runtime.getBufferManager();
     auto& engine = runtime.getEngine();
 
@@ -167,7 +167,7 @@ void RuntimeBuffers::create(TllmRuntime& runtime, GptModelConfig const& modelCon
         hiddenStates = manager.emptyTensor(MemoryType::kGPU, modelConfig.getDataType());
     }
 
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
 void RuntimeBuffers::initFromInput(ITensor const& inputIds, TensorPtr const& inputLengths, bool inputPacked,
@@ -184,7 +184,7 @@ void RuntimeBuffers::initFromInput(ITensor const& inputIds, TensorPtr const& inp
 
 void RuntimeBuffers::reshape(GptModelConfig const& modelConfig, WorldConfig const& worldConfig)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
 
     auto const batchSize = generationConfig.batchSize;
     auto const beamWidth = generationConfig.beamWidth;
@@ -246,7 +246,7 @@ void RuntimeBuffers::reshape(GptModelConfig const& modelConfig, WorldConfig cons
     }
 
     allocated = true;
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
 void RuntimeBuffers::reset(BufferManager& manager)
@@ -259,7 +259,7 @@ void RuntimeBuffers::reset(BufferManager& manager)
 std::vector<RuntimeBuffers> RuntimeBuffers::split(
     SizeType contextBatchSize, GptModelConfig const& modelConfig, WorldConfig const& worldConfig)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
 
     std::vector<RuntimeBuffers> bufferSlices;
     auto const generationBatchSize = generationConfig.batchSize;
@@ -340,15 +340,15 @@ std::vector<RuntimeBuffers> RuntimeBuffers::split(
         }
     }
 
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
     return bufferSlices;
 }
 
 void RuntimeBuffers::gatherLastTokenLogits(
     BufferManager& manager, GptModelConfig const& modelConfig, WorldConfig const& worldConfig)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
-    TLLM_CHECK_WITH_INFO(modelConfig.computeContextLogits(),
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    CHECK_WITH_INFO(modelConfig.computeContextLogits(),
         "Gather last token logits is only necessary when context logits are computed");
 
     if (worldConfig.isLastPipelineParallelRank())
@@ -365,12 +365,12 @@ void RuntimeBuffers::gatherLastTokenLogits(
         std::swap(logits, tiledTensor);
     }
 
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
 void RuntimeBuffers::copyAttentionMasks(std::vector<RuntimeBuffers> const& contextBatches, BufferManager& manager)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     auto const batchSize = generationConfig.batchSize;
     auto const maxInputLength = generationConfig.maxInputLength;
 
@@ -386,14 +386,14 @@ void RuntimeBuffers::copyAttentionMasks(std::vector<RuntimeBuffers> const& conte
         manager.copy(*buffers.attentionMask, *attentionMaskSlice);
         offset += contextBatchSize;
     }
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
 void RuntimeBuffers::tile(BufferManager& manager, GptModelConfig const& modelConfig, WorldConfig const& worldConfig)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     auto const beamWidth = generationConfig.beamWidth;
-    TLLM_CHECK_WITH_INFO(beamWidth > 1, "Tiling is only necessary for beam search.");
+    CHECK_WITH_INFO(beamWidth > 1, "Tiling is only necessary for beam search.");
 
     if (worldConfig.isLastPipelineParallelRank() && !modelConfig.computeContextLogits())
     {
@@ -422,13 +422,13 @@ void RuntimeBuffers::tile(BufferManager& manager, GptModelConfig const& modelCon
         for (auto& buffer : presentKeysValsAlt)
             utils::tileBufferReplace(buffer, beamWidth, manager);
     }
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
 void RuntimeBuffers::postContextStep(std::vector<RuntimeBuffers> const& contextBuffers, BufferManager& manager,
     GptModelConfig const& modelConfig, WorldConfig const& worldConfig)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     auto const batchSize = generationConfig.batchSize;
     auto const beamWidth = generationConfig.beamWidth;
 
@@ -477,13 +477,13 @@ void RuntimeBuffers::postContextStep(std::vector<RuntimeBuffers> const& contextB
             manager, modelConfig.usePackedInput());
     }
 
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
 void RuntimeBuffers::postEachGenerationStep(BufferManager& manager, TensorPtr outputGenerationLogits, SizeType step,
     SizeType firstBatchSlotIdx, SizeType microBatchSize, SizeType beamWidth, WorldConfig const& worldConfig)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
 
     if (worldConfig.isLastPipelineParallelRank())
     {
@@ -492,14 +492,14 @@ void RuntimeBuffers::postEachGenerationStep(BufferManager& manager, TensorPtr ou
         manager.getStream().synchronize();
     }
 
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
 void RuntimeBuffers::prepareContextStep(TensorPtr const& inputIds, TokenIdType const padId, BufferManager& manager,
     KvCacheManager const* kvCacheManager, SizeType firstBatchSlotIdx, GptModelConfig const& modelConfig,
     WorldConfig const& worldConfig)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     auto& stream = manager.getStream();
     SizeType const batchSize = generationConfig.batchSize;
     SizeType const maxInputLength = generationConfig.maxInputLength;
@@ -511,10 +511,10 @@ void RuntimeBuffers::prepareContextStep(TensorPtr const& inputIds, TokenIdType c
     if (modelConfig.useGptAttentionPlugin())
     {
         auto pastKeyValueLengthsPtr = bufferCast<SizeType>(*pastKeyValueLengths);
-        TLLM_CHECK(pastKeyValueLengths->getSize() == static_cast<std::size_t>(batchSize));
+        CHECK(pastKeyValueLengths->getSize() == static_cast<std::size_t>(batchSize));
 
         auto RequestTypesPtr = bufferCast<int32_t>(*requestTypes);
-        TLLM_CHECK(requestTypes->getSize() == static_cast<std::size_t>(batchSize));
+        CHECK(requestTypes->getSize() == static_cast<std::size_t>(batchSize));
         std::fill_n(RequestTypesPtr, batchSize, 0);
 
         for (auto layer = 0; layer < localNbLayers; ++layer)
@@ -557,7 +557,7 @@ void RuntimeBuffers::prepareContextStep(TensorPtr const& inputIds, TokenIdType c
         }
         else
         {
-            TLLM_THROW("Unsupported model variant");
+            THROW("Unsupported model variant");
         }
 
         for (SizeType i = 0; i < batchSize; ++i)
@@ -623,14 +623,14 @@ void RuntimeBuffers::prepareContextStep(TensorPtr const& inputIds, TokenIdType c
         manager.copy(*contextLengthsDevice, *lastTokenIds);
     }
 
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
 RuntimeBuffers::TensorPtr RuntimeBuffers::prepareNextStep(SizeType const step, BufferManager& manager,
     KvCacheManager* kvCacheManager, SizeType firstBatchSlotIdx, GptModelConfig const& modelConfig,
     WorldConfig const& worldConfig)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     auto& stream = manager.getStream();
     SizeType const batchSize = generationConfig.batchSize;
     SizeType const beamWidth = generationConfig.beamWidth;
@@ -652,7 +652,7 @@ RuntimeBuffers::TensorPtr RuntimeBuffers::prepareNextStep(SizeType const step, B
         auto const pastKeyValueLengthsPtr = bufferCast<SizeType>(*pastKeyValueLengths);
         auto const tensorBatchSize = static_cast<SizeType>(pastKeyValueLengths->getSize());
         SizeType const srcStride{modelConfig.useGptAttentionPlugin() ? 1 : beamWidth};
-        TLLM_CHECK(static_cast<std::size_t>(tensorBatchSize * srcStride) == contextLengthsDevice->getSize());
+        CHECK(static_cast<std::size_t>(tensorBatchSize * srcStride) == contextLengthsDevice->getSize());
         for (SizeType i = 0; i < tensorBatchSize; ++i)
         {
             pastKeyValueLengthsPtr[i] = contextLengthsHostPtr[i * srcStride] + step;
@@ -683,7 +683,7 @@ RuntimeBuffers::TensorPtr RuntimeBuffers::prepareNextStep(SizeType const step, B
         }
         else
         {
-            TLLM_THROW("Unsupported model variant");
+            THROW("Unsupported model variant");
         }
 
         if (worldConfig.isPipelineParallel())
@@ -739,7 +739,7 @@ RuntimeBuffers::TensorPtr RuntimeBuffers::prepareNextStep(SizeType const step, B
     {
         kernels::invokeInclusiveSum(*lastTokenIds, *lastTokenIds, manager, stream);
     }
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
     return nextInputIds;
 }
 
@@ -747,7 +747,7 @@ void RuntimeBuffers::getRuntimeBuffers(TensorMap& inputBuffers, TensorMap& outpu
     TensorPtr const& inputIds, TensorPtr const& commPtrs, GptModelConfig const& modelConfig,
     WorldConfig const& worldConfig) const
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     inputBuffers.clear();
     outputBuffers.clear();
 
@@ -841,13 +841,13 @@ void RuntimeBuffers::getRuntimeBuffers(TensorMap& inputBuffers, TensorMap& outpu
         inputBuffers.insert_or_assign("tasks", promptTuningParams.tasks);
         inputBuffers.insert_or_assign("prompt_vocab_size", promptTuningParams.vocabSize);
     }
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
 std::vector<SizeType> RuntimeBuffers::getPositionIdsContextPhaseGlm(const SizeType& batchSize,
     const SizeType& maxInputLength, const SizeType* pInputLengths, bool useGptAttentionPlugin, bool usePackedInput)
 {
-    TLLM_CHECK(pInputLengths != nullptr);
+    CHECK(pInputLengths != nullptr);
 
     std::vector<SizeType> positionIdsVec(1, 0);
     if (useGptAttentionPlugin)
@@ -889,7 +889,7 @@ std::vector<SizeType> RuntimeBuffers::getPositionIdsContextPhaseGlm(const SizeTy
     }
     else
     {
-        TLLM_THROW("Unsupported model without GPT Attention Plugin");
+        THROW("Unsupported model without GPT Attention Plugin");
     }
 
     return positionIdsVec;
@@ -899,7 +899,7 @@ std::vector<SizeType> RuntimeBuffers::getPositionIdsGenerationPhaseGlm(const Siz
     const SizeType& beamSize, const SizeType& step, const SizeType* pInputLengths, bool useGptAttentionPlugin,
     bool usePackedInput)
 {
-    TLLM_CHECK(pInputLengths != nullptr);
+    CHECK(pInputLengths != nullptr);
 
     auto const size = 2 * batchSize * beamSize;
     std::vector<SizeType> positionIdsVec(size, 0);
@@ -936,7 +936,7 @@ std::vector<SizeType> RuntimeBuffers::getPositionIdsGenerationPhaseGlm(const Siz
     }
     else
     {
-        TLLM_THROW("Unsupported model without GPT Attention Plugin");
+        THROW("Unsupported model without GPT Attention Plugin");
     }
 
     return positionIdsVec;

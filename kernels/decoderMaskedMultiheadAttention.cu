@@ -60,7 +60,7 @@ void multihead_attention_(
         mmha::mmha_launch_kernel<T, KVCacheBuffer, KERNEL_PARAMS_TYPE, 224>(params, kv_cache_buffer, stream);
         break;
 #endif // FAST_BUILD
-    default: TLLM_THROW("unsupported head_size");
+    default: THROW("unsupported head_size");
     }
 }
 

@@ -52,7 +52,7 @@ namespace bitfusion
             }
             else
             {
-                TLLM_CHECK_WITH_INFO(false, "Unsupported Arch");
+                CHECK_WITH_INFO(false, "Unsupported Arch");
                 return false;
             }
         }
@@ -70,7 +70,7 @@ namespace bitfusion
             }
             else
             {
-                TLLM_CHECK_WITH_INFO(false, "Unsupported WeightOnlyQuantType");
+                CHECK_WITH_INFO(false, "Unsupported WeightOnlyQuantType");
                 return false;
             }
         }

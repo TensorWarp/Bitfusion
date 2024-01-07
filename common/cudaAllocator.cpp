@@ -13,9 +13,9 @@ CudaAllocator::CudaAllocator(tr::BufferManager bufferManager)
 
 ReallocType CudaAllocator::reallocType(void const* ptr, size_t size) const
 {
-    TLLM_CHECK(contains(ptr));
+    CHECK(contains(ptr));
     auto const currentSize = mPointerMapping.at(ptr)->getSize();
-    TLLM_LOG_DEBUG("current_buffer_size: %d, original buffer: %p, new buffer: %d", currentSize, ptr, size);
+    LOG_DEBUG("current_buffer_size: %d, original buffer: %p, new buffer: %d", currentSize, ptr, size);
     if (currentSize < size)
     {
         return ReallocType::INCREASE;
@@ -32,21 +32,21 @@ ReallocType CudaAllocator::reallocType(void const* ptr, size_t size) const
 
 void* CudaAllocator::malloc(std::size_t size, bool const setZero)
 {
-    TLLM_LOG_TRACE(__PRETTY_FUNCTION__);
+    LOG_TRACE(__PRETTY_FUNCTION__);
     auto bufferPtr = mBufferManager.gpu(size);
     if (setZero)
     {
         mBufferManager.setZero(*bufferPtr);
     }
     void* ptr{ bufferPtr->data() };
-    TLLM_LOG_DEBUG("malloc buffer %p with size %ld", ptr, size);
+    LOG_DEBUG("malloc buffer %p with size %ld", ptr, size);
     mPointerMapping.insert({ ptr, std::move(bufferPtr) });
     return ptr;
 }
 
 void CudaAllocator::free(void** ptr)
 {
-    TLLM_LOG_TRACE(__PRETTY_FUNCTION__);
+    LOG_TRACE(__PRETTY_FUNCTION__);
     mPointerMapping.erase(*ptr);
     *ptr = nullptr;
 }

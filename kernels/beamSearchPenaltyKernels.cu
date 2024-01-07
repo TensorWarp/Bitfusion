@@ -215,8 +215,8 @@ void invokeAddBiasApplyPenalties(T* logits, const int** output_ids_ptr, const in
         }
     }
 
-    TLLM_CHECK_WITH_INFO(sequence_lengths != nullptr, "Need sequence_lengths to apply min length penlaty");
-    TLLM_CHECK_WITH_INFO(end_ids != nullptr, "Need end_id to apply min length penlaty");
+    CHECK_WITH_INFO(sequence_lengths != nullptr, "Need sequence_lengths to apply min length penlaty");
+    CHECK_WITH_INFO(end_ids != nullptr, "Need end_id to apply min length penlaty");
 
     const int block_size = min(local_batch_size * beam_width, 1024);
     const int grid_size = (local_batch_size * beam_width + block_size - 1) / block_size;

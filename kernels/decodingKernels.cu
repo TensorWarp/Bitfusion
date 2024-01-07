@@ -259,7 +259,7 @@ void invokeGatherTree(gatherTreeParam param)
 
     if (param.beamWidth > 1)
     {
-        TLLM_CHECK_WITH_INFO(param.beamWidth <= 32, "TRT-LLM does not support beam width > 32 now");
+        CHECK_WITH_INFO(param.beamWidth <= 32, "TRT-LLM does not support beam width > 32 now");
         // sort results by normalized cumLogProbs
         dim3 grid(param.batchSize);
         dim3 block(divUp(param.beamWidth, 32) * 32);
@@ -412,10 +412,10 @@ void invokeFinalize(int* outputIds, int* sequenceLengths, float* cumLogProbs, fl
     const float* topKLogProbs, const int* numBeams, const int* inputLengths, const int beamWidth, const int maxSeqLen,
     const int batchSize, cudaStream_t stream)
 {
-    TLLM_LOG_DEBUG("%s %s start", __FILE__, __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s %s start", __FILE__, __PRETTY_FUNCTION__);
     dim3 block(beamWidth * 2);
     block.x = (block.x + 31) / 32 * 32;
-    TLLM_CHECK(block.x < 1024);
+    CHECK(block.x < 1024);
     finalize<<<batchSize, block, beamWidth * sizeof(int) * 2 + (beamWidth * 2) * sizeof(float), stream>>>(outputIds,
         sequenceLengths, cumLogProbs, outputLogProbs, topKOutputIds, topKSequenceLengths, scores, topKCumLogProbs,
         topKLogProbs, numBeams, inputLengths, beamWidth, maxSeqLen);
@@ -539,7 +539,7 @@ void invokeAcceptDraftTokensByIds(const int* draftIds, const int* targetIds, con
     const int* numsDraftTokens, int* sequenceLengths, const FinishedState* finished, FinishedState* finishedFinal,
     int* finishedSum, int batchSize, int beamWidth, int maxSeqLen, int maxDraftTokens, cudaStream_t stream)
 {
-    TLLM_CHECK(beamWidth == 1);
+    CHECK(beamWidth == 1);
     dim3 block(min(256, batchSize * beamWidth));
     dim3 grid(1);
     acceptDraftTokensByIds<<<grid, block, 0, stream>>>(draftIds, targetIds, contextLengths, numsDraftTokens,

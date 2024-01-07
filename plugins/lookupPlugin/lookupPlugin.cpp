@@ -27,7 +27,7 @@ LookupPlugin::LookupPlugin(const void* data, size_t length)
     const char *d = reinterpret_cast<const char*>(data), *a = d;
     read(d, mType);
     read(d, mRank);
-    TLLM_CHECK(d == a + length);
+    CHECK(d == a + length);
 }
 
 nvinfer1::IPluginV2DynamicExt* LookupPlugin::clone() const noexcept
@@ -43,8 +43,8 @@ nvinfer1::DimsExprs LookupPlugin::getOutputDimensions(
 {
     try
     {
-        TLLM_CHECK(nbInputs == 2);
-        TLLM_CHECK(outputIndex == 0);
+        CHECK(nbInputs == 2);
+        CHECK(outputIndex == 0);
         DimsExprs ret;
         const int nbDimsInput = inputs[0].nbDims;
         const int nbDimsWeight = inputs[1].nbDims;
@@ -133,7 +133,7 @@ int LookupPlugin::enqueue(const nvinfer1::PluginTensorDesc* inputDesc, const nvi
 nvinfer1::DataType LookupPlugin::getOutputDataType(
     int index, const nvinfer1::DataType* inputTypes, int nbInputs) const noexcept
 {
-    TLLM_CHECK(index == 0);
+    CHECK(index == 0);
     return inputTypes[1];
 }
 
@@ -214,12 +214,12 @@ IPluginV2* LookupPluginCreator::createPlugin(const char* name, const PluginField
         const char* attrName = fields[i].name;
         if (!strcmp(attrName, "type_id"))
         {
-            TLLM_CHECK(fields[i].type == PluginFieldType::kINT32);
+            CHECK(fields[i].type == PluginFieldType::kINT32);
             type = static_cast<nvinfer1::DataType>(*(static_cast<const nvinfer1::DataType*>(fields[i].data)));
         }
         else if (!strcmp(attrName, "rank"))
         {
-            TLLM_CHECK(fields[i].type == PluginFieldType::kINT32);
+            CHECK(fields[i].type == PluginFieldType::kINT32);
             rank = static_cast<int>(*(static_cast<const int*>(fields[i].data)));
         }
     }

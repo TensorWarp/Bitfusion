@@ -28,7 +28,7 @@ LayernormQuantizationPlugin::LayernormQuantizationPlugin(const void* data, size_
     read(d, mUseDiffOfSquares);
     read(d, mDynActScaling);
     read(d, mType);
-    TLLM_CHECK(d == a + length);
+    CHECK(d == a + length);
 }
 
 nvinfer1::IPluginV2DynamicExt* LayernormQuantizationPlugin::clone() const noexcept
@@ -48,7 +48,7 @@ nvinfer1::DimsExprs LayernormQuantizationPlugin::getOutputDimensions(
 
     try
     {
-        TLLM_CHECK(outputIndex == 1);
+        CHECK(outputIndex == 1);
         DimsExprs ret;
         ret.nbDims = inputs[0].nbDims;
         for (int di = 0; di < ret.nbDims - 1; ++di)
@@ -69,8 +69,8 @@ bool LayernormQuantizationPlugin::supportsFormatCombination(
     int pos, const nvinfer1::PluginTensorDesc* inOut, int nbInputs, int nbOutputs) noexcept
 {
     const int totalPoses = 6 + static_cast<int>(mDynActScaling);
-    TLLM_CHECK(0 <= pos && pos < totalPoses);
-    TLLM_CHECK(nbInputs == 4);
+    CHECK(0 <= pos && pos < totalPoses);
+    CHECK(nbInputs == 4);
     if (pos < nbInputs)
     {
         switch (pos)
@@ -228,22 +228,22 @@ IPluginV2* LayernormQuantizationPluginCreator::createPlugin(const char* name, co
         const char* attrName = fields[i].name;
         if (!strcmp(attrName, "eps"))
         {
-            TLLM_CHECK(fields[i].type == PluginFieldType::kFLOAT32);
+            CHECK(fields[i].type == PluginFieldType::kFLOAT32);
             eps = static_cast<float>(*(static_cast<const float*>(fields[i].data)));
         }
         else if (!strcmp(attrName, "type_id"))
         {
-            TLLM_CHECK(fields[i].type == PluginFieldType::kINT32);
+            CHECK(fields[i].type == PluginFieldType::kINT32);
             type = static_cast<nvinfer1::DataType>(*(static_cast<const nvinfer1::DataType*>(fields[i].data)));
         }
         else if (!strcmp(attrName, "dyn_act_scaling"))
         {
-            TLLM_CHECK(fields[i].type == PluginFieldType::kINT32);
+            CHECK(fields[i].type == PluginFieldType::kINT32);
             dynamicActivationScaling = static_cast<bool>(*(static_cast<const bool*>(fields[i].data)));
         }
         else if (!strcmp(attrName, "use_diff_of_squares"))
         {
-            TLLM_CHECK(fields[i].type == PluginFieldType::kINT32);
+            CHECK(fields[i].type == PluginFieldType::kINT32);
             useDiffOfSquares = static_cast<bool>(*(static_cast<const bool*>(fields[i].data)));
         }
     }

@@ -17,7 +17,7 @@ RmsnormPlugin::RmsnormPlugin(float eps, nvinfer1::DataType type)
     : mEps(eps)
     , mType(type)
 {
-    TLLM_CHECK_WITH_INFO((getSMVersion() >= 80) || (mType != DataType::kBF16),
+    CHECK_WITH_INFO((getSMVersion() >= 80) || (mType != DataType::kBF16),
         "Unsupported data type, pre SM 80 GPUs do not support bfloat16");
 }
 
@@ -26,8 +26,8 @@ RmsnormPlugin::RmsnormPlugin(const void* data, size_t length)
     const char *d = reinterpret_cast<const char*>(data), *a = d;
     read(d, mEps);
     read(d, mType);
-    TLLM_CHECK(d == a + length);
-    TLLM_CHECK_WITH_INFO((getSMVersion() >= 80) || (mType != DataType::kBF16), "Unsupported data type");
+    CHECK(d == a + length);
+    CHECK_WITH_INFO((getSMVersion() >= 80) || (mType != DataType::kBF16), "Unsupported data type");
 }
 
 nvinfer1::IPluginV2DynamicExt* RmsnormPlugin::clone() const noexcept
@@ -46,7 +46,7 @@ nvinfer1::DimsExprs RmsnormPlugin::getOutputDimensions(
 bool RmsnormPlugin::supportsFormatCombination(
     int pos, const nvinfer1::PluginTensorDesc* inOut, int nbInputs, int nbOutputs) noexcept
 {
-    TLLM_CHECK(0 <= pos && pos < 5);
+    CHECK(0 <= pos && pos < 5);
     return (inOut[pos].type == mType) && (inOut[pos].format == TensorFormat::kLINEAR);
 }
 
@@ -182,12 +182,12 @@ IPluginV2* RmsnormPluginCreator::createPlugin(const char* name, const PluginFiel
         const char* attrName = fields[i].name;
         if (!strcmp(attrName, "eps"))
         {
-            TLLM_CHECK(fields[i].type == PluginFieldType::kFLOAT32);
+            CHECK(fields[i].type == PluginFieldType::kFLOAT32);
             eps = static_cast<float>(*(static_cast<const float*>(fields[i].data)));
         }
         else if (!strcmp(attrName, "type_id"))
         {
-            TLLM_CHECK(fields[i].type == PluginFieldType::kINT32);
+            CHECK(fields[i].type == PluginFieldType::kINT32);
             type = static_cast<nvinfer1::DataType>(*(static_cast<const nvinfer1::DataType*>(fields[i].data)));
         }
     }

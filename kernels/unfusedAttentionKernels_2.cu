@@ -246,16 +246,16 @@ namespace bitfusion
             const float* kvScaleOrigQuant, const int int8_mode, const bool enable_paged_kv_fmha, cudaStream_t stream,
             int beam_width)
         {
-            TLLM_CHECK_WITH_INFO(int8_mode != 2, "w8a8 not yet implemented with RoPE");
+            CHECK_WITH_INFO(int8_mode != 2, "w8a8 not yet implemented with RoPE");
             if constexpr (!IsGenerate)
             {
-                TLLM_CHECK_WITH_INFO(beam_width == 1, "beam_width should be default 1 for context phase.");
+                CHECK_WITH_INFO(beam_width == 1, "beam_width should be default 1 for context phase.");
             }
             else
             {
-                TLLM_CHECK_WITH_INFO(seq_len == 1, "Generation phase should have seq_len of 1.");
-                TLLM_CHECK_WITH_INFO(padding_offset == nullptr, "Generation phase should not use padding_offset");
-                TLLM_CHECK_WITH_INFO(
+                CHECK_WITH_INFO(seq_len == 1, "Generation phase should have seq_len of 1.");
+                CHECK_WITH_INFO(padding_offset == nullptr, "Generation phase should not use padding_offset");
+                CHECK_WITH_INFO(
                     token_num == batch_size * beam_width, "token_num should be batch_size * beam_width for generation phase.");
             }
             dim3 block((size_per_head / Vec_t<T>::size + 31) / 32 * 32);
@@ -301,7 +301,7 @@ namespace bitfusion
             const bool enable_paged_kv_fmha, cudaStream_t stream, int beam_width)
         {
             constexpr int x = (sizeof(T) == 4) ? 4 : 8;
-            TLLM_CHECK_WITH_INFO(size_per_head % x == 0, "Size per head is not a multiple of X");
+            CHECK_WITH_INFO(size_per_head % x == 0, "Size per head is not a multiple of X");
 
             if (cache_type == KvCacheDataType::INT8)
             {

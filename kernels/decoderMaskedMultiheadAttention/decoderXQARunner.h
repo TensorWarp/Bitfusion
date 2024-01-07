@@ -334,7 +334,7 @@ namespace bitfusion
             template <typename KVCacheBuffer>
             void dispatch(const XQAParams& xqa_params, KVCacheBuffer& kv_cache_buffer, const cudaStream_t& stream)
             {
-                TLLM_CHECK_WITH_INFO((std::is_same<KVCacheBuffer, KVLinearBuffer>::value),
+                CHECK_WITH_INFO((std::is_same<KVCacheBuffer, KVLinearBuffer>::value),
                     "DecoderXQARunner.dispatch supports only KVLinearBuffer now.");
                 sync_check_cuda_error();
                 this->dispatchCacheBuffer(xqa_params, kv_cache_buffer, stream);

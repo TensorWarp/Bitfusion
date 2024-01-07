@@ -52,9 +52,9 @@ void NcclCommunicator::send(T* sendbuff, size_t count, int peer, CudaStream cons
 {
 #if ENABLE_MULTI_DEVICE
     auto datatype = NcclDataType<std::remove_cv_t<T>>::value;
-    TLLM_NCCL_CHECK(ncclSend(sendbuff, count, datatype, peer, mComm, stream.get()));
+    NCCL_CHECK(ncclSend(sendbuff, count, datatype, peer, mComm, stream.get()));
 #else
-    TLLM_THROW("Multi device support is disabled.");
+    THROW("Multi device support is disabled.");
 #endif
 }
 
@@ -69,9 +69,9 @@ void NcclCommunicator::receive(T* sendbuff, size_t count, int peer, CudaStream c
 {
 #if ENABLE_MULTI_DEVICE
     auto datatype = NcclDataType<std::remove_cv_t<T>>::value;
-    TLLM_NCCL_CHECK(ncclRecv(sendbuff, count, datatype, peer, mComm, stream.get()));
+    NCCL_CHECK(ncclRecv(sendbuff, count, datatype, peer, mComm, stream.get()));
 #else
-    TLLM_THROW("Multi device support is disabled.");
+    THROW("Multi device support is disabled.");
 #endif
 }
 
@@ -91,18 +91,18 @@ std::shared_ptr<NcclCommunicator> NcclCommunicator::createPipelineComm(WorldConf
         ncclGetUniqueId(&id);
         for (auto peer = 1; peer < worldSize; ++peer)
         {
-            TLLM_MPI_CHECK(MPI_Send(&id, sizeof(id), MPI_BYTE, peer, 0, MPI_COMM_WORLD));
+            MPI_CHECK(MPI_Send(&id, sizeof(id), MPI_BYTE, peer, 0, MPI_COMM_WORLD));
         }
     }
     else
     {
         auto constexpr peer = 0;
         MPI_Status status;
-        TLLM_MPI_CHECK(MPI_Recv(&id, sizeof(id), MPI_BYTE, peer, 0, MPI_COMM_WORLD, &status));
+        MPI_CHECK(MPI_Recv(&id, sizeof(id), MPI_BYTE, peer, 0, MPI_COMM_WORLD, &status));
     }
 
     auto pipelineComm = std::make_shared<NcclCommunicator>();
-    TLLM_NCCL_CHECK(ncclCommInitRank(&pipelineComm->mComm, worldSize, id, myRank));
+    NCCL_CHECK(ncclCommInitRank(&pipelineComm->mComm, worldSize, id, myRank));
 
     return pipelineComm;
 #else

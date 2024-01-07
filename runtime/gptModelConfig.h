@@ -58,7 +58,7 @@ public:
 
     [[nodiscard]] SizeType constexpr getNbLayers(SizeType pipelineParallelism = 1) const
     {
-        TLLM_CHECK(mNbLayers % pipelineParallelism == 0);
+        CHECK(mNbLayers % pipelineParallelism == 0);
         return mNbLayers / pipelineParallelism;
     }
 

@@ -79,7 +79,7 @@ SmoothQuantGemmPlugin::SmoothQuantGemmPlugin(
 
     mPluginProfiler->deserialize(d, mDims, mGemmId);
 
-    TLLM_CHECK(d == a + length);
+    CHECK(d == a + length);
 }
 
 void SmoothQuantGemmPlugin::init(nvinfer1::DataType type)
@@ -99,7 +99,7 @@ void SmoothQuantGemmPlugin::init(nvinfer1::DataType type)
     }
     else
     {
-        TLLM_THROW("Support for bf16 is missing");
+        THROW("Support for bf16 is missing");
     }
 
     mPluginProfiler->setQuantMode(mQuantMode);
@@ -118,10 +118,10 @@ nvinfer1::DimsExprs SmoothQuantGemmPlugin::getOutputDimensions(
 {
     try
     {
-        TLLM_CHECK(nbInputs == 4);
-        TLLM_CHECK(outputIndex == 0);
+        CHECK(nbInputs == 4);
+        CHECK(outputIndex == 0);
         const int nbDimsA = inputs[0].nbDims;
-        TLLM_CHECK(nbDimsA >= 2);
+        CHECK(nbDimsA >= 2);
         DimsExprs ret;
         ret.nbDims = nbDimsA;
         for (int ii = 0; ii < nbDimsA - 1; ++ii)
@@ -169,8 +169,8 @@ void SmoothQuantGemmPlugin::configurePlugin(const nvinfer1::DynamicPluginTensorD
     const int minK = in[0].min.d[in[0].min.nbDims - 1];
     const int minN = in[1].min.d[0];
 
-    TLLM_CHECK_WITH_INFO(minN == maxN, "Variable out channels is not allowed");
-    TLLM_CHECK_WITH_INFO(minK == maxK, "Variable in channels is not allowed");
+    CHECK_WITH_INFO(minN == maxN, "Variable out channels is not allowed");
+    CHECK_WITH_INFO(minK == maxK, "Variable in channels is not allowed");
 
     if (!mDims.isInitialized())
     {
@@ -201,7 +201,7 @@ int SmoothQuantGemmPlugin::enqueue(const nvinfer1::PluginTensorDesc* inputDesc,
     const int wsSize = m_sqGemmRunner->getWorkspaceSize(m, n, k);
 
     const auto& bestTactic = mPluginProfiler->getBestConfig(m, mGemmId);
-    TLLM_CHECK_WITH_INFO(bestTactic, "No valid SQ GEMM tactic");
+    CHECK_WITH_INFO(bestTactic, "No valid SQ GEMM tactic");
     m_sqGemmRunner->gemm(reinterpret_cast<const int8_t*>(inputs[0]), reinterpret_cast<const int8_t*>(inputs[1]),
         mQuantMode, reinterpret_cast<const float*>(inputs[3]), reinterpret_cast<const float*>(inputs[2]),
         reinterpret_cast<void*>(outputs[0]), m, n, k, *bestTactic, reinterpret_cast<char*>(workspace), wsSize, stream);
@@ -212,7 +212,7 @@ int SmoothQuantGemmPlugin::enqueue(const nvinfer1::PluginTensorDesc* inputDesc,
 nvinfer1::DataType SmoothQuantGemmPlugin::getOutputDataType(
     int index, const nvinfer1::DataType* inputTypes, int nbInputs) const noexcept
 {
-    TLLM_CHECK(index == 0);
+    CHECK(index == 0);
     return mType;
 }
 
@@ -305,17 +305,17 @@ IPluginV2* SmoothQuantGemmPluginCreator::createPlugin(const char* name, const Pl
         const char* attrName = fields[i].name;
         if (!strcmp(attrName, "has_per_channel_scaling"))
         {
-            TLLM_CHECK(fields[i].type == PluginFieldType::kINT32);
+            CHECK(fields[i].type == PluginFieldType::kINT32);
             perChannelScaling = static_cast<bool>(*(static_cast<const int*>(fields[i].data)));
         }
         else if (!strcmp(attrName, "has_per_token_scaling"))
         {
-            TLLM_CHECK(fields[i].type == PluginFieldType::kINT32);
+            CHECK(fields[i].type == PluginFieldType::kINT32);
             perTokenScaling = static_cast<bool>(*(static_cast<const int*>(fields[i].data)));
         }
         else if (!strcmp(attrName, "type_id"))
         {
-            TLLM_CHECK(fields[i].type == PluginFieldType::kINT32);
+            CHECK(fields[i].type == PluginFieldType::kINT32);
             type = static_cast<nvinfer1::DataType>(*(static_cast<const nvinfer1::DataType*>(fields[i].data)));
         }
     }

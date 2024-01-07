@@ -105,7 +105,7 @@ void genericMoeGemmKernelLauncher(const T* A, const WeightType* B, const T* weig
         return;
     }
     int occupancy = std::min(2, GemmGrouped::maximum_active_blocks());
-    TLLM_CHECK_WITH_INFO(occupancy != 0, "GPU lacks the shared memory resources to run GroupedGEMM kernel");
+    CHECK_WITH_INFO(occupancy != 0, "GPU lacks the shared memory resources to run GroupedGEMM kernel");
     const int threadblock_count = multi_processor_count * occupancy;
 
     typename EpilogueOp::Params epilogue_op(
@@ -120,16 +120,16 @@ void genericMoeGemmKernelLauncher(const T* A, const WeightType* B, const T* weig
     GemmGrouped gemm;
 
     auto can_implement = gemm.can_implement(args);
-    TLLM_CHECK_WITH_INFO(can_implement == cutlass::Status::kSuccess,
+    CHECK_WITH_INFO(can_implement == cutlass::Status::kSuccess,
         "MoE FC kernel will fail for params. Error: " + std::string(cutlassGetStatusString(can_implement)));
 
     auto init_status = gemm.initialize(args);
-    TLLM_CHECK_WITH_INFO(init_status == cutlass::Status::kSuccess,
+    CHECK_WITH_INFO(init_status == cutlass::Status::kSuccess,
         "Failed to initialize cutlass variable batched gemm. Error: "
             + std::string(cutlassGetStatusString(init_status)));
 
     auto run_status = gemm.run(stream);
-    TLLM_CHECK_WITH_INFO(run_status == cutlass::Status::kSuccess,
+    CHECK_WITH_INFO(run_status == cutlass::Status::kSuccess,
         "Failed to run cutlass variable batched gemm. Error: " + std::string(cutlassGetStatusString(run_status)));
 }
 
@@ -142,7 +142,7 @@ struct dispatch_stages
         cutlass_extensions::CutlassGemmConfig gemm_config, int multi_processor_count, cudaStream_t stream,
         int* occupancy = nullptr)
     {
-        TLLM_THROW("Cutlass fpA_intB gemm. Not instantiated for arch %d with stages set to %d",
+        THROW("Cutlass fpA_intB gemm. Not instantiated for arch %d with stages set to %d",
             arch::kMinComputeCapability, Stages);
     }
 };
@@ -202,7 +202,7 @@ void dispatchGemmConfig(const T* A, const WeightType* B, const T* weight_scales,
         DispatcherStages4::dispatch(A, B, weight_scales, biases, C, total_rows_before_expert, num_rows, gemm_n, gemm_k,
             num_experts, gemm_config, multi_processor_count, stream, occupancy);
         break;
-    default: TLLM_THROW("dispatchGemmConfig does not support stages %d", gemm_config.stages); break;
+    default: THROW("dispatchGemmConfig does not support stages %d", gemm_config.stages); break;
     }
 }
 
@@ -232,11 +232,11 @@ void dispatchMoeGemmToCutlass(const T* A, const WeightType* B, const T* weight_s
             cutlass::gemm::GemmShape<64, 32, 64>>(A, B, weight_scales, biases, C, total_rows_before_expert, total_rows,
             gemm_n, gemm_k, num_experts, gemm_config, multi_processor_count, stream, occupancy);
         break;
-    case cutlass_extensions::CutlassTileConfig::Undefined: TLLM_THROW("GEMM config undefined."); break;
+    case cutlass_extensions::CutlassTileConfig::Undefined: THROW("GEMM config undefined."); break;
     case cutlass_extensions::CutlassTileConfig::ChooseWithHeuristic:
-        TLLM_THROW("GEMM config should have already been set by heuristic.");
+        THROW("GEMM config should have already been set by heuristic.");
         break;
-    default: TLLM_THROW("Config is invalid for same type tensorop GEMM."); break;
+    default: THROW("Config is invalid for same type tensorop GEMM."); break;
     }
 }
 
@@ -267,11 +267,11 @@ void dispatchMoeGemmToCutlass(const T* A, const WeightType* B, const T* weight_s
             cutlass::gemm::GemmShape<128, 32, 64>>(A, B, weight_scales, biases, C, total_rows_before_expert, total_rows,
             gemm_n, gemm_k, num_experts, gemm_config, multi_processor_count, stream, occupancy);
         break;
-    case cutlass_extensions::CutlassTileConfig::Undefined: TLLM_THROW("GEMM config undefined."); break;
+    case cutlass_extensions::CutlassTileConfig::Undefined: THROW("GEMM config undefined."); break;
     case cutlass_extensions::CutlassTileConfig::ChooseWithHeuristic:
-        TLLM_THROW("GEMM config should have already been set by heuristic.");
+        THROW("GEMM config should have already been set by heuristic.");
         break;
-    default: TLLM_THROW("Config is invalid for mixed type tensorop GEMM."); break;
+    default: THROW("Config is invalid for mixed type tensorop GEMM."); break;
     }
 }
 
@@ -290,11 +290,11 @@ void dispatchMoeGemmToCutlass(const T* A, const WeightType* B, const T* weight_s
             cutlass::gemm::GemmShape<64, 64, 8>>(A, B, weight_scales, biases, C, total_rows_before_expert, total_rows,
             gemm_n, gemm_k, num_experts, gemm_config, multi_processor_count, stream, occupancy);
         break;
-    case cutlass_extensions::CutlassTileConfig::Undefined: TLLM_THROW("GEMM config undefined."); break;
+    case cutlass_extensions::CutlassTileConfig::Undefined: THROW("GEMM config undefined."); break;
     case cutlass_extensions::CutlassTileConfig::ChooseWithHeuristic:
-        TLLM_THROW("GEMM config should have already been set by heuristic.");
+        THROW("GEMM config should have already been set by heuristic.");
         break;
-    default: TLLM_THROW("Unsupported config for float MoE gemm."); break;
+    default: THROW("Unsupported config for float MoE gemm."); break;
     }
 }
 
@@ -351,7 +351,7 @@ void MoeGemmRunner<T, WeightType>::dispatchToArch<EpilogueTag>(const T* A, const
     }
     else
     {
-        TLLM_THROW("Arch unsupported for MoE GEMM");
+        THROW("Arch unsupported for MoE GEMM");
     }
 }
 
@@ -409,8 +409,8 @@ void MoeGemmRunner<T, WeightType>::moeGemmBiasAct(const T* A, const WeightType* 
         runGemm<cutlass_extensions::EpilogueOpDefault>(
             A, B, weight_scales, biases, C, total_rows_before_expert, total_rows, gemm_n, gemm_k, num_experts, stream);
         break;
-    case ActivationType::InvalidType: TLLM_THROW("Activation type for fpA_intB must be valid."); break;
-    default: TLLM_THROW("Invalid activation type."); break;
+    case ActivationType::InvalidType: THROW("Activation type for fpA_intB must be valid."); break;
+    default: THROW("Invalid activation type."); break;
     }
 }
 

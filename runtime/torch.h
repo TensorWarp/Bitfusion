@@ -30,12 +30,12 @@ public:
                 {
                     try
                     {
-                        TLLM_CHECK(data == ptr->data());
+                        CHECK(data == ptr->data());
                         ptr.reset();
                     }
                     catch (std::exception const& e)
                     {
-                        TLLM_LOG_EXCEPTION(e);
+                        LOG_EXCEPTION(e);
                     }
                 })
             .make_tensor();

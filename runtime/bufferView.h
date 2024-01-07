@@ -67,7 +67,7 @@ public:
 
     void resize(std::size_t newSize) override
     {
-        TLLM_CHECK(newSize <= getCapacity());
+        CHECK(newSize <= getCapacity());
         mSize = newSize;
     }
 

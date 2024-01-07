@@ -98,7 +98,7 @@ WeightOnlyGroupwiseQuantMatmulPlugin::WeightOnlyGroupwiseQuantMatmulPlugin(
 
     mPluginProfiler->deserialize(d, mDims, mGemmId);
 
-    TLLM_CHECK(d == a + length);
+    CHECK(d == a + length);
 }
 
 void WeightOnlyGroupwiseQuantMatmulPlugin::init(nvinfer1::DataType type, int quant_algo, int group_size)
@@ -147,7 +147,7 @@ void WeightOnlyGroupwiseQuantMatmulPlugin::init(nvinfer1::DataType type, int qua
 #endif
     else
     {
-        TLLM_THROW("Unsupported data type");
+        THROW("Unsupported data type");
     }
     mCudaKernelEnabled
         = bitfusion::kernels::isWeightOnlyBatchedGemvEnabled(bitfusion::kernels::WeightOnlyQuantType::Int4b);
@@ -175,12 +175,12 @@ nvinfer1::DimsExprs WeightOnlyGroupwiseQuantMatmulPlugin::getOutputDimensions(
 
     try
     {
-        TLLM_CHECK(nbInputs == mBiasesInputIdx + 1);
-        TLLM_CHECK(outputIndex == 0);
+        CHECK(nbInputs == mBiasesInputIdx + 1);
+        CHECK(outputIndex == 0);
         const int nbDimsA = inputs[0].nbDims;
         const int nbDimsB = inputs[mWeightInputIdx].nbDims;
-        TLLM_CHECK(nbDimsA >= 2);
-        TLLM_CHECK(nbDimsB == 2);
+        CHECK(nbDimsA >= 2);
+        CHECK(nbDimsB == 2);
         DimsExprs ret;
         ret.nbDims = nbDimsA;
         for (int ii = 0; ii < nbDimsA - 1; ++ii)
@@ -289,10 +289,10 @@ int WeightOnlyGroupwiseQuantMatmulPlugin::enqueue(const nvinfer1::PluginTensorDe
     }
 
 #if defined(ENABLE_BF16)
-    TLLM_CHECK_WITH_INFO(mType == nvinfer1::DataType::kHALF || mType == nvinfer1::DataType::kBF16,
+    CHECK_WITH_INFO(mType == nvinfer1::DataType::kHALF || mType == nvinfer1::DataType::kBF16,
         "No valid weightOnlyGropwiseQuantMatmul configuration");
 #else
-    TLLM_CHECK_WITH_INFO(mType == nvinfer1::DataType::kHALF, "No valid weightOnlyGropwiseQuantMatmul configuration");
+    CHECK_WITH_INFO(mType == nvinfer1::DataType::kHALF, "No valid weightOnlyGropwiseQuantMatmul configuration");
 #endif
 
     bitfusion::kernels::WeightOnlyActivationType weight_only_act_type;
@@ -324,7 +324,7 @@ int WeightOnlyGroupwiseQuantMatmulPlugin::enqueue(const nvinfer1::PluginTensorDe
         int32_t* weight_ptr = const_cast<int32_t*>(reinterpret_cast<const int32_t*>(inputs[mWeightInputIdx]));
 
         const auto& bestTactic = mPluginProfiler->getBestConfig(m, mGemmId);
-        TLLM_CHECK_WITH_INFO(bestTactic,
+        CHECK_WITH_INFO(bestTactic,
             "No valid weight only groupwise GEMM tactic(It is usually caused by the failure to execute all candidate "
             "configurations of the CUTLASS kernel, please pay attention to the warning information when building the "
             "engine.)");
@@ -339,7 +339,7 @@ int WeightOnlyGroupwiseQuantMatmulPlugin::enqueue(const nvinfer1::PluginTensorDe
 nvinfer1::DataType WeightOnlyGroupwiseQuantMatmulPlugin::getOutputDataType(
     int index, const nvinfer1::DataType* inputTypes, int nbInputs) const noexcept
 {
-    TLLM_CHECK(index == 0);
+    CHECK(index == 0);
     return mType;
 }
 
@@ -431,17 +431,17 @@ IPluginV2* WeightOnlyGroupwiseQuantMatmulPluginCreator::createPlugin(
         const char* attrName = fields[i].name;
         if (!strcmp(attrName, "quant_algo"))
         {
-            TLLM_CHECK(fields[i].type == PluginFieldType::kINT32);
+            CHECK(fields[i].type == PluginFieldType::kINT32);
             QuantAlgo = static_cast<int>(*(static_cast<const int*>(fields[i].data)));
         }
         else if (!strcmp(attrName, "group_size"))
         {
-            TLLM_CHECK(fields[i].type == PluginFieldType::kINT32);
+            CHECK(fields[i].type == PluginFieldType::kINT32);
             GroupSize = static_cast<int>(*(static_cast<const int*>(fields[i].data)));
         }
         else if (!strcmp(attrName, "type_id"))
         {
-            TLLM_CHECK(fields[i].type == PluginFieldType::kINT32);
+            CHECK(fields[i].type == PluginFieldType::kINT32);
             type = static_cast<nvinfer1::DataType>(*(static_cast<const nvinfer1::DataType*>(fields[i].data)));
         }
     }

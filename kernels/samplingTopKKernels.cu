@@ -282,7 +282,7 @@ namespace bitfusion
             curandState_t* curandstate, const int maxTopK, const int* topKs, const float topP, const float* topPs,
             const int vocabSizePadded, const int* endIds, cudaStream_t stream, const int batchSize, const bool* skipDecode)
         {
-            TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+            LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
 
             assert(topP == 1.0f || topPs == nullptr);
             const int vocabSize = vocabSizePadded;

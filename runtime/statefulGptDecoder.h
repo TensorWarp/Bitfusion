@@ -51,7 +51,7 @@ public:
 
     [[nodiscard]] TensorPtr getNewTokens(SizeType iter = 0) const override
     {
-        TLLM_CHECK(iter == 0);
+        CHECK(iter == 0);
         return mDecodingOutput->newTokens;
     }
 

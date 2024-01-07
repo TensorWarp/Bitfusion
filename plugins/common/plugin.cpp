@@ -38,10 +38,10 @@ inline CUcontext getCurrentCudaCtx()
     CUresult err = cuCtxGetCurrent(&ctx);
     if (err == CUDA_ERROR_NOT_INITIALIZED || ctx == nullptr)
     {
-        TLLM_CUDA_CHECK(cudaFree(nullptr));
+        CUDA_CHECK(cudaFree(nullptr));
         err = cuCtxGetCurrent(&ctx);
     }
-    TLLM_CHECK(err == CUDA_SUCCESS);
+    CHECK(err == CUDA_SUCCESS);
     return ctx;
 }
 
@@ -101,12 +101,12 @@ std::shared_ptr<cublasHandle_t> getCublasHandle()
         []() -> auto
         {
             auto handle = std::unique_ptr<cublasHandle_t>(new cublasHandle_t);
-            TLLM_CUDA_CHECK(cublasCreate(handle.get()));
+            CUDA_CHECK(cublasCreate(handle.get()));
             return handle;
         },
         [](cublasHandle_t* handle)
         {
-            TLLM_CUDA_CHECK(cublasDestroy(*handle));
+            CUDA_CHECK(cublasDestroy(*handle));
             delete handle;
         });
     return creator();
@@ -118,12 +118,12 @@ std::shared_ptr<cublasLtHandle_t> getCublasLtHandle()
         []() -> auto
         {
             auto handle = std::unique_ptr<cublasLtHandle_t>(new cublasLtHandle_t);
-            TLLM_CUDA_CHECK(cublasLtCreate(handle.get()));
+            CUDA_CHECK(cublasLtCreate(handle.get()));
             return handle;
         },
         [](cublasLtHandle_t* handle)
         {
-            TLLM_CUDA_CHECK(cublasLtDestroy(*handle));
+            CUDA_CHECK(cublasLtDestroy(*handle));
             delete handle;
         });
     return creator();
@@ -180,7 +180,7 @@ std::optional<T> PluginFieldParser::getScalar(std::string_view const& name)
     }
     auto& record = mMap.at(name);
     auto const& f = mFields[record.index];
-    TLLM_CHECK(toFieldType<T>() == f.type && f.length == 1);
+    CHECK(toFieldType<T>() == f.type && f.length == 1);
     record.retrieved = true;
     return std::optional{*static_cast<T const*>(f.data)};
 }

@@ -10,11 +10,11 @@ void TllmLogger::log(nvinfer1::ILogger::Severity severity, nvinfer1::AsciiChar c
     switch (severity)
     {
     case nvinfer1::ILogger::Severity::kINTERNAL_ERROR:
-    case nvinfer1::ILogger::Severity::kERROR: TLLM_LOG_ERROR(msg); break;
-    case nvinfer1::ILogger::Severity::kWARNING: TLLM_LOG_WARNING(msg); break;
-    case nvinfer1::ILogger::Severity::kINFO: TLLM_LOG_INFO(msg); break;
-    case nvinfer1::ILogger::Severity::kVERBOSE: TLLM_LOG_DEBUG(msg); break;
-    default: TLLM_LOG_TRACE(msg); break;
+    case nvinfer1::ILogger::Severity::kERROR: LOG_ERROR(msg); break;
+    case nvinfer1::ILogger::Severity::kWARNING: LOG_WARNING(msg); break;
+    case nvinfer1::ILogger::Severity::kINFO: LOG_INFO(msg); break;
+    case nvinfer1::ILogger::Severity::kVERBOSE: LOG_DEBUG(msg); break;
+    default: LOG_TRACE(msg); break;
     }
 }
 
@@ -42,6 +42,6 @@ void TllmLogger::setLevel(nvinfer1::ILogger::Severity level)
     case nvinfer1::ILogger::Severity::kWARNING: logger->setLevel(tc::Logger::Level::WARNING); break;
     case nvinfer1::ILogger::Severity::kINFO: logger->setLevel(tc::Logger::Level::INFO); break;
     case nvinfer1::ILogger::Severity::kVERBOSE: logger->setLevel(tc::Logger::Level::TRACE); break;
-    default: TLLM_THROW("Unsupported severity");
+    default: THROW("Unsupported severity");
     }
 }

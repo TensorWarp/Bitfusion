@@ -70,7 +70,7 @@ public:
         }
         else
         {
-            TLLM_THROW("Unknown memory type: %s", MemoryTypeString<T>::value);
+            THROW("Unknown memory type: %s", MemoryTypeString<T>::value);
         }
     }
 
@@ -97,7 +97,7 @@ public:
         }
         else
         {
-            TLLM_THROW("Unknown memory type: %s", MemoryTypeString<T>::value);
+            THROW("Unknown memory type: %s", MemoryTypeString<T>::value);
         }
     }
 

@@ -16,7 +16,7 @@ QuantizePerTokenPlugin::QuantizePerTokenPlugin() {}
 QuantizePerTokenPlugin::QuantizePerTokenPlugin(const void* data, size_t length)
 {
     const char *d = reinterpret_cast<const char*>(data), *a = d;
-    TLLM_CHECK(d == a + length);
+    CHECK(d == a + length);
 }
 
 nvinfer1::IPluginV2DynamicExt* QuantizePerTokenPlugin::clone() const noexcept
@@ -31,8 +31,8 @@ nvinfer1::DimsExprs QuantizePerTokenPlugin::getOutputDimensions(
 {
     try
     {
-        TLLM_CHECK(nbInputs == 1);
-        TLLM_CHECK(outputIndex < 2);
+        CHECK(nbInputs == 1);
+        CHECK(outputIndex < 2);
         if (outputIndex == 0)
         {
             return inputs[0];
@@ -112,8 +112,8 @@ int QuantizePerTokenPlugin::enqueue(const nvinfer1::PluginTensorDesc* inputDesc,
 nvinfer1::DataType QuantizePerTokenPlugin::getOutputDataType(
     int index, const nvinfer1::DataType* inputTypes, int nbInputs) const noexcept
 {
-    TLLM_CHECK(nbInputs == 1);
-    TLLM_CHECK(index < 2);
+    CHECK(nbInputs == 1);
+    CHECK(index < 2);
     return index == 0 ? nvinfer1::DataType::kINT8 : nvinfer1::DataType::kFLOAT;
 }
 

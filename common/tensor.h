@@ -216,14 +216,14 @@ namespace bitfusion
             template <typename T>
             inline T getVal(size_t index) const
             {
-                TLLM_LOG_TRACE("%s start", __PRETTY_FUNCTION__);
-                TLLM_CHECK(where == MEMORY_CPU);
-                TLLM_CHECK(data != nullptr);
-                TLLM_CHECK_WITH_INFO(index < size(), "index is larger than buffer size");
+                LOG_TRACE("%s start", __PRETTY_FUNCTION__);
+                CHECK(where == MEMORY_CPU);
+                CHECK(data != nullptr);
+                CHECK_WITH_INFO(index < size(), "index is larger than buffer size");
 
                 if (getTensorType<T>() != type)
                 {
-                    TLLM_LOG_DEBUG("getVal with type %s, but data type is: %s", getNumpyTypeDesc(getTensorType<T>()).c_str(),
+                    LOG_DEBUG("getVal with type %s, but data type is: %s", getNumpyTypeDesc(getTensorType<T>()).c_str(),
                         getNumpyTypeDesc(type).c_str());
                 }
                 return ((T*)data)[index];
@@ -232,10 +232,10 @@ namespace bitfusion
             template <typename T>
             inline T getVal() const
             {
-                TLLM_LOG_TRACE("%s start", __PRETTY_FUNCTION__);
+                LOG_TRACE("%s start", __PRETTY_FUNCTION__);
                 if (getTensorType<T>() != type)
                 {
-                    TLLM_LOG_DEBUG("getVal with type %s, but data type is: %s", getNumpyTypeDesc(getTensorType<T>()).c_str(),
+                    LOG_DEBUG("getVal with type %s, but data type is: %s", getNumpyTypeDesc(getTensorType<T>()).c_str(),
                         getNumpyTypeDesc(type).c_str());
                 }
                 return getVal<T>(0);
@@ -244,10 +244,10 @@ namespace bitfusion
             template <typename T>
             inline T* getPtr() const
             {
-                TLLM_LOG_TRACE("%s start", __PRETTY_FUNCTION__);
+                LOG_TRACE("%s start", __PRETTY_FUNCTION__);
                 if (getTensorType<T>() != type)
                 {
-                    TLLM_LOG_DEBUG("getPtr with type %s, but data type is: %s", getNumpyTypeDesc(getTensorType<T>()).c_str(),
+                    LOG_DEBUG("getPtr with type %s, but data type is: %s", getNumpyTypeDesc(getTensorType<T>()).c_str(),
                         getNumpyTypeDesc(type).c_str());
                 }
                 return (T*)data;
@@ -255,14 +255,14 @@ namespace bitfusion
 
             inline void* getPtrWithOffset(size_t offset) const
             {
-                TLLM_LOG_TRACE("%s start", __PRETTY_FUNCTION__);
+                LOG_TRACE("%s start", __PRETTY_FUNCTION__);
                 if (data == nullptr)
                 {
                     return (void*)data;
                 }
                 else
                 {
-                    TLLM_CHECK_WITH_INFO(offset < size(), "offset is larger than buffer size");
+                    CHECK_WITH_INFO(offset < size(), "offset is larger than buffer size");
                     return (void*)((char*)data + offset * Tensor::getTypeSize(type));
                 }
             }
@@ -270,10 +270,10 @@ namespace bitfusion
             template <typename T>
             inline T* getPtrWithOffset(size_t offset) const
             {
-                TLLM_LOG_TRACE("%s start", __PRETTY_FUNCTION__);
+                LOG_TRACE("%s start", __PRETTY_FUNCTION__);
                 if (getTensorType<T>() != type)
                 {
-                    TLLM_LOG_DEBUG("getVal with type %s, but data type is: %s", getNumpyTypeDesc(getTensorType<T>()).c_str(),
+                    LOG_DEBUG("getVal with type %s, but data type is: %s", getNumpyTypeDesc(getTensorType<T>()).c_str(),
                         getNumpyTypeDesc(type).c_str());
                 }
                 if (data == nullptr)
@@ -282,7 +282,7 @@ namespace bitfusion
                 }
                 else
                 {
-                    TLLM_CHECK_WITH_INFO(
+                    CHECK_WITH_INFO(
                         offset < size(), fmtstr("offset (%lu) is larger than buffer size (%lu)", offset, size()));
                     return ((T*)data) + offset;
                 }
@@ -293,11 +293,11 @@ namespace bitfusion
             {
                 if (getTensorType<T>() != type)
                 {
-                    TLLM_LOG_DEBUG("getVal with type %s, but data type is: %s", getNumpyTypeDesc(getTensorType<T>()).c_str(),
+                    LOG_DEBUG("getVal with type %s, but data type is: %s", getNumpyTypeDesc(getTensorType<T>()).c_str(),
                         getNumpyTypeDesc(type).c_str());
                 }
-                TLLM_CHECK_WITH_INFO(shape.size() > 0 && data != nullptr, "Should be a non-empty tensor.");
-                TLLM_CHECK_WITH_INFO(where == MEMORY_CPU || where == MEMORY_CPU_PINNED,
+                CHECK_WITH_INFO(shape.size() > 0 && data != nullptr, "Should be a non-empty tensor.");
+                CHECK_WITH_INFO(where == MEMORY_CPU || where == MEMORY_CPU_PINNED,
                     "max() supports MEMORY_CPU or MEMORY_CPU_PINNED tensor.");
                 size_t max_idx = 0;
                 T max_val = getVal<T>(max_idx);
@@ -318,11 +318,11 @@ namespace bitfusion
             {
                 if (getTensorType<T>() != type)
                 {
-                    TLLM_LOG_DEBUG("getVal with type %s, but data type is: %s", getNumpyTypeDesc(getTensorType<T>()).c_str(),
+                    LOG_DEBUG("getVal with type %s, but data type is: %s", getNumpyTypeDesc(getTensorType<T>()).c_str(),
                         getNumpyTypeDesc(type).c_str());
                 }
-                TLLM_CHECK_WITH_INFO(shape.size() > 0 && data != nullptr, "Should be a non-empty tensor.");
-                TLLM_CHECK_WITH_INFO(where == MEMORY_CPU || where == MEMORY_CPU_PINNED,
+                CHECK_WITH_INFO(shape.size() > 0 && data != nullptr, "Should be a non-empty tensor.");
+                CHECK_WITH_INFO(where == MEMORY_CPU || where == MEMORY_CPU_PINNED,
                     "min() supports MEMORY_CPU or MEMORY_CPU_PINNED tensor.");
                 size_t min_idx = 0;
                 T min_val = getVal<T>(min_idx);
@@ -343,11 +343,11 @@ namespace bitfusion
             {
                 if (getTensorType<T>() != type)
                 {
-                    TLLM_LOG_DEBUG("getVal with type %s, but data type is: %s", getNumpyTypeDesc(getTensorType<T>()).c_str(),
+                    LOG_DEBUG("getVal with type %s, but data type is: %s", getNumpyTypeDesc(getTensorType<T>()).c_str(),
                         getNumpyTypeDesc(type).c_str());
                 }
-                TLLM_CHECK_WITH_INFO(shape.size() > 0 && data != nullptr, "Should be a non-empty tensor.");
-                TLLM_CHECK_WITH_INFO(where == MEMORY_CPU || where == MEMORY_CPU_PINNED,
+                CHECK_WITH_INFO(shape.size() > 0 && data != nullptr, "Should be a non-empty tensor.");
+                CHECK_WITH_INFO(where == MEMORY_CPU || where == MEMORY_CPU_PINNED,
                     "any() supports MEMORY_CPU or MEMORY_CPU_PINNED tensor.");
                 for (size_t i = 0; i < size(); ++i)
                 {
@@ -364,11 +364,11 @@ namespace bitfusion
             {
                 if (getTensorType<T>() != type)
                 {
-                    TLLM_LOG_DEBUG("getVal with type %s, but data type is: %s", getNumpyTypeDesc(getTensorType<T>()).c_str(),
+                    LOG_DEBUG("getVal with type %s, but data type is: %s", getNumpyTypeDesc(getTensorType<T>()).c_str(),
                         getNumpyTypeDesc(type).c_str());
                 }
-                TLLM_CHECK_WITH_INFO(shape.size() > 0 && data != nullptr, "Should be a non-empty tensor.");
-                TLLM_CHECK_WITH_INFO(where == MEMORY_CPU || where == MEMORY_CPU_PINNED,
+                CHECK_WITH_INFO(shape.size() > 0 && data != nullptr, "Should be a non-empty tensor.");
+                CHECK_WITH_INFO(where == MEMORY_CPU || where == MEMORY_CPU_PINNED,
                     "all() supports MEMORY_CPU or MEMORY_CPU_PINNED tensor.");
                 for (size_t i = 0; i < size(); ++i)
                 {
@@ -413,7 +413,7 @@ namespace bitfusion
 
             inline bool contains(const std::string& key) const
             {
-                TLLM_LOG_TRACE("%s for key: %s", __PRETTY_FUNCTION__, key.c_str());
+                LOG_TRACE("%s for key: %s", __PRETTY_FUNCTION__, key.c_str());
                 return tensor_map_.find(key) != tensor_map_.end();
             }
 
@@ -421,8 +421,8 @@ namespace bitfusion
 
             inline void insert(const std::string& key, const Tensor& value)
             {
-                TLLM_CHECK_WITH_INFO(!contains(key), fmtstr("Duplicated key %s", key.c_str()));
-                TLLM_CHECK_WITH_INFO(
+                CHECK_WITH_INFO(!contains(key), fmtstr("Duplicated key %s", key.c_str()));
+                CHECK_WITH_INFO(
                     value.isValid(), fmtstr("A none tensor or nullptr is not allowed (key is %s)", key.c_str()));
                 tensor_map_.insert({ key, value });
             }
@@ -445,8 +445,8 @@ namespace bitfusion
 
             inline Tensor& at(const std::string& key)
             {
-                TLLM_LOG_TRACE("%s for key %s", __PRETTY_FUNCTION__, key.c_str());
-                TLLM_CHECK_WITH_INFO(contains(key),
+                LOG_TRACE("%s for key %s", __PRETTY_FUNCTION__, key.c_str());
+                CHECK_WITH_INFO(contains(key),
                     fmtstr(
                         "Cannot find a tensor of name %s in the tensor map (keys: %s)", key.c_str(), vec2str(keys()).c_str()));
                 return tensor_map_.at(key);
@@ -454,7 +454,7 @@ namespace bitfusion
 
             inline Tensor at(const std::string& key) const
             {
-                TLLM_CHECK_WITH_INFO(contains(key),
+                CHECK_WITH_INFO(contains(key),
                     fmtstr(
                         "Cannot find a tensor of name %s in the tensor map (keys: %s)", key.c_str(), vec2str(keys()).c_str()));
                 return tensor_map_.at(key);
@@ -470,7 +470,7 @@ namespace bitfusion
 
             inline Tensor& at(const std::string& key, Tensor& default_tensor)
             {
-                TLLM_LOG_TRACE("%s for key %s", __PRETTY_FUNCTION__, key.c_str());
+                LOG_TRACE("%s for key %s", __PRETTY_FUNCTION__, key.c_str());
                 if (contains(key))
                 {
                     return tensor_map_.at(key);
@@ -480,7 +480,7 @@ namespace bitfusion
 
             inline Tensor at(const std::string& key, Tensor& default_tensor) const
             {
-                TLLM_LOG_TRACE("%s for key %s", __PRETTY_FUNCTION__, key.c_str());
+                LOG_TRACE("%s for key %s", __PRETTY_FUNCTION__, key.c_str());
                 if (contains(key))
                 {
                     return tensor_map_.at(key);
@@ -490,7 +490,7 @@ namespace bitfusion
 
             inline Tensor& at(const std::string& key, Tensor&& default_tensor)
             {
-                TLLM_LOG_TRACE("%s for key %s", __PRETTY_FUNCTION__, key.c_str());
+                LOG_TRACE("%s for key %s", __PRETTY_FUNCTION__, key.c_str());
                 if (contains(key))
                 {
                     return tensor_map_.at(key);
@@ -510,7 +510,7 @@ namespace bitfusion
             template <typename T>
             inline T getVal(const std::string& key) const
             {
-                TLLM_CHECK_WITH_INFO(contains(key),
+                CHECK_WITH_INFO(contains(key),
                     fmtstr(
                         "Cannot find a tensor of name %s in the tensor map (keys: %s)", key.c_str(), vec2str(keys()).c_str()));
                 return tensor_map_.at(key).getVal<T>();
@@ -542,7 +542,7 @@ namespace bitfusion
             template <typename T>
             inline T getValWithOffset(const std::string& key, size_t index) const
             {
-                TLLM_CHECK_WITH_INFO(contains(key),
+                CHECK_WITH_INFO(contains(key),
                     fmtstr(
                         "Cannot find a tensor of name %s in the tensor map (keys: %s)", key.c_str(), vec2str(keys()).c_str()));
                 return tensor_map_.at(key).getVal<T>(index);
@@ -561,7 +561,7 @@ namespace bitfusion
             template <typename T>
             inline T* getPtr(const std::string& key) const
             {
-                TLLM_CHECK_WITH_INFO(contains(key),
+                CHECK_WITH_INFO(contains(key),
                     fmtstr(
                         "Cannot find a tensor of name %s in the tensor map (keys: %s)", key.c_str(), vec2str(keys()).c_str()));
                 return tensor_map_.at(key).getPtr<T>();
@@ -580,7 +580,7 @@ namespace bitfusion
             template <typename T>
             inline T* getPtrWithOffset(const std::string& key, size_t index) const
             {
-                TLLM_CHECK_WITH_INFO(contains(key),
+                CHECK_WITH_INFO(contains(key),
                     fmtstr(
                         "Cannot find a tensor of name %s in the tensor map (keys: %s)", key.c_str(), vec2str(keys()).c_str()));
                 return tensor_map_.at(key).getPtrWithOffset<T>(index);

@@ -91,7 +91,7 @@ namespace bitfusion::common {
         };
 
         if (type == TYPE_BF16) {
-            TLLM_LOG_WARNING(
+            LOG_WARNING(
                 "getNumpyTypeDesc(TYPE_BF16) returns an invalid type 'x' since Numpy doesn't "
                 "support bfloat16 as of now, it will be properly extended if numpy supports. "
                 "Please refer for the discussions https://github.com/numpy/numpy/issues/19808.");
@@ -104,7 +104,7 @@ namespace bitfusion::common {
         if (data != nullptr) {
             size_t nElts = size();
             size_t nSlicedElts = std::accumulate(shape.begin(), shape.end(), size_t{ 1 }, std::multiplies<size_t>());
-            TLLM_CHECK_WITH_INFO(nSlicedElts + offset <= nElts,
+            CHECK_WITH_INFO(nSlicedElts + offset <= nElts,
                 fmtstr("The number (%ld) of elements of sliced tensor exceeds that (%ld) of the original tensor",
                     nSlicedElts + offset, nElts));
         }
@@ -117,7 +117,7 @@ namespace bitfusion::common {
                 insert(kv.first, kv.second);
             }
             else {
-                TLLM_LOG_DEBUG(fmtstr("%s is not a valid tensor, skipping insert into TensorMap", kv.first.c_str()));
+                LOG_DEBUG(fmtstr("%s is not a valid tensor, skipping insert into TensorMap", kv.first.c_str()));
             }
         }
     }
@@ -134,7 +134,7 @@ namespace bitfusion::common {
                 insert(pair.first, pair.second);
             }
             else {
-                TLLM_LOG_DEBUG(fmtstr("%s is not a valid tensor, skipping insert into TensorMap", pair.first.c_str()));
+                LOG_DEBUG(fmtstr("%s is not a valid tensor, skipping insert into TensorMap", pair.first.c_str()));
             }
         }
     }

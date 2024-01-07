@@ -10,7 +10,7 @@
 #include <vector>
 
 #define COMM_WORLD MpiComm(MPI_COMM_WORLD)
-#define MPICHECK(cmd) TLLM_MPI_CHECK(cmd)
+#define MPICHECK(cmd) MPI_CHECK(cmd)
 
 namespace bitfusion::mpi
 {

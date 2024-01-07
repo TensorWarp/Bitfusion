@@ -67,14 +67,14 @@ LoraPlugin::LoraPlugin(int in_hidden_size, std::vector<int> out_hidden_sizes, in
 {
     mOutHiddenSizes.resize(mNumLoraModules);
     mOutHiddenSizes.assign(out_hidden_sizes.begin(), out_hidden_sizes.end());
-    TLLM_LOG_DEBUG("%s", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s", __PRETTY_FUNCTION__);
     init();
 }
 
 LoraPlugin::LoraPlugin(const void* data, size_t length, const LoraPlugin::PluginProfilerPtr& pluginProfiler)
     : mPluginProfiler(pluginProfiler)
 {
-    TLLM_LOG_DEBUG("%s", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s", __PRETTY_FUNCTION__);
     const char *d = reinterpret_cast<const char*>(data), *a = d;
     read(d, mInHiddenSize);
     read(d, mTransA);
@@ -94,12 +94,12 @@ LoraPlugin::LoraPlugin(const void* data, size_t length, const LoraPlugin::Plugin
 
     mPluginProfiler->deserialize(d, mDims, mGemmId);
 
-    TLLM_CHECK(d == a + length);
+    CHECK(d == a + length);
 }
 
 void LoraPlugin::init()
 {
-    TLLM_LOG_DEBUG("%s", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s", __PRETTY_FUNCTION__);
     auto cublasHandle = getCublasHandle();
     auto cublasLtHandle = getCublasLtHandle();
     mCublasWrapper = std::make_shared<CublasMMWrapper>(cublasHandle, cublasLtHandle, nullptr, nullptr);
@@ -111,7 +111,7 @@ void LoraPlugin::init()
 
 void LoraPlugin::setGemmConfig()
 {
-    TLLM_LOG_DEBUG("%s", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s", __PRETTY_FUNCTION__);
     if (mType == DataType::kHALF)
     {
         mCublasWrapper->setFP16GemmConfig();
@@ -130,7 +130,7 @@ void LoraPlugin::setGemmConfig()
 
 void LoraPlugin::configGemm()
 {
-    TLLM_LOG_DEBUG("%s", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s", __PRETTY_FUNCTION__);
     if (!mDims.isInitialized())
     {
         return;
@@ -143,7 +143,7 @@ void LoraPlugin::configGemm()
 
 nvinfer1::IPluginV2DynamicExt* LoraPlugin::clone() const noexcept
 {
-    TLLM_LOG_DEBUG("%s", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s", __PRETTY_FUNCTION__);
     auto* plugin = new LoraPlugin(*this);
     return plugin;
 }
@@ -151,10 +151,10 @@ nvinfer1::IPluginV2DynamicExt* LoraPlugin::clone() const noexcept
 nvinfer1::DimsExprs LoraPlugin::getOutputDimensions(
     int outputIndex, const nvinfer1::DimsExprs* inputs, int nbInputs, nvinfer1::IExprBuilder& exprBuilder) noexcept
 {
-    TLLM_LOG_DEBUG("%s", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s", __PRETTY_FUNCTION__);
     try
     {
-        TLLM_CHECK(outputIndex < mNumLoraModules);
+        CHECK(outputIndex < mNumLoraModules);
         const int nbDimsA = inputs[getInputTensorIdx()].nbDims;
         DimsExprs ret;
         ret.nbDims = nbDimsA;
@@ -180,7 +180,7 @@ nvinfer1::DimsExprs LoraPlugin::getOutputDimensions(
         }
 
         auto const* outHiddenSize = exprBuilder.constant(mOutHiddenSizes.at(outputIndex));
-        TLLM_CHECK(outHiddenSize != nullptr);
+        CHECK(outHiddenSize != nullptr);
         ret.d[ret.nbDims - 1] = outHiddenSize;
         return ret;
     }
@@ -194,7 +194,7 @@ nvinfer1::DimsExprs LoraPlugin::getOutputDimensions(
 bool LoraPlugin::supportsFormatCombination(
     int pos, const nvinfer1::PluginTensorDesc* inOut, int nbInputs, int nbOutputs) noexcept
 {
-    TLLM_LOG_DEBUG("%s", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s", __PRETTY_FUNCTION__);
     if (pos == getHostRequestTypesIdx())
     {
         return inOut[pos].type == nvinfer1::DataType::kINT32;
@@ -260,7 +260,7 @@ int32_t _computeNDimension(bool transB, const int32_t nbDims, const int32_t* dim
 void LoraPlugin::configurePlugin(const nvinfer1::DynamicPluginTensorDesc* in, int nbInputs,
     const nvinfer1::DynamicPluginTensorDesc* out, int nbOutputs) noexcept
 {
-    TLLM_LOG_DEBUG("%s", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s", __PRETTY_FUNCTION__);
     const int nbDimsA = in[0].max.nbDims;
     const int nbDimsB = in[1].max.nbDims;
 
@@ -275,7 +275,7 @@ void LoraPlugin::configurePlugin(const nvinfer1::DynamicPluginTensorDesc* in, in
     }
     mGemmId.n = N;
     mGemmId.k = K;
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
 int64_t getLowRankWorkSpaceSize(
@@ -296,7 +296,7 @@ int64_t getCutlassWorkSpaceSize(int64_t nbReq)
 size_t LoraPlugin::getWorkspaceSize(const nvinfer1::PluginTensorDesc* inputs, int nbInputs,
     const nvinfer1::PluginTensorDesc* outputs, int nbOutputs) const noexcept
 {
-    TLLM_LOG_DEBUG("%s", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s", __PRETTY_FUNCTION__);
     const int nbReq = inputs[getLoraRanksIdx()].dims.d[0];
     auto const type = inputs[getInputTensorIdx()].type;
     auto const typeSize = bitfusion::runtime::BufferDataType(type).getSize();
@@ -309,7 +309,7 @@ size_t LoraPlugin::getWorkspaceSize(const nvinfer1::PluginTensorDesc* inputs, in
 void runCublasGemmEx(const int M, const int N, const int K, const bool transA, const bool transB, const void* act,
     const void* weight, void* output, cublasHandle_t cublas_handle)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     float a = 1.0f;
     float b = 0.0f;
     void* alpha = &a;
@@ -321,13 +321,13 @@ void runCublasGemmEx(const int M, const int N, const int K, const bool transA, c
 
     bitfusion::common::check_cuda_error(cublasGemmEx(cublas_handle, transa, transb, m, n, k, alpha, weight,
         CUDA_R_16F, lda, act, CUDA_R_16F, ldb, beta, output, CUDA_R_16F, ldc, CUDA_R_32F, CUBLAS_GEMM_DEFAULT));
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
 int LoraPlugin::enqueue(const nvinfer1::PluginTensorDesc* inputDesc, const nvinfer1::PluginTensorDesc* outputDesc,
     const void* const* inputs, void* const* outputs, void* workspace, cudaStream_t stream) noexcept
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
 
     auto const typeSize = bitfusion::runtime::BufferDataType(mType).getSize();
     setGemmConfig();
@@ -392,7 +392,7 @@ int LoraPlugin::enqueue(const nvinfer1::PluginTensorDesc* inputDesc, const nvinf
 
             if (N > 0)
             {
-                TLLM_CHECK_WITH_INFO(N <= mMaxLowRank,
+                CHECK_WITH_INFO(N <= mMaxLowRank,
                     fmtstr("Invalid low_rank (%d). low_rank must be smaller than mMaxLowRank (%d)", N, mMaxLowRank));
                 const auto K = mTransA ? inputDesc[0].dims.d[0] : inputDesc[0].dims.d[nbDimsA - 1];
                 const auto N2 = outputDesc[loraModuleIdx].dims.d[nbDimsA - 1];
@@ -452,7 +452,7 @@ int LoraPlugin::enqueue(const nvinfer1::PluginTensorDesc* inputDesc, const nvinf
                 const auto N = lora_rank;
                 if (N > 0)
                 {
-                    TLLM_CHECK_WITH_INFO(N <= mMaxLowRank,
+                    CHECK_WITH_INFO(N <= mMaxLowRank,
                         fmtstr(
                             "Invalid low_rank (%d). low_rank must be smaller than mMaxLowRank (%d)", N, mMaxLowRank));
                     const auto K
@@ -494,53 +494,53 @@ int LoraPlugin::enqueue(const nvinfer1::PluginTensorDesc* inputDesc, const nvinf
         sync_check_cuda_error();
     }
 
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
     return 0;
 }
 
 nvinfer1::DataType LoraPlugin::getOutputDataType(
     int index, const nvinfer1::DataType* inputTypes, int nbInputs) const noexcept
 {
-    TLLM_LOG_DEBUG("%s", __PRETTY_FUNCTION__);
-    TLLM_CHECK(index < mNumLoraModules);
+    LOG_DEBUG("%s", __PRETTY_FUNCTION__);
+    CHECK(index < mNumLoraModules);
     return inputTypes[0];
 }
 
 
 const char* LoraPlugin::getPluginType() const noexcept
 {
-    TLLM_LOG_DEBUG("%s", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s", __PRETTY_FUNCTION__);
     return LORA_PLUGIN_NAME;
 }
 
 const char* LoraPlugin::getPluginVersion() const noexcept
 {
-    TLLM_LOG_DEBUG("%s", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s", __PRETTY_FUNCTION__);
     return LORA_PLUGIN_VERSION;
 }
 
 int LoraPlugin::getNbOutputs() const noexcept
 {
-    TLLM_LOG_DEBUG("%s", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s", __PRETTY_FUNCTION__);
     return mNumLoraModules;
 }
 
 int LoraPlugin::initialize() noexcept
 {
-    TLLM_LOG_DEBUG("%s", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s", __PRETTY_FUNCTION__);
     configGemm();
     return 0;
 }
 
 void LoraPlugin::destroy() noexcept
 {
-    TLLM_LOG_DEBUG("%s", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s", __PRETTY_FUNCTION__);
     delete this;
 }
 
 size_t LoraPlugin::getSerializationSize() const noexcept
 {
-    TLLM_LOG_DEBUG("%s", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s", __PRETTY_FUNCTION__);
     return sizeof(mInHiddenSize) + sizeof(mTransA) + sizeof(mTransB) + sizeof(mNumLoraModules) + sizeof(mType)
         + mPluginProfiler->getSerializationSize(mGemmId) + sizeof(mRemoveInputPadding) + sizeof(mMaxContextLength)
         + sizeof(mMaxLowRank) + sizeof(int) * mNumLoraModules;
@@ -548,7 +548,7 @@ size_t LoraPlugin::getSerializationSize() const noexcept
 
 void LoraPlugin::serialize(void* buffer) const noexcept
 {
-    TLLM_LOG_DEBUG("%s", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s", __PRETTY_FUNCTION__);
     char *d = static_cast<char*>(buffer), *a = d;
     write(d, mInHiddenSize);
     write(d, mTransA);
@@ -572,7 +572,7 @@ void LoraPlugin::terminate() noexcept {}
 
 LoraPluginCreator::LoraPluginCreator()
 {
-    TLLM_LOG_DEBUG("%s", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s", __PRETTY_FUNCTION__);
     mPluginAttributes.clear();
     mPluginAttributes.emplace_back(PluginField("transA", nullptr, PluginFieldType::kINT32, 0));
     mPluginAttributes.emplace_back(PluginField("transB", nullptr, PluginFieldType::kINT32, 0));
@@ -584,25 +584,25 @@ LoraPluginCreator::LoraPluginCreator()
 
 const char* LoraPluginCreator::getPluginName() const noexcept
 {
-    TLLM_LOG_DEBUG("%s", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s", __PRETTY_FUNCTION__);
     return LORA_PLUGIN_NAME;
 }
 
 const char* LoraPluginCreator::getPluginVersion() const noexcept
 {
-    TLLM_LOG_DEBUG("%s", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s", __PRETTY_FUNCTION__);
     return LORA_PLUGIN_VERSION;
 }
 
 const PluginFieldCollection* LoraPluginCreator::getFieldNames() noexcept
 {
-    TLLM_LOG_DEBUG("%s", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s", __PRETTY_FUNCTION__);
     return &mFC;
 }
 
 IPluginV2* LoraPluginCreator::createPlugin(const char* name, const PluginFieldCollection* fc) noexcept
 {
-    TLLM_LOG_DEBUG("%s", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s", __PRETTY_FUNCTION__);
 
     const PluginField* fields = fc->fields;
     nvinfer1::DataType type;
@@ -616,42 +616,42 @@ IPluginV2* LoraPluginCreator::createPlugin(const char* name, const PluginFieldCo
         const char* attrName = fields[i].name;
         if (!strcmp(attrName, "in_hidden_size"))
         {
-            TLLM_CHECK(fields[i].type == PluginFieldType::kINT32);
+            CHECK(fields[i].type == PluginFieldType::kINT32);
             in_hidden_size = static_cast<int>(*(static_cast<const int*>(fields[i].data)));
         }
         else if (!strcmp(attrName, "transa"))
         {
-            TLLM_CHECK(fields[i].type == PluginFieldType::kINT32);
+            CHECK(fields[i].type == PluginFieldType::kINT32);
             transA = static_cast<int>(*(static_cast<const int*>(fields[i].data)));
         }
         else if (!strcmp(attrName, "transb"))
         {
-            TLLM_CHECK(fields[i].type == PluginFieldType::kINT32);
+            CHECK(fields[i].type == PluginFieldType::kINT32);
             transB = static_cast<int>(*(static_cast<const int*>(fields[i].data)));
         }
         else if (!strcmp(attrName, "type_id"))
         {
-            TLLM_CHECK(fields[i].type == PluginFieldType::kINT32);
+            CHECK(fields[i].type == PluginFieldType::kINT32);
             type = static_cast<nvinfer1::DataType>(*(static_cast<const nvinfer1::DataType*>(fields[i].data)));
         }
         else if (!strcmp(attrName, "remove_input_padding"))
         {
-            TLLM_CHECK(fields[i].type == PluginFieldType::kINT8);
+            CHECK(fields[i].type == PluginFieldType::kINT8);
             remove_input_padding = static_cast<bool>(*(static_cast<const int8_t*>(fields[i].data)));
         }
         else if (!strcmp(attrName, "max_context_length"))
         {
-            TLLM_CHECK(fields[i].type == PluginFieldType::kINT32);
+            CHECK(fields[i].type == PluginFieldType::kINT32);
             max_context_length = static_cast<int>(*(static_cast<const int*>(fields[i].data)));
         }
         else if (!strcmp(attrName, "max_low_rank"))
         {
-            TLLM_CHECK(fields[i].type == PluginFieldType::kINT32);
+            CHECK(fields[i].type == PluginFieldType::kINT32);
             max_low_rank = static_cast<int>(*(static_cast<const int*>(fields[i].data)));
         }
         else if (!strcmp(attrName, "num_lora_modules"))
         {
-            TLLM_CHECK(fields[i].type == PluginFieldType::kINT32);
+            CHECK(fields[i].type == PluginFieldType::kINT32);
             num_lora_modules = static_cast<int>(*(static_cast<const int*>(fields[i].data)));
         }
     }
@@ -664,7 +664,7 @@ IPluginV2* LoraPluginCreator::createPlugin(const char* name, const PluginFieldCo
         {
             if (!strcmp(attrName, fmtstr("out_hidden_size_%d", j).c_str()))
             {
-                TLLM_CHECK(fields[i].type == PluginFieldType::kINT32);
+                CHECK(fields[i].type == PluginFieldType::kINT32);
                 out_hidden_sizes.at(j) = static_cast<int>(*(static_cast<const int*>(fields[i].data)));
             }
         }
@@ -686,7 +686,7 @@ IPluginV2* LoraPluginCreator::createPlugin(const char* name, const PluginFieldCo
 
 IPluginV2* LoraPluginCreator::deserializePlugin(const char* name, const void* serialData, size_t serialLength) noexcept
 {
-    TLLM_LOG_DEBUG("%s", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s", __PRETTY_FUNCTION__);
     try
     {
         auto pluginProfiler = gemmPluginProfileManager.createGemmPluginProfiler( true, true);

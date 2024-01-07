@@ -27,7 +27,7 @@ public:
 
     static std::vector<SizeType> shape(ITensor::Shape const& dims)
     {
-        TLLM_CHECK(dims.nbDims >= 0);
+        CHECK(dims.nbDims >= 0);
         std::vector<SizeType> shape{};
         shape.reserve(dims.nbDims);
         std::transform(
@@ -37,12 +37,12 @@ public:
 
     static ITensor::Shape shape(at::IntArrayRef const& sizes)
     {
-        TLLM_CHECK(sizes.size() <= ITensor::Shape::MAX_DIMS);
+        CHECK(sizes.size() <= ITensor::Shape::MAX_DIMS);
         ITensor::Shape shape{static_cast<runtime::SizeType>(sizes.size())};
         using dimType = std::remove_reference_t<decltype(shape.d[0])>;
         for (std::size_t i = 0; i < sizes.size(); ++i)
         {
-            TLLM_CHECK(sizes[i] <= std::numeric_limits<dimType>::max());
+            CHECK(sizes[i] <= std::numeric_limits<dimType>::max());
             shape.d[i] = static_cast<dimType>(sizes[i]);
         }
         return shape;
@@ -56,7 +56,7 @@ public:
     static at::Device device(void const* ptr)
     {
         ::cudaPointerAttributes attr{};
-        TLLM_CUDA_CHECK(cudaPointerGetAttributes(&attr, ptr));
+        CUDA_CHECK(cudaPointerGetAttributes(&attr, ptr));
         auto const memoryType = attr.type;
         return (memoryType == ::cudaMemoryTypeDevice || memoryType == ::cudaMemoryTypeManaged)
             ? at::Device{at::kCUDA, static_cast<at::DeviceIndex>(attr.device)}
@@ -76,7 +76,7 @@ public:
         case IBuffer::DataType::kBOOL: return at::ScalarType::Bool;
         case IBuffer::DataType::kFP8: return at::ScalarType::Bits8;
         case IBuffer::DataType::kBF16: return at::ScalarType::BFloat16;
-        default: TLLM_THROW("unsupported data type");
+        default: THROW("unsupported data type");
         }
     }
 
@@ -93,7 +93,7 @@ public:
         case at::ScalarType::Bool: return IBuffer::DataType::kBOOL;
         case at::ScalarType::Bits8: return IBuffer::DataType::kFP8;
         case at::ScalarType::BFloat16: return IBuffer::DataType::kBF16;
-        default: TLLM_THROW("unsupported data type");
+        default: THROW("unsupported data type");
         }
     }
 

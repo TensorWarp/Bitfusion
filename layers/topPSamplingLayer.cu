@@ -90,7 +90,7 @@ static __global__ void set_topp_runtime_args(int batch_size, std::uint32_t top_k
 template <typename T>
 void TopPSamplingLayer<T>::allocateBuffer(std::size_t batch_size, std::vector<float> const& top_p)
 {
-    TLLM_LOG_TRACE(__PRETTY_FUNCTION__);
+    LOG_TRACE(__PRETTY_FUNCTION__);
     float const max_top_p = (top_p.size() > 0) ? *std::max_element(std::begin(top_p), std::end(top_p)) : 0.0f;
     invokeTopPSampling<T>(nullptr, // workspace
         sampling_workspace_size_, cub_temp_storage_size_,
@@ -121,7 +121,7 @@ void TopPSamplingLayer<T>::allocateBuffer(std::size_t batch_size, std::vector<fl
 template <typename T>
 void TopPSamplingLayer<T>::freeBuffer()
 {
-    TLLM_LOG_TRACE(__PRETTY_FUNCTION__);
+    LOG_TRACE(__PRETTY_FUNCTION__);
     if (is_allocate_buffer_)
     {
         allocator_->free((void**) (&sampling_workspace_));
@@ -142,7 +142,7 @@ void TopPSamplingLayer<T>::freeBuffer()
 template <typename T>
 void TopPSamplingLayer<T>::setup(std::size_t const batch_size, SetupParams const& setupParams)
 {
-    TLLM_LOG_TRACE(__PRETTY_FUNCTION__);
+    LOG_TRACE(__PRETTY_FUNCTION__);
     BaseSamplingLayer<T>::setupBase(batch_size, setupParams);
 
     std::uint32_t const default_top_k = 0;
@@ -165,14 +165,14 @@ void TopPSamplingLayer<T>::setup(std::size_t const batch_size, SetupParams const
 
     if (runtime_top_k_size > 1)
     {
-        TLLM_CHECK_WITH_INFO(runtime_top_k.size() == batch_size,
+        CHECK_WITH_INFO(runtime_top_k.size() == batch_size,
             fmtstr(
                 "runtime_top_k.size() (%lu) == batch_size (%lu) is not satisfied!", runtime_top_k.size(), batch_size));
         cudaAutoCpy(runtime_top_k_buf_, runtime_top_k.data(), batch_size, stream_);
     }
     if (runtime_top_p_size > 1)
     {
-        TLLM_CHECK_WITH_INFO(runtime_top_p.size() == batch_size,
+        CHECK_WITH_INFO(runtime_top_p.size() == batch_size,
             fmtstr(
                 "runtime_top_p.size() (%lu) == batch_size (%lu) is not satisfied!", runtime_top_p.size(), batch_size));
         cudaAutoCpy(runtime_top_p_buf_, runtime_top_p.data(), batch_size, stream_);
@@ -180,7 +180,7 @@ void TopPSamplingLayer<T>::setup(std::size_t const batch_size, SetupParams const
 
     auto fillBuffers = [this, &batch_size](std::string name, auto const& vector, auto& deviceBuffer)
     {
-        TLLM_CHECK_WITH_INFO(vector.size() == batch_size,
+        CHECK_WITH_INFO(vector.size() == batch_size,
             fmtstr("%s.size() (%lu) == batch_size (%lu) is not satisfied!", name.c_str(), vector.size(), batch_size));
         cudaAutoCpy(deviceBuffer, vector.data(), batch_size, stream_);
     };
@@ -214,7 +214,7 @@ void TopPSamplingLayer<T>::setup(std::size_t const batch_size, SetupParams const
 template <typename T>
 void TopPSamplingLayer<T>::runSampling(DecodingOutputParams& outputs, DecodingParams const& params)
 {
-    TLLM_LOG_TRACE(__PRETTY_FUNCTION__);
+    LOG_TRACE(__PRETTY_FUNCTION__);
 
     auto const batch_size = outputs.output_ids_ptr.shape[0];
     auto const local_batch_size = params.logits.shape[0];
@@ -273,7 +273,7 @@ TopPSamplingLayer<T>::TopPSamplingLayer(TopPSamplingLayer<T> const& top_p_sampli
 template <typename T>
 TopPSamplingLayer<T>::~TopPSamplingLayer()
 {
-    TLLM_LOG_TRACE(__PRETTY_FUNCTION__);
+    LOG_TRACE(__PRETTY_FUNCTION__);
     freeBuffer();
 }
 

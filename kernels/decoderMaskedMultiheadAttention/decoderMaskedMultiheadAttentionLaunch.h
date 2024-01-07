@@ -98,7 +98,7 @@ inline void multi_block_grid_setup(dim3& grid, const Multihead_attention_params<
 
     params.seq_len_tile = std::clamp(balanced_seq_len_tile, params.min_seq_len_tile, max_seq_len_tile);
 
-    TLLM_CHECK_WITH_INFO(
+    CHECK_WITH_INFO(
         params.seq_len_tile <= block_size, "The number of blocks per sequence may not exceed the thread block size.");
 
     params.timesteps_per_block = mmha::divUp(tlength + 1, params.seq_len_tile);
@@ -108,7 +108,7 @@ inline void multi_block_grid_setup(dim3& grid, const Multihead_attention_params<
     static bool debug_flag_printed_once = false;
     if (multi_block_debug_flag && !debug_flag_printed_once)
     {
-        TLLM_LOG_INFO("MMHA kernel info: threads per block(%d), launched_blocks_per_sequence(%d), sequence_length(%d).",
+        LOG_INFO("MMHA kernel info: threads per block(%d), launched_blocks_per_sequence(%d), sequence_length(%d).",
             block_size, params.seq_len_tile, tlength + 1);
         debug_flag_printed_once = true;
     }
@@ -126,10 +126,10 @@ inline void multi_block_grid_setup(dim3& grid, const Multihead_attention_params<
             mmha::masked_multihead_attention_kernel<T, T_cache, KVCacheBuffer, Dh, DYNAMIC_THDS_PER_BLOCK,             \
                 KernelParamsType::DO_CROSS_ATTENTION, HAS_BEAMS, DO_MULTI_BLOCK>,                                      \
             cudaFuncAttributeMaxDynamicSharedMemorySize, dynamic_smem_sz);                                             \
-        TLLM_CHECK_WITH_INFO(                                                                                          \
+        CHECK_WITH_INFO(                                                                                          \
             res == cudaSuccess, "Sequence Length is too long for the MMHA kernel (not enough shared memory).");        \
     }                                                                                                                  \
-    TLLM_CUDA_CHECK(cudaOccupancyMaxActiveBlocksPerMultiprocessor(&available_blocks,                                   \
+    CUDA_CHECK(cudaOccupancyMaxActiveBlocksPerMultiprocessor(&available_blocks,                                   \
         mmha::masked_multihead_attention_kernel<T, T_cache, KVCacheBuffer, Dh, DYNAMIC_THDS_PER_BLOCK,                 \
             KernelParamsType::DO_CROSS_ATTENTION, HAS_BEAMS, DO_MULTI_BLOCK>,                                          \
         DYNAMIC_THDS_PER_BLOCK, dynamic_smem_sz));
@@ -144,7 +144,7 @@ inline void multi_block_grid_setup(dim3& grid, const Multihead_attention_params<
             mmha::masked_multihead_attention_kernel<T, T_cache, KVCacheBuffer, Dh, DYNAMIC_THDS_PER_BLOCK,             \
                 KernelParamsType::DO_CROSS_ATTENTION, HAS_BEAMS, ENABLE_MULTI_BLOCK>,                                  \
             cudaFuncAttributeMaxDynamicSharedMemorySize, dynamic_smem_sz);                                             \
-        TLLM_CHECK_WITH_INFO(                                                                                          \
+        CHECK_WITH_INFO(                                                                                          \
             res == cudaSuccess, "Sequence Length is too long for the MMHA kernel (not enough shared memory).");        \
     }                                                                                                                  \
     mmha::masked_multihead_attention_kernel<T, T_cache, KVCacheBuffer, Dh, DYNAMIC_THDS_PER_BLOCK,                     \
@@ -190,7 +190,7 @@ void mmha_launch_kernel_ex(
     }
 
     int num_blocks_per_sm = -1;
-    TLLM_CUDA_CHECK(cudaOccupancyMaxActiveBlocksPerMultiprocessor(&num_blocks_per_sm,
+    CUDA_CHECK(cudaOccupancyMaxActiveBlocksPerMultiprocessor(&num_blocks_per_sm,
         mmha::masked_multihead_attention_kernel<T, T_cache, KVCacheBuffer, Dh, THDS_PER_BLOCK,
             KernelParamsType::DO_CROSS_ATTENTION, HAS_BEAMS, DO_MULTI_BLOCK>,
         THDS_PER_BLOCK, 0));

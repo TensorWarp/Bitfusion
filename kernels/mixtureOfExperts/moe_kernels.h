@@ -175,7 +175,7 @@ public:
         MOEParallelismConfig parallelism_config, MOEExpertScaleNormalizationMode normalization_mode,
         cudaStream_t stream) override
     {
-        TLLM_THROW("FP32 MoE with different precision weights is not supported.");
+        THROW("FP32 MoE with different precision weights is not supported.");
     }
 };
 

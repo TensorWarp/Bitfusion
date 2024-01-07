@@ -34,9 +34,9 @@ namespace bitfusion
                 , data(nullptr)
             {
                 const float tokensPerBlockSeqLog2 = log2(mTokensPerBlock);
-                TLLM_CHECK_WITH_INFO(
+                CHECK_WITH_INFO(
                     ceil(tokensPerBlockSeqLog2) == floor(tokensPerBlockSeqLog2), "tokensPerBlock must be power of 2");
-                TLLM_CHECK_WITH_INFO(static_cast<int64_t>(mMaxSeqs - 1) * mMaxBlocksPerSeq * 2 + maxBlocksPerSeq
+                CHECK_WITH_INFO(static_cast<int64_t>(mMaxSeqs - 1) * mMaxBlocksPerSeq * 2 + maxBlocksPerSeq
                     <= std::numeric_limits<int32_t>::max(),
                     "kv cache is too large for gpt_attention_plugin");
                 mTokensPerBlockLog2 = static_cast<int>(tokensPerBlockSeqLog2);
@@ -96,7 +96,7 @@ namespace bitfusion
                 , mBytesPerSeq(tokensPerBlock* sizePerToken)
                 , data(nullptr)
             {
-                TLLM_CHECK_WITH_INFO(
+                CHECK_WITH_INFO(
                     static_cast<int64_t>(mMaxSeqs - 1) * mBytesPerSeq * 2 + mBytesPerSeq <= std::numeric_limits<int32_t>::max(),
                     "kv cache is too large for gpt_attention_plugin");
             }

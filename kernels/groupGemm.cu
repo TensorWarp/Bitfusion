@@ -21,7 +21,7 @@ void groupedGemm_(std::vector<cutlass::gemm::GemmCoord> problem_sizes, std::vect
     std::vector<void*> ptrC, std::vector<void*> ptrD, void* workspace, int64_t workSpaceSize, void* cublasWorkSpace,
     int64_t cublasWorkspaceSize, nvinfer1::DataType dataType, cudaStream_t stream)
 {
-    TLLM_LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     using ElementA = cutlassType;
     using ElementB = cutlassType;
     using ElementOutput = cutlassType;
@@ -96,7 +96,7 @@ void groupedGemm_(std::vector<cutlass::gemm::GemmCoord> problem_sizes, std::vect
     int64_t* ldc = reinterpret_cast<int64_t*>((char*) workspace + gemm_coord_size + 4 * ptr_size + 2 * ldd_size);
     int64_t* ldd = reinterpret_cast<int64_t*>((char*) workspace + gemm_coord_size + 4 * ptr_size + 3 * ldd_size);
 
-    TLLM_CHECK(((char*) ldc_host - (char*) host_workspace) == ((char*) ldc - (char*) workspace));
+    CHECK(((char*) ldc_host - (char*) host_workspace) == ((char*) ldc - (char*) workspace));
     bitfusion::common::cudaAutoCpy((int8_t*) workspace, (int8_t*) host_workspace, workSpaceSize, stream);
 
     int threadblock_count = Gemm::sufficient(problem_sizes.data(), problem_count);
@@ -108,19 +108,19 @@ void groupedGemm_(std::vector<cutlass::gemm::GemmCoord> problem_sizes, std::vect
     Gemm gemm;
 
     size_t workspace_size = gemm.get_workspace_size(args);
-    TLLM_CHECK(gemm.get_workspace_size(args) <= cublasWorkspaceSize);
+    CHECK(gemm.get_workspace_size(args) <= cublasWorkspaceSize);
 
     cutlass::Status status = gemm.initialize(args, cublasWorkSpace);
 
-    TLLM_CHECK_WITH_INFO(status == cutlass::Status::kSuccess, "Failed to initialize CUTLASS Grouped GEMM kernel.");
+    CHECK_WITH_INFO(status == cutlass::Status::kSuccess, "Failed to initialize CUTLASS Grouped GEMM kernel.");
 
     // Run the grouped GEMM object
     status = gemm.run(stream);
 
-    TLLM_CHECK_WITH_INFO(status == cutlass::Status::kSuccess, "Failed to run CUTLASS Grouped GEMM kernel.");
+    CHECK_WITH_INFO(status == cutlass::Status::kSuccess, "Failed to run CUTLASS Grouped GEMM kernel.");
 
     std::free(host_workspace);
-    TLLM_LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
+    LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
 template <int M1, int N1, int K1, int M2, int N2, int K2>
@@ -135,7 +135,7 @@ void groupedGemmType_(std::vector<cutlass::gemm::GemmCoord> problem_sizes, std::
     }
     else if (dataType == nvinfer1::DataType::kFLOAT)
     {
-        TLLM_CHECK_WITH_INFO(false, "not support float input/output");
+        CHECK_WITH_INFO(false, "not support float input/output");
     }
 #ifdef ENABLE_BF16
     else if (dataType == nvinfer1::DataType::kBF16)
