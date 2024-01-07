@@ -1,46 +1,38 @@
 #include "Exception.h"
-
 #include <cstdlib>
-#if !defined(_MSC_VER)
+#include <iostream>
+#include <sstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+
+#ifndef _MSC_VER
 #include <cxxabi.h>
 #include <dlfcn.h>
 #include <execinfo.h>
 #endif
-#include <sstream>
 
 namespace bitfusion::common
 {
-
     namespace
     {
-        int constexpr VOID_PTR_SZ = 2 + sizeof(void*) * 2;
+        constexpr int VOID_PTR_SZ = 2 + sizeof(void*) * 2;
+        constexpr int MAX_FRAMES = 64;
     }
 
-#if !defined(_MSC_VER)
-
-    Exception::Exception(char const* file, std::size_t line, const std::string& msg)
-        : std::runtime_error{ "" }
+    Exception::Exception(const char* file, std::size_t line, const std::string& msg)
+        : std::runtime_error{ msg + " (" + file + ":" + std::to_string(line) + ")" }
     {
+#ifndef _MSC_VER
         mNbFrames = backtrace(mCallstack.data(), MAX_FRAMES);
-        auto const trace = getTrace();
-        std::runtime_error::operator=(
-            std::runtime_error{ fmtstr("%s (%s:%zu)\n%s", msg.c_str(), file, line, trace.c_str()) });
-    }
-#else
-    Exception::Exception(char const* file, std::size_t line, const std::string& msg)
-        : mNbFrames{}
-        , std::runtime_error{ fmtstr("%s (%s:%zu)", msg.c_str(), file, line) }
-    {
-    }
 #endif
+    }
 
     Exception::~Exception() noexcept = default;
 
+#ifndef _MSC_VER
     std::string Exception::getTrace() const
     {
-#if defined(_MSC_VER)
-        return "";
-#else
         auto const trace = backtrace_symbols(mCallstack.data(), mNbFrames);
         std::ostringstream buf;
         for (auto i = 1; i < mNbFrames; ++i)
@@ -57,24 +49,20 @@ namespace bitfusion::common
                 buf << fmtstr("%-3d %*p %s", i, VOID_PTR_SZ, mCallstack[i], trace[i]);
             }
             if (i < mNbFrames - 1)
-                buf << std::endl;
+                buf << '\n';
         }
 
         if (mNbFrames == MAX_FRAMES)
-            buf << std::endl << "[truncated]";
+            buf << "\n[truncated]";
 
         std::free(trace);
         return buf.str();
-#endif
     }
 
-    std::string Exception::demangle(char const* name)
+    std::string Exception::demangle(const char* name)
     {
-#if defined(_MSC_VER)
-        return name;
-#else
         std::string clearName{ name };
-        auto status = -1;
+        int status = -1;
         auto const demangled = abi::__cxa_demangle(name, nullptr, nullptr, &status);
         if (status == 0)
         {
@@ -82,7 +70,16 @@ namespace bitfusion::common
             std::free(demangled);
         }
         return clearName;
-#endif
+    }
+#else
+    std::string Exception::getTrace() const
+    {
+        return "";
     }
 
+    std::string Exception::demangle(const char* name)
+    {
+        return name;
+    }
+#endif
 }
