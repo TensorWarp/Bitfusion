@@ -1,5 +1,5 @@
 #include "logger.h"
-#include "tllmException.h"
+#include "exception.h"
 #include <cuda_runtime.h>
 
 namespace bitfusion::common
@@ -46,7 +46,7 @@ namespace bitfusion::common
 
     void Logger::log(std::exception const& ex, Logger::Level level)
     {
-        log(level, "%s: %s", TllmException::demangle(typeid(ex).name()).c_str(), ex.what());
+        log(level, "%s: %s", Exception::demangle(typeid(ex).name()).c_str(), ex.what());
     }
 
     Logger* Logger::getLogger()
