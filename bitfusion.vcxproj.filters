@@ -1614,16 +1614,16 @@
     <ClCompile Include="runtime\decodingOutput.cpp">
       <Filter>runtime</Filter>
     </ClCompile>
-    <ClCompile Include="runtime\gptDecoder.cpp">
+    <ClCompile Include="runtime\decoder.cpp">
       <Filter>runtime</Filter>
     </ClCompile>
-    <ClCompile Include="runtime\gptDecoderBatch.cpp">
+    <ClCompile Include="runtime\decoderBatch.cpp">
       <Filter>runtime</Filter>
     </ClCompile>
     <ClCompile Include="runtime\gptJsonConfig.cpp">
       <Filter>runtime</Filter>
     </ClCompile>
-    <ClCompile Include="runtime\gptSession.cpp">
+    <ClCompile Include="runtime\session.cpp">
       <Filter>runtime</Filter>
     </ClCompile>
     <ClCompile Include="runtime\iBuffer.cpp">
@@ -1650,7 +1650,7 @@
     <ClCompile Include="runtime\runtimeKernels.cu">
       <Filter>runtime</Filter>
     </ClCompile>
-    <ClCompile Include="runtime\statefulGptDecoder.cpp">
+    <ClCompile Include="runtime\statefulDecoder.cpp">
       <Filter>runtime</Filter>
     </ClCompile>
     <ClCompile Include="runtime\tllmLogger.cpp">
@@ -2035,10 +2035,10 @@
     <ClInclude Include="runtime\generationOutput.h">
       <Filter>runtime</Filter>
     </ClInclude>
-    <ClInclude Include="runtime\gptDecoder.h">
+    <ClInclude Include="runtime\decoder.h">
       <Filter>runtime</Filter>
     </ClInclude>
-    <ClInclude Include="runtime\gptDecoderBatch.h">
+    <ClInclude Include="runtime\decoderBatch.h">
       <Filter>runtime</Filter>
     </ClInclude>
     <ClInclude Include="runtime\gptJsonConfig.h">
@@ -2047,19 +2047,19 @@
     <ClInclude Include="runtime\gptModelConfig.h">
       <Filter>runtime</Filter>
     </ClInclude>
-    <ClInclude Include="runtime\gptSession.h">
+    <ClInclude Include="runtime\session.h">
       <Filter>runtime</Filter>
     </ClInclude>
     <ClInclude Include="runtime\iBuffer.h">
       <Filter>runtime</Filter>
     </ClInclude>
-    <ClInclude Include="runtime\iGptDecoderBatch.h">
+    <ClInclude Include="runtime\iDecoderBatch.h">
       <Filter>runtime</Filter>
     </ClInclude>
     <ClInclude Include="runtime\ipcUtils.h">
       <Filter>runtime</Filter>
     </ClInclude>
-    <ClInclude Include="runtime\iStatefulGptDecoder.h">
+    <ClInclude Include="runtime\iStatefulDecoder.h">
       <Filter>runtime</Filter>
     </ClInclude>
     <ClInclude Include="runtime\iTensor.h">
@@ -2083,7 +2083,7 @@
     <ClInclude Include="runtime\samplingConfig.h">
       <Filter>runtime</Filter>
     </ClInclude>
-    <ClInclude Include="runtime\statefulGptDecoder.h">
+    <ClInclude Include="runtime\statefulDecoder.h">
       <Filter>runtime</Filter>
     </ClInclude>
     <ClInclude Include="runtime\tensorView.h">
