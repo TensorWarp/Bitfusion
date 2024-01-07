@@ -2,7 +2,7 @@
 #pragma once
 
 #include "stringUtils.h"
-#include "tllmException.h"
+#include "exception.h"
 
 #include <string>
 
@@ -10,7 +10,7 @@ namespace bitfusion::common
 {
 [[noreturn]] inline void throwRuntimeError(const char* const file, int const line, std::string const& info = "")
 {
-    throw TllmException(file, line, fmtstr("[TensorRT-LLM][ERROR] Assertion failed: %s", info.c_str()));
+    throw Exception(file, line, fmtstr("[TensorRT-LLM][ERROR] Assertion failed: %s", info.c_str()));
 }
 
 }
@@ -66,4 +66,4 @@ extern bool CHECK_DEBUG_ENABLED;
     } while (0)
 
 #define TLLM_WRAP(ex)                                                                                                  \
-    NEW_TLLM_EXCEPTION("%s: %s", bitfusion::common::TllmException::demangle(typeid(ex).name()).c_str(), ex.what())
+    NEW_EXCEPTION("%s: %s", bitfusion::common::TllmException::demangle(typeid(ex).name()).c_str(), ex.what())
