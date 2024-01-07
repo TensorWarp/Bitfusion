@@ -1605,7 +1605,7 @@
     <ClCompile Include="common\tensor.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="common\tllmException.cpp">
+    <ClCompile Include="common\exception.cpp">
       <Filter>common</Filter>
     </ClCompile>
     <ClCompile Include="runtime\bufferManager.cpp">
@@ -1828,7 +1828,7 @@
     <ClInclude Include="common\stringUtils.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="common\tllmException.h">
+    <ClInclude Include="common\exception.h">
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="common\logger.h">
