@@ -208,14 +208,18 @@ Layer* Network::GetLayer(const std::string& layerName) const
     if (itr != _mLayer.end())
     {
         Layer* layer = itr->second;
-        if (!layer)
+        if (layer)
+        {
+            std::cout << "Found layer '" << layerName << "'.\n";
+            return layer;
+        }
+        else
         {
             throw std::runtime_error("Layer '" + layerName + "' is null.");
         }
-        std::cout << "Found layer '" << layerName << "'.\n";
-        return layer;
     }
-    else if (getGpu()._id == 0)
+
+    if (const auto& gpu = getGpu(); gpu._id == 0)
     {
         throw std::runtime_error("Layer '" + layerName + "' not found.");
     }
