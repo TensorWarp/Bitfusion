@@ -391,7 +391,7 @@ namespace bitfusion
                 return size() > 0 && data != nullptr;
             }
 
-            Tensor slice(std::vector<size_t> shape, size_t offset = 0) const;
+            Tensor slice(const std::vector<size_t>& shape, size_t offset) const;
         };
 
         class TensorMap
