@@ -1,104 +1,128 @@
 #include "ipcUtils.h"
 #include "../common/cudaUtils.h"
 #include "../common/mpiUtils.h"
+#include <span>
+#include <vector>
 
 namespace bitfusion::runtime
 {
-
-void setPeerAccess(WorldConfig worldConfig, bool enable)
-{
-    const auto srcNode = worldConfig.getTensorParallelRank();
-
-    for (SizeType destNode = 0; destNode < worldConfig.getTensorParallelism(); destNode++)
+    /// <summary>
+    /// Enables or disables peer access between CUDA devices based on the provided WorldConfig.
+    /// </summary>
+    /// <param name="worldConfig">The WorldConfig object containing configuration information.</param>
+    /// <param name="enable">If true, enable peer access; otherwise, disable it.</param>
+    void setPeerAccess(WorldConfig worldConfig, bool enable)
     {
-        if (destNode == srcNode)
-        {
-            continue;
-        }
+        const auto srcNode = worldConfig.getTensorParallelRank();
 
-        int canAccessPeer;
-        CUDA_CHECK(cudaDeviceCanAccessPeer(&canAccessPeer, srcNode, destNode));
+        for (SizeType destNode = 0; destNode < worldConfig.getTensorParallelism(); destNode++)
+        {
+            if (destNode == srcNode)
+            {
+                continue;
+            }
 
-        if (enable)
-        {
-            cudaDeviceEnablePeerAccess(destNode, 0);
-        }
-        else
-        {
-            cudaDeviceDisablePeerAccess(destNode);
-        }
-        const auto error = cudaGetLastError();
-        if (error != cudaErrorPeerAccessAlreadyEnabled && error != cudaErrorPeerAccessNotEnabled)
-        {
-            CUDA_CHECK(error);
+            int canAccessPeer;
+            CUDA_CHECK(cudaDeviceCanAccessPeer(&canAccessPeer, srcNode, destNode));
+
+            if (enable)
+            {
+                CUDA_CHECK(cudaDeviceEnablePeerAccess(destNode, 0));
+            }
+            else
+            {
+                CUDA_CHECK(cudaDeviceDisablePeerAccess(destNode));
+            }
+
+            const auto error = cudaGetLastError();
+            if (error != cudaErrorPeerAccessAlreadyEnabled && error != cudaErrorPeerAccessNotEnabled)
+            {
+                CUDA_CHECK(error);
+            }
         }
     }
-}
 
-IpcMemory::IpcMemory(WorldConfig worldConfig, std::size_t bufferSize)
-    : mWorldConfig(worldConfig)
-    , mCommPtrs(worldConfig.getTensorParallelism())
-    , mBufferSize(bufferSize)
-{
-    allocateIpcMemory();
-}
-
-void IpcMemory::allocateIpcMemory()
-{
-    CUDA_CHECK(cudaMalloc(&mBufferPtr, mBufferSize));
-    CUDA_CHECK(cudaMemset(mBufferPtr, 0, mBufferSize));
-
-    cudaIpcMemHandle_t localHandle;
-    CUDA_CHECK(cudaIpcGetMemHandle(&localHandle, mBufferPtr));
-
-    const auto tpRank = mWorldConfig.getTensorParallelRank();
-    const auto ppRank = mWorldConfig.getPipelineParallelRank();
-    mpi::MpiComm comm;
-    mpi::comm_split(MPI_COMM_WORLD, ppRank, tpRank, &comm);
-    std::vector<char> serialHandles(CUDA_IPC_HANDLE_SIZE * mWorldConfig.getTensorParallelism(), 0);
-    mpi::allgather(&localHandle.reserved, serialHandles.data(), CUDA_IPC_HANDLE_SIZE, mpi::MPI_TYPE_BYTE, comm);
-
-    std::vector<cudaIpcMemHandle_t> handles(mWorldConfig.getTensorParallelism());
-    for (size_t i = 0; i < handles.size(); ++i)
+    /// <summary>
+    /// Constructs an IpcMemory object with the given WorldConfig and buffer size.
+    /// </summary>
+    /// <param name="worldConfig">The WorldConfig object containing configuration information.</param>
+    /// <param name="bufferSize">The size of the IPC memory buffer to allocate.</param>
+    IpcMemory::IpcMemory(WorldConfig worldConfig, std::size_t bufferSize)
+        : mWorldConfig(worldConfig),
+        mCommPtrs(worldConfig.getTensorParallelism()),
+        mBufferSize(bufferSize)
     {
-        memcpy(handles[i].reserved, &serialHandles[i * CUDA_IPC_HANDLE_SIZE], CUDA_IPC_HANDLE_SIZE);
+        allocateIpcMemory();
     }
 
-    for (size_t nodeId = 0; nodeId < handles.size(); nodeId++)
+    /// <summary>
+    /// Allocates IPC memory and initializes the necessary data structures.
+    /// </summary>
+    void IpcMemory::allocateIpcMemory()
     {
-        if ((int) nodeId == mWorldConfig.getTensorParallelRank())
+        CUDA_CHECK(cudaMalloc(&mBufferPtr, mBufferSize));
+        CUDA_CHECK(cudaMemset(mBufferPtr, 0, mBufferSize));
+
+        cudaIpcMemHandle_t localHandle;
+        CUDA_CHECK(cudaIpcGetMemHandle(&localHandle, mBufferPtr));
+
+        const auto tpRank = mWorldConfig.getTensorParallelRank();
+        const auto ppRank = mWorldConfig.getPipelineParallelRank();
+        mpi::MpiComm comm;
+        mpi::comm_split(MPI_COMM_WORLD, ppRank, tpRank, &comm);
+
+        std::vector<char> serialHandles(CUDA_IPC_HANDLE_SIZE * mWorldConfig.getTensorParallelism(), 0);
+        mpi::allgather(&localHandle.reserved, serialHandles.data(), CUDA_IPC_HANDLE_SIZE, mpi::MPI_TYPE_BYTE, comm);
+
+        std::vector<cudaIpcMemHandle_t> handles;
+        handles.reserve(mWorldConfig.getTensorParallelism());
+        for (const auto& serialHandle : serialHandles)
         {
-            mCommPtrs[nodeId] = mBufferPtr;
+            cudaIpcMemHandle_t handle;
+            std::memcpy(handle.reserved, &serialHandle, CUDA_IPC_HANDLE_SIZE);
+            handles.push_back(handle);
         }
-        else
+
+        for (size_t nodeId = 0; nodeId < handles.size(); nodeId++)
         {
-            uint8_t* foreignBuffer;
-            CUDA_CHECK(cudaIpcOpenMemHandle(
-                reinterpret_cast<void**>(&foreignBuffer), handles[nodeId], cudaIpcMemLazyEnablePeerAccess));
-            mCommPtrs[nodeId] = foreignBuffer;
+            if (nodeId == static_cast<size_t>(mWorldConfig.getTensorParallelRank()))
+            {
+                mCommPtrs[nodeId] = mBufferPtr;
+            }
+            else
+            {
+                uint8_t* foreignBuffer;
+                CUDA_CHECK(cudaIpcOpenMemHandle(
+                    reinterpret_cast<void**>(&foreignBuffer), handles[nodeId], cudaIpcMemLazyEnablePeerAccess));
+                mCommPtrs[nodeId] = foreignBuffer;
+            }
         }
     }
-}
 
-IpcMemory::~IpcMemory()
-{
-    destroyIpcMemory();
-}
-
-void IpcMemory::destroyIpcMemory()
-{
-    for (SizeType nodeId = 0; nodeId < mWorldConfig.getTensorParallelism(); ++nodeId)
+    /// <summary>
+    /// Destroys the IpcMemory object and releases allocated IPC memory.
+    /// </summary>
+    IpcMemory::~IpcMemory()
     {
-        if ((int) nodeId == mWorldConfig.getTensorParallelRank())
-        {
-            CUDA_CHECK(cudaFree(mCommPtrs[nodeId]));
-        }
-        else
-        {
-            CUDA_CHECK(cudaIpcCloseMemHandle(mCommPtrs[nodeId]));
-        }
+        destroyIpcMemory();
     }
-    cudaFree(mBufferPtr);
-}
 
+    /// <summary>
+    /// Releases the allocated IPC memory.
+    /// </summary>
+    void IpcMemory::destroyIpcMemory()
+    {
+        for (SizeType nodeId = 0; nodeId < mWorldConfig.getTensorParallelism(); ++nodeId)
+        {
+            if (nodeId == static_cast<size_t>(mWorldConfig.getTensorParallelRank()))
+            {
+                CUDA_CHECK(cudaFree(mCommPtrs[nodeId]));
+            }
+            else
+            {
+                CUDA_CHECK(cudaIpcCloseMemHandle(mCommPtrs[nodeId]));
+            }
+        }
+        cudaFree(mBufferPtr);
+    }
 }
