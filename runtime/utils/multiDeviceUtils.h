@@ -1,8 +1,8 @@
 
 #pragma once
 
-#include "../../common/assert.h"
-#include "../../common/stringUtils.h"
+#include "../common/assert.h"
+#include "../common/stringUtils.h"
 
 #include <mpi.h>
 
