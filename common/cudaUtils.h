@@ -3,7 +3,7 @@
 #include "cudaBf16Wrapper.h"
 #include "cudaFp8Utils.h"
 #include "logger.h"
-#include "tllmException.h"
+#include "Exception.h"
 #include <cinttypes>
 #include <cublasLt.h>
 #include <cublas_v2.h>
