@@ -1,8 +1,4 @@
-
 #include "statefulDecoder.h"
-
-#include <algorithm>
-
 #include "../common/cudaUtils.h"
 #include "../common/memoryUtils.h"
 #include "../kernels/decodingCommon.h"
@@ -14,43 +10,54 @@ using namespace bitfusion::runtime;
 
 using TensorPtr = ITensor::SharedPtr;
 
+/// <summary>
+/// Constructor for the StatefulDecoder class.
+/// </summary>
+/// <param name="vocabSize">The vocabulary size.</param>
+/// <param name="vocabSizePadded">The padded vocabulary size.</param>
+/// <param name="stream">A pointer to the CUDA stream.</param>
 StatefulDecoder::StatefulDecoder(std::size_t vocabSize, std::size_t vocabSizePadded, CudaStreamPtr stream)
-    : mVocabSize{vocabSize}
-    , mVocabSizePadded{vocabSizePadded}
-    , mStream{std::move(stream)}
-    , mBufferManager{mStream}
+    : mVocabSize{ vocabSize },
+    mVocabSizePadded{ vocabSizePadded },
+    mStream{ std::move(stream) },
+    mBufferManager{ mStream },
+    mDecodingInput(std::make_unique<DecodingInput>(0, 0, 0,
+        mBufferManager.emptyTensor(MemoryType::kGPU, TRTDataType<float>::value),
+        mBufferManager.emptyTensor(MemoryType::kGPU, TRTDataType<TokenIdType>::value))),
+    mDecodingOutput(std::make_unique<DecodingOutput>(
+        mBufferManager.emptyTensor(MemoryType::kGPU, TRTDataType<TokenIdType>::value))),
+    mNbSteps{ 0 }
 {
     LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
-    auto constexpr nvTokenIdType = TRTDataType<TokenIdType>::value;
-    auto constexpr nvSizeType = TRTDataType<SizeType>::value;
-    auto constexpr nvFloatType = TRTDataType<float>::value;
 
-    auto& dInput = mDecodingInput;
-    auto dummyLogits = mBufferManager.emptyTensor(MemoryType::kGPU, nvFloatType);
-    auto endIds = mBufferManager.emptyTensor(MemoryType::kGPU, nvTokenIdType);
-    dInput = std::make_unique<DecodingInput>(0, 0, 0, std::move(dummyLogits), std::move(endIds));
+    auto& dInput = *mDecodingInput;
+    auto& dOutput = *mDecodingOutput;
 
-    dInput->sequenceLimitLength = mBufferManager.emptyTensor(MemoryType::kGPU, nvSizeType);
-    dInput->lengths = mBufferManager.emptyTensor(MemoryType::kGPU, nvSizeType);
+    dInput.sequenceLimitLength = mBufferManager.emptyTensor(MemoryType::kGPU, TRTDataType<SizeType>::value);
+    dInput.lengths = mBufferManager.emptyTensor(MemoryType::kGPU, TRTDataType<SizeType>::value);
 
-    auto& dOutput = mDecodingOutput;
-    auto outputIds = mBufferManager.emptyTensor(MemoryType::kGPU, nvTokenIdType);
-    dOutput = std::make_unique<DecodingOutput>(std::move(outputIds));
-
-    dOutput->newTokens = mBufferManager.emptyTensor(MemoryType::kGPU, nvTokenIdType);
-    dOutput->parentIds = mBufferManager.emptyTensor(MemoryType::kGPU, nvTokenIdType);
-    dOutput->finished
-        = mBufferManager.emptyTensor(MemoryType::kGPU, TRTDataType<tk::FinishedState::UnderlyingType>::value);
-    dOutput->finishedSum = BufferManager::pinned(ITensor::makeShape({1}), nvSizeType);
-    dOutput->lengths = mBufferManager.emptyTensor(MemoryType::kGPU, nvSizeType);
-    dOutput->cumLogProbs = mBufferManager.emptyTensor(MemoryType::kGPU, nvFloatType);
-    dOutput->beamHypotheses.empty(mBufferManager);
+    auto outputIds = mBufferManager.emptyTensor(MemoryType::kGPU, TRTDataType<TokenIdType>::value);
+    dOutput.newTokens = mBufferManager.emptyTensor(MemoryType::kGPU, TRTDataType<TokenIdType>::value);
+    dOutput.parentIds = mBufferManager.emptyTensor(MemoryType::kGPU, TRTDataType<TokenIdType>::value);
+    dOutput.finished = mBufferManager.emptyTensor(MemoryType::kGPU, TRTDataType<tk::FinishedState::UnderlyingType>::value);
+    dOutput.finishedSum = BufferManager::pinned(ITensor::makeShape({ 1 }), TRTDataType<SizeType>::value);
+    dOutput.lengths = mBufferManager.emptyTensor(MemoryType::kGPU, TRTDataType<SizeType>::value);
+    dOutput.cumLogProbs = mBufferManager.emptyTensor(MemoryType::kGPU, TRTDataType<float>::value);
+    dOutput.beamHypotheses.empty(mBufferManager);
 
     LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
-void StatefulDecoder::setup(SizeType maxBatchSize, SizeType maxBeamWidth, SizeType maxAttentionWindow,
-    SizeType maxSequenceLength, SizeType maxTokensPerStep, nvinfer1::DataType dtype)
+/// <summary>
+/// Sets up the StatefulDecoder with the specified parameters.
+/// </summary>
+/// <param name="maxBatchSize">The maximum batch size.</param>
+/// <param name="maxBeamWidth">The maximum beam width.</param>
+/// <param name="maxAttentionWindow">The maximum attention window.</param>
+/// <param name="maxSequenceLength">The maximum sequence length.</param>
+/// <param name="maxTokensPerStep">The maximum tokens per step.</param>
+/// <param name="dtype">The data type to use.</param>
+void StatefulDecoder::setup(SizeType maxBatchSize, SizeType maxBeamWidth, SizeType maxAttentionWindow, SizeType maxSequenceLength, SizeType maxTokensPerStep, nvinfer1::DataType dtype)
 {
     LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     CHECK(maxTokensPerStep == 1);
@@ -60,8 +67,14 @@ void StatefulDecoder::setup(SizeType maxBatchSize, SizeType maxBeamWidth, SizeTy
     LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
-void StatefulDecoder::reshapeBuffers(
-    SizeType batchSize, SizeType beamWidth, SizeType maxAttentionWindow, SizeType maxSequenceLength)
+/// <summary>
+/// Reshapes the buffers for the StatefulDecoder based on the specified parameters.
+/// </summary>
+/// <param name="batchSize">The batch size.</param>
+/// <param name="beamWidth">The beam width.</param>
+/// <param name="maxAttentionWindow">The maximum attention window.</param>
+/// <param name="maxSequenceLength">The maximum sequence length.</param>
+void StatefulDecoder::reshapeBuffers(SizeType batchSize, SizeType beamWidth, SizeType maxAttentionWindow, SizeType maxSequenceLength)
 {
     LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     CHECK(batchSize > 0);
@@ -71,8 +84,8 @@ void StatefulDecoder::reshapeBuffers(
     mMaxSequenceLength = maxSequenceLength;
     mMaxAttentionWindow = maxAttentionWindow;
 
-    auto const batchSizeShape = ITensor::makeShape({batchSize});
-    auto const batchSizeXbeamWidth = ITensor::makeShape({batchSize, beamWidth});
+    auto const batchSizeShape = ITensor::makeShape({ batchSize });
+    auto const batchSizeXbeamWidth = ITensor::makeShape({ batchSize, beamWidth });
 
     auto& dInput = *mDecodingInput;
     const_cast<ITensor&>(*dInput.endIds).reshape(batchSizeXbeamWidth);
@@ -83,7 +96,7 @@ void StatefulDecoder::reshapeBuffers(
     inputLengths.reshape(batchSizeXbeamWidth);
     mBufferManager.setZero(inputLengths);
 
-    auto const outputIdsShape = ITensor::makeShape({batchSize, beamWidth, maxSequenceLength});
+    auto const outputIdsShape = ITensor::makeShape({ batchSize, beamWidth, maxSequenceLength });
 
     auto& dOutput = *mDecodingOutput;
     dOutput.ids->reshape(outputIdsShape);
@@ -110,8 +123,13 @@ void StatefulDecoder::reshapeBuffers(
     LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
-void StatefulDecoder::newBatch(
-    GenerationInput const& inputs, GenerationOutput const& outputs, SamplingConfig const& samplingConfig)
+/// <summary>
+/// Sets up the StatefulDecoder with the specified parameters.
+/// </summary>
+/// <param name="inputs">The input data for generation.</param>
+/// <param name="outputs">The output data for generation.</param>
+/// <param name="samplingConfig">The configuration for sampling.</param>
+void StatefulDecoder::newBatch(GenerationInput const& inputs, GenerationOutput const& outputs, SamplingConfig const& samplingConfig)
 {
     LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     auto& manager = mBufferManager;
@@ -139,7 +157,7 @@ void StatefulDecoder::newBatch(
     TensorPtr inputOffsets = manager.emptyTensor(MemoryType::kGPU, TRTDataType<SizeType>::value);
     if (inputs.packed)
     {
-        inputOffsets->reshape(ITensor::makeShape({batchSize + 1}));
+        inputOffsets->reshape(ITensor::makeShape({ batchSize + 1 }));
         manager.setZero(*inputOffsets);
         kernels::invokeInclusiveSum(*ITensor::slice(inputOffsets, 1), *inputLengths, manager, *stream);
     }
@@ -156,7 +174,7 @@ void StatefulDecoder::newBatch(
     dInput.embeddingBias = inputs.embeddingBias;
     dInput.badWordsList = inputs.badWordsList;
     dInput.stopWordsList = inputs.stopWordsList;
-    auto inputLengthsView = ITensor::view(dInput.lengths, ITensor::makeShape({batchSize * beamWidth}));
+    auto inputLengthsView = ITensor::view(dInput.lengths, ITensor::makeShape({ batchSize * beamWidth }));
     kernels::tileTensor(const_cast<ITensor&>(*inputLengthsView), *inputLengths, beamWidth, *stream);
     if (inputs.maxNewTokens)
     {
@@ -212,6 +230,11 @@ void StatefulDecoder::newBatch(
     LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
+/// <summary>
+/// Asynchronously performs the forward pass of the decoder.
+/// </summary>
+/// <param name="output">The output tensor to be filled by the decoder.</param>
+/// <param name="input">The input tensor containing logits.</param>
 void StatefulDecoder::forwardAsync(decoder::Output& output, decoder::Input const& input)
 {
     LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
@@ -250,6 +273,9 @@ void StatefulDecoder::forwardAsync(decoder::Output& output, decoder::Input const
     LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
+/// <summary>
+/// Synchronizes the forward pass of the decoder, waiting for completion.
+/// </summary>
 void StatefulDecoder::forwardSync()
 {
     LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
@@ -257,6 +283,9 @@ void StatefulDecoder::forwardSync()
     LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
+/// <summary>
+/// Finalizes the decoding process, gathering the output data.
+/// </summary>
 void StatefulDecoder::finalize() const
 {
     LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
@@ -265,5 +294,4 @@ void StatefulDecoder::finalize() const
     mDecoder->gatherTree(*finalOutputIds, *mDecodingOutput, *mDecodingInput, mBufferManager);
     mBufferManager.copy(*finalOutputIds, *outputIds);
     LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
-    return;
 }
