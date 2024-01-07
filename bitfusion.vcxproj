@@ -22,7 +22,7 @@
     <ClCompile Include="common\mpiUtils.cpp" />
     <ClCompile Include="common\stringUtils.cpp" />
     <ClCompile Include="common\tensor.cpp" />
-    <ClCompile Include="common\tllmException.cpp" />
+    <ClCompile Include="common\exception.cpp" />
     <ClCompile Include="gtests\common\allocatorTest.cpp" />
     <ClCompile Include="gtests\common\memoryUtilsTest.cu" />
     <ClCompile Include="gtests\common\quantizationTest.cpp" />
@@ -612,7 +612,7 @@
     <ClInclude Include="common\stringUtils.h" />
     <ClInclude Include="common\tensor.h" />
     <ClInclude Include="common\tensorConversion.h" />
-    <ClInclude Include="common\tllmException.h" />
+    <ClInclude Include="common\exception.h" />
     <ClInclude Include="common\workspace.h" />
     <ClInclude Include="kernels\banBadWords.h" />
     <ClInclude Include="kernels\banRepeatNgram.h" />
