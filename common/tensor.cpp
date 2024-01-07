@@ -8,8 +8,6 @@
 #include <cuda_runtime_api.h>
 #include <numeric>
 #include <string>
-#include <sys/stat.h>
-#include <sys/types.h>
 #include <unordered_map>
 #include <vector>
 
@@ -19,13 +17,18 @@
 
 namespace bitfusion::common {
 
-    Tensor::Tensor()
-        : where(MEMORY_CPU),
-        type(TYPE_INVALID),
-        shape({}),
-        data(nullptr) {
-    }
+    /// <summary>
+    /// Default constructor for the Tensor class.
+    /// </summary>
+    Tensor::Tensor() = default;
 
+    /// <summary>
+    /// Constructor for the Tensor class.
+    /// </summary>
+    /// <param name="_where">Memory type where the tensor is located.</param>
+    /// <param name="_type">Data type of the tensor.</param>
+    /// <param name="_shape">Shape of the tensor.</param>
+    /// <param name="_data">Pointer to the data of the tensor.</param>
     Tensor::Tensor(MemoryType _where, DataType _type, const std::vector<size_t>& _shape, const void* _data)
         : where(_where),
         type(_type),
@@ -33,26 +36,39 @@ namespace bitfusion::common {
         data(_data) {
     }
 
-    size_t Tensor::size() const {
-        if (data == nullptr || shape.empty()) {
-            return 0;
-        }
-        return std::accumulate(shape.begin(), shape.end(), size_t(1), std::multiplies<size_t>());
+    /// <summary>
+    /// Get the size (number of elements) of the tensor.
+    /// </summary>
+    /// <returns>The size of the tensor.</returns>
+    auto Tensor::size() const -> size_t {
+        return data ? std::reduce(shape.begin(), shape.end(), size_t(1), std::multiplies<size_t>()) : 0;
     }
 
-    size_t Tensor::sizeBytes() const {
+    /// <summary>
+    /// Get the size of the tensor in bytes.
+    /// </summary>
+    /// <returns>The size of the tensor in bytes.</returns>
+    auto Tensor::sizeBytes() const -> size_t {
         return size() * getTypeSize(type);
     }
 
-    std::string Tensor::whereToString() const {
+    /// <summary>
+    /// Convert the MemoryType enum to a string representation.
+    /// </summary>
+    /// <returns>The string representation of the MemoryType.</returns>
+    auto Tensor::whereToString() const -> std::string {
         static const std::unordered_map<MemoryType, std::string> memToString{
             { MEMORY_CPU, "CPU" },{ MEMORY_CPU_PINNED, "CPU_PINNED" },{ MEMORY_GPU, "GPU" }
         };
         return memToString.at(where);
     }
 
-    std::string Tensor::toString() const {
-        std::string memTypeStr = whereToString();
+    /// <summary>
+    /// Convert the Tensor object to a string representation.
+    /// </summary>
+    /// <returns>The string representation of the Tensor.</returns>
+    auto Tensor::toString() const -> std::string {
+        const auto memTypeStr = whereToString();
 
         static const std::unordered_map<DataType, std::string> typeToString{
             { TYPE_BOOL, "BOOL" },{ TYPE_UINT8, "UINT8" },{ TYPE_UINT16, "UINT16" },{ TYPE_UINT32, "UINT32" },
@@ -61,11 +77,17 @@ namespace bitfusion::common {
             { TYPE_FP64, "FP64" },{ TYPE_BYTES, "BYTES" },{ TYPE_INVALID, "INVALID" },{ TYPE_FP8_E4M3, "E4M3" },
             { TYPE_VOID, "VOID" }
         };
+
         return fmtstr("Tensor[where=%s, type=%s, shape=%s, data=%p]", memTypeStr.c_str(), typeToString.at(type).c_str(),
             vec2str(shape).c_str(), data);
     }
 
-    size_t Tensor::getTypeSize(DataType type) {
+    /// <summary>
+    /// Get the size in bytes of a specific data type.
+    /// </summary>
+    /// <param name="type">The data type.</param>
+    /// <returns>The size in bytes of the data type.</returns>
+    auto Tensor::getTypeSize(DataType type) -> size_t {
         static const std::unordered_map<DataType, size_t> typeMap{
             { TYPE_BOOL, sizeof(bool) },{ TYPE_BYTES, sizeof(char) },
             { TYPE_UINT8, sizeof(uint8_t) },{ TYPE_UINT16, sizeof(uint16_t) },{ TYPE_UINT32, sizeof(uint32_t) },
@@ -79,10 +101,16 @@ namespace bitfusion::common {
     #endif
             { TYPE_FP16, sizeof(half) },{ TYPE_FP32, sizeof(float) },{ TYPE_FP64, sizeof(double) }
         };
+
         return typeMap.at(type);
     }
 
-    std::string Tensor::getNumpyTypeDesc(DataType type) const {
+    /// <summary>
+    /// Get the Numpy type description for a specific data type.
+    /// </summary>
+    /// <param name="type">The data type.</param>
+    /// <returns>The Numpy type description string.</returns>
+    auto Tensor::getNumpyTypeDesc(DataType type) const -> std::string {
         static const std::unordered_map<DataType, std::string> typeMap{
             { TYPE_INVALID, "x" },{ TYPE_BOOL, "?" },{ TYPE_BYTES, "b" },{ TYPE_UINT8, "u1" },
             { TYPE_UINT16, "u2" },{ TYPE_UINT32, "u4" },{ TYPE_UINT64, "u8" },{ TYPE_INT8, "i1" },
@@ -97,13 +125,19 @@ namespace bitfusion::common {
                 "Please refer for the discussions https://github.com/numpy/numpy/issues/19808.");
         }
 
-        return typeMap.count(type) > 0 ? typeMap.at(type) : "x";
+        return typeMap.contains(type) ? typeMap.at(type) : "x";
     }
 
-    Tensor Tensor::slice(const std::vector<size_t>& shape, size_t offset) const {
+    /// <summary>
+    /// Slice the tensor into a new tensor with a specified shape and offset.
+    /// </summary>
+    /// <param name="shape">The shape of the sliced tensor.</param>
+    /// <param name="offset">The offset in the original tensor.</param>
+    /// <returns>The sliced tensor.</returns>
+    auto Tensor::slice(const std::vector<size_t>& shape, size_t offset) const -> Tensor {
         if (data != nullptr) {
             size_t nElts = size();
-            size_t nSlicedElts = std::accumulate(shape.begin(), shape.end(), size_t{ 1 }, std::multiplies<size_t>());
+            size_t nSlicedElts = std::reduce(shape.begin(), shape.end(), size_t{ 1 }, std::multiplies<size_t>());
             CHECK_WITH_INFO(nSlicedElts + offset <= nElts,
                 fmtstr("The number (%ld) of elements of sliced tensor exceeds that (%ld) of the original tensor",
                     nSlicedElts + offset, nElts));
@@ -111,63 +145,76 @@ namespace bitfusion::common {
         return Tensor(where, type, shape, getPtrWithOffset(offset));
     }
 
+    /// <summary>
+    /// Constructor for the TensorMap class from an unordered map of string keys and Tensor values.
+    /// </summary>
+    /// <param name="tensorMap">The unordered map of string keys and Tensor values.</param>
     TensorMap::TensorMap(const std::unordered_map<std::string, Tensor>& tensorMap) {
-        for (auto& kv : tensorMap) {
-            if (kv.second.isValid()) {
-                insert(kv.first, kv.second);
+        for (const auto& [key, value] : tensorMap) {
+            if (value.isValid()) {
+                insert(key, value);
             }
             else {
-                LOG_DEBUG(fmtstr("%s is not a valid tensor, skipping insert into TensorMap", kv.first.c_str()));
+                LOG_DEBUG(fmtstr("%s is not a valid tensor, skipping insert into TensorMap", key.c_str()));
             }
         }
     }
 
+    /// <summary>
+    /// Constructor for the TensorMap class from a vector of Tensor values.
+    /// </summary>
+    /// <param name="tensorMap">The vector of Tensor values.</param>
     TensorMap::TensorMap(const std::vector<Tensor>& tensorMap) {
         for (size_t i = 0; i < tensorMap.size(); i++) {
             insert(std::to_string(i), tensorMap[i]);
         }
     }
 
+    /// <summary>
+    /// Constructor for the TensorMap class from an initializer list of pairs containing string keys and Tensor values.
+    /// </summary>
+    /// <param name="tensorMap">The initializer list of pairs containing string keys and Tensor values.</param>
     TensorMap::TensorMap(std::initializer_list<std::pair<std::string, Tensor>> tensorMap) {
-        for (auto& pair : tensorMap) {
-            if (pair.second.isValid()) {
-                insert(pair.first, pair.second);
+        for (const auto& [key, value] : tensorMap) {
+            if (value.isValid()) {
+                insert(key, value);
             }
             else {
-                LOG_DEBUG(fmtstr("%s is not a valid tensor, skipping insert into TensorMap", pair.first.c_str()));
+                LOG_DEBUG(fmtstr("%s is not a valid tensor, skipping insert into TensorMap", key.c_str()));
             }
         }
     }
 
-        TensorMap::~TensorMap()
-        {
-            tensor_map_.clear();
-    }
+    /// <summary>
+    /// Destructor for the TensorMap class.
+    /// </summary>
+    TensorMap::~TensorMap() = default;
 
-        std::vector<std::string> TensorMap::keys() const
-        {
-            std::vector<std::string> key_names;
-            for (auto& kv : tensor_map_)
-            {
-                key_names.push_back(kv.first);
+    /// <summary>
+    /// Get a vector of string keys for the TensorMap.
+    /// </summary>
+    /// <returns>A vector of string keys.</returns>
+    auto TensorMap::keys() const -> std::vector<std::string> {
+        std::vector<std::string> key_names;
+        for (const auto& [key, value] : tensor_map_) {
+            key_names.push_back(key);
         }
-            return key_names;
+        return key_names;
     }
 
-        std::string TensorMap::toString()
-        {
-        std::stringstream ss;
-        ss << "{";
-            std::vector<std::string> key_names = keys();
-            for (size_t i = 0; i < tensor_map_.size(); ++i)
-            {
-                ss << key_names[i] << ": " << at(key_names[i]).toString();
-                if (i < tensor_map_.size() - 1)
-                {
-                ss << ", ";
+    /// <summary>
+    /// Convert the TensorMap to a string representation.
+    /// </summary>
+    /// <returns>The string representation of the TensorMap.</returns>
+    auto TensorMap::toString() -> std::string {
+        std::string result = "{";
+        const auto& key_names = keys();
+        for (size_t i = 0; i < key_names.size(); ++i) {
+            result += key_names[i] + ": " + at(key_names[i]).toString();
+            if (i < key_names.size() - 1) {
+                result += ", ";
             }
         }
-        ss << "}";
-        return ss.str();
+        return result + "}";
     }
 }
