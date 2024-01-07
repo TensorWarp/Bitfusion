@@ -8,6 +8,9 @@
 
 namespace bitfusion::common {
 
+    /// <summary>
+    /// Logger constructor.
+    /// </summary>
     Logger::Logger() {
         char* isFirstRankOnlyChar = std::getenv("LOG_FIRST_RANK_ONLY");
         bool isFirstRankOnly = (isFirstRankOnlyChar != nullptr && std::string(isFirstRankOnlyChar) == "ON");
@@ -43,10 +46,19 @@ namespace bitfusion::common {
         }
     }
 
+    /// <summary>
+    /// Logs an exception with a specified log level.
+    /// </summary>
+    /// <param name="ex">The exception to log.</param>
+    /// <param name="level">The log level.</param>
     void Logger::log(const std::exception& ex, Level level) {
         log(level, "%s: %s", Exception::demangle(typeid(ex).name()).c_str(), ex.what());
     }
 
+    /// <summary>
+    /// Gets a logger instance.
+    /// </summary>
+    /// <returns>The logger instance.</returns>
     Logger* Logger::getLogger() {
         thread_local Logger instance;
         return &instance;
