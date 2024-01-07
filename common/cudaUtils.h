@@ -91,7 +91,7 @@ namespace bitfusion::common
     {
         if (result)
         {
-            throw TllmException(
+            throw Exception(
                 file, line, fmtstr("[TensorRT-LLM][ERROR] CUDA runtime error in %s: %s", func, _cudaGetErrorEnum(result)));
         }
     }
