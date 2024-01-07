@@ -62,7 +62,7 @@ extern bool CHECK_DEBUG_ENABLED;
 #define TLLM_THROW(...)                                                                                                \
     do                                                                                                                 \
     {                                                                                                                  \
-        throw NEW_TLLM_EXCEPTION(__VA_ARGS__);                                                                         \
+        throw NEW_EXCEPTION(__VA_ARGS__);                                                                         \
     } while (0)
 
 #define TLLM_WRAP(ex)                                                                                                  \
