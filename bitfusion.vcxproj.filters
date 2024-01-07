@@ -1784,7 +1784,7 @@
     <ClCompile Include="gtests\common\tensorTest.cpp">
       <Filter>gtests\common</Filter>
     </ClCompile>
-    <ClCompile Include="gtests\common\tllmExceptionTest.cpp">
+    <ClCompile Include="gtests\common\exceptionTest.cpp">
       <Filter>gtests\common</Filter>
     </ClCompile>
   </ItemGroup>
