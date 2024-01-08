@@ -1,10 +1,8 @@
-
 #include "runtimeBuffers.h"
-
 #include "../batch_manager/kvCacheManager.h"
 #include "../common/stlUtils.h"
 #include "runtimeKernels.h"
-#include "tllmRuntime.h"
+#include "runtime.h"
 #include "utils/sessionUtils.h"
 
 #include <algorithm>
@@ -88,7 +86,7 @@ void RuntimeBuffers::clearTensorMaps()
     LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
-void RuntimeBuffers::create(TllmRuntime& runtime, GptModelConfig const& modelConfig, WorldConfig const& worldConfig)
+void RuntimeBuffers::create(Runtime& runtime, GptModelConfig const& modelConfig, WorldConfig const& worldConfig)
 {
     LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     auto& manager = runtime.getBufferManager();
