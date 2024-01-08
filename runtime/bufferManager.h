@@ -81,7 +81,7 @@ public:
     template <typename T>
     [[nodiscard]] IBufferPtr copyFrom(std::vector<T> const& src, MemoryType memoryType) const
     {
-        auto buffer = allocate(memoryType, src.size(), TRTDataType<std::remove_cv_t<T>>::value);
+        auto buffer = allocate(memoryType, src.size(), DataType<std::remove_cv_t<T>>::value);
         copy(src.data(), *buffer);
         return buffer;
     }
@@ -89,7 +89,7 @@ public:
     template <typename T>
     [[nodiscard]] ITensorPtr copyFrom(T* src, nvinfer1::Dims dims, MemoryType memoryType) const
     {
-        auto buffer = allocate(memoryType, dims, TRTDataType<std::remove_cv_t<T>>::value);
+        auto buffer = allocate(memoryType, dims, DataType<std::remove_cv_t<T>>::value);
         copy(src, *buffer);
         return buffer;
     }
