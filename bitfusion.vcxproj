@@ -714,7 +714,7 @@
     <ClInclude Include="runtime\samplingConfig.h" />
     <ClInclude Include="runtime\statefulDecoder.h" />
     <ClInclude Include="runtime\tensorView.h" />
-    <ClInclude Include="runtime\tllmBuffers.h" />
+    <ClInclude Include="runtime\Buffers.h" />
     <ClInclude Include="runtime\logger.h" />
     <ClInclude Include="runtime\runtime.h" />
     <ClInclude Include="runtime\utils\cdl.h" />
