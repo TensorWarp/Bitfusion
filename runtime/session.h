@@ -42,7 +42,7 @@ class IpcMemory;
 class IStatefulDecoder;
 class NcclCommunicator;
 class RuntimeBuffers;
-class TllmRuntime;
+class Runtime;
 
 class Session
 {
@@ -173,7 +173,7 @@ private:
         }
 
         void clear();
-        void prepareNextGraph(TllmRuntime const& runtime, SizeType nextContextId);
+        void prepareNextGraph(Runtime const& runtime, SizeType nextContextId);
         void launch(CudaStream const& stream);
 
     private:
@@ -236,7 +236,7 @@ private:
     SizeType mDecoderMaxAttentionWindow{};
 
     LoggerPtr mLogger;
-    std::shared_ptr<TllmRuntime> mRuntime;
+    std::shared_ptr<Runtime> mRuntime;
     std::shared_ptr<KvCacheManager> mKvCacheManager;
 
     MicroBatchConfig mMicroBatchConfig;
