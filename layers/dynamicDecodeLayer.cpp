@@ -32,7 +32,7 @@ void DynamicDecodeLayer<T>::initialize()
         vocab_size_, vocab_size_padded_, stream_, allocator_, false, cuda_device_prop_);
 
     auto manager = runtime::BufferManager{std::make_shared<runtime::CudaStream>(stream_, common::getDevice(), false)};
-    mIdsPtrHost = manager.emptyBuffer(runtime::MemoryType::kPINNED, runtime::TRTDataType<int*>::value);
+    mIdsPtrHost = manager.emptyBuffer(runtime::MemoryType::kPINNED, runtime::DataType<int*>::value);
 }
 
 template <typename T>
