@@ -8,6 +8,7 @@
 #include <iostream>
 #include <span>
 #include <format>
+#include "Buffers.h"
 
 namespace bitfusion::runtime {
 
