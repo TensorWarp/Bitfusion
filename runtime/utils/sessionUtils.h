@@ -13,7 +13,7 @@
 
 namespace bitfusion::runtime
 {
-class TllmRuntime;
+class Runtime;
 
 namespace utils
 {
@@ -32,11 +32,11 @@ auto transformVector(TInputContainer const& input, TFunc func)
     return output;
 }
 
-std::vector<ITensor::SharedPtr> createBufferVector(TllmRuntime const& runtime, SizeType indexOffset,
+std::vector<ITensor::SharedPtr> createBufferVector(Runtime const& runtime, SizeType indexOffset,
     SizeType numBuffers, std::string const& prefix, MemoryType memType);
 
 std::vector<ITensor::SharedPtr> createBufferVector(
-    TllmRuntime const& runtime, SizeType numBuffers, MemoryType memType, nvinfer1::DataType dtype);
+    Runtime const& runtime, SizeType numBuffers, MemoryType memType, nvinfer1::DataType dtype);
 
 void reshapeBufferVector(std::vector<ITensor::SharedPtr>& vector, nvinfer1::Dims const& shape);
 
