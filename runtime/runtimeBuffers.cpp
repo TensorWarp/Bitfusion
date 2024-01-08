@@ -86,7 +86,7 @@ void RuntimeBuffers::clearTensorMaps()
     LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
-void RuntimeBuffers::create(Runtime& runtime, GptModelConfig const& modelConfig, WorldConfig const& worldConfig)
+void RuntimeBuffers::create(Runtime& runtime, ModelConfig const& modelConfig, WorldConfig const& worldConfig)
 {
     LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     auto& manager = runtime.getBufferManager();
@@ -180,7 +180,7 @@ void RuntimeBuffers::initFromInput(ITensor const& inputIds, TensorPtr const& inp
         inputIds, *contextLengthsHost, inputPacked, beamWidth, maxAttentionWindow, maxSequenceLength);
 }
 
-void RuntimeBuffers::reshape(GptModelConfig const& modelConfig, WorldConfig const& worldConfig)
+void RuntimeBuffers::reshape(ModelConfig const& modelConfig, WorldConfig const& worldConfig)
 {
     LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
 
@@ -255,7 +255,7 @@ void RuntimeBuffers::reset(BufferManager& manager)
 }
 
 std::vector<RuntimeBuffers> RuntimeBuffers::split(
-    SizeType contextBatchSize, GptModelConfig const& modelConfig, WorldConfig const& worldConfig)
+    SizeType contextBatchSize, ModelConfig const& modelConfig, WorldConfig const& worldConfig)
 {
     LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
 
@@ -343,7 +343,7 @@ std::vector<RuntimeBuffers> RuntimeBuffers::split(
 }
 
 void RuntimeBuffers::gatherLastTokenLogits(
-    BufferManager& manager, GptModelConfig const& modelConfig, WorldConfig const& worldConfig)
+    BufferManager& manager, ModelConfig const& modelConfig, WorldConfig const& worldConfig)
 {
     LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     CHECK_WITH_INFO(modelConfig.computeContextLogits(),
@@ -387,7 +387,7 @@ void RuntimeBuffers::copyAttentionMasks(std::vector<RuntimeBuffers> const& conte
     LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
-void RuntimeBuffers::tile(BufferManager& manager, GptModelConfig const& modelConfig, WorldConfig const& worldConfig)
+void RuntimeBuffers::tile(BufferManager& manager, ModelConfig const& modelConfig, WorldConfig const& worldConfig)
 {
     LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     auto const beamWidth = generationConfig.beamWidth;
@@ -424,7 +424,7 @@ void RuntimeBuffers::tile(BufferManager& manager, GptModelConfig const& modelCon
 }
 
 void RuntimeBuffers::postContextStep(std::vector<RuntimeBuffers> const& contextBuffers, BufferManager& manager,
-    GptModelConfig const& modelConfig, WorldConfig const& worldConfig)
+    ModelConfig const& modelConfig, WorldConfig const& worldConfig)
 {
     LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     auto const batchSize = generationConfig.batchSize;
@@ -494,7 +494,7 @@ void RuntimeBuffers::postEachGenerationStep(BufferManager& manager, TensorPtr ou
 }
 
 void RuntimeBuffers::prepareContextStep(TensorPtr const& inputIds, TokenIdType const padId, BufferManager& manager,
-    KvCacheManager const* kvCacheManager, SizeType firstBatchSlotIdx, GptModelConfig const& modelConfig,
+    KvCacheManager const* kvCacheManager, SizeType firstBatchSlotIdx, ModelConfig const& modelConfig,
     WorldConfig const& worldConfig)
 {
     LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
@@ -524,7 +524,7 @@ void RuntimeBuffers::prepareContextStep(TensorPtr const& inputIds, TokenIdType c
         auto const contextLengthsHostPtr = bufferCast<SizeType const>(*contextLengthsHost);
         auto const modelVariant = modelConfig.getModelVariant();
 
-        if (modelVariant == GptModelConfig::ModelVariant::kGpt)
+        if (modelVariant == ModelConfig::ModelVariant::kGpt)
         {
             auto const inputSize = inputIds->getSize();
             std::vector<SizeType> positionIdsVec(inputSize);
@@ -537,7 +537,7 @@ void RuntimeBuffers::prepareContextStep(TensorPtr const& inputIds, TokenIdType c
             }
             positionIds = manager.copyFrom(positionIdsVec, inputShape, MemoryType::kGPU);
         }
-        else if (modelVariant == GptModelConfig::ModelVariant::kGlm)
+        else if (modelVariant == ModelConfig::ModelVariant::kGlm)
         {
             auto const positionIdsVec = getPositionIdsContextPhaseGlm(batchSize, maxInputLength, contextLengthsHostPtr,
                 modelConfig.useGptAttentionPlugin(), modelConfig.usePackedInput());
@@ -625,7 +625,7 @@ void RuntimeBuffers::prepareContextStep(TensorPtr const& inputIds, TokenIdType c
 }
 
 RuntimeBuffers::TensorPtr RuntimeBuffers::prepareNextStep(SizeType const step, BufferManager& manager,
-    KvCacheManager* kvCacheManager, SizeType firstBatchSlotIdx, GptModelConfig const& modelConfig,
+    KvCacheManager* kvCacheManager, SizeType firstBatchSlotIdx, ModelConfig const& modelConfig,
     WorldConfig const& worldConfig)
 {
     LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
@@ -658,13 +658,13 @@ RuntimeBuffers::TensorPtr RuntimeBuffers::prepareNextStep(SizeType const step, B
 
         auto const modelVariant = modelConfig.getModelVariant();
 
-        if (modelVariant == GptModelConfig::ModelVariant::kGpt)
+        if (modelVariant == ModelConfig::ModelVariant::kGpt)
         {
             positionIds->reshape(inputShape);
             manager.copy(*contextLengthsDevice, *positionIds);
             kernels::invokeAdd(*positionIds, step, stream);
         }
-        else if (modelVariant == GptModelConfig::ModelVariant::kGlm)
+        else if (modelVariant == ModelConfig::ModelVariant::kGlm)
         {
             auto const positionIdsVec = getPositionIdsGenerationPhaseGlm(batchSize, beamWidth, step,
                 contextLengthsHostPtr, modelConfig.useGptAttentionPlugin(), modelConfig.usePackedInput());
@@ -742,7 +742,7 @@ RuntimeBuffers::TensorPtr RuntimeBuffers::prepareNextStep(SizeType const step, B
 }
 
 void RuntimeBuffers::getRuntimeBuffers(TensorMap& inputBuffers, TensorMap& outputBuffers, SizeType const step,
-    TensorPtr const& inputIds, TensorPtr const& commPtrs, GptModelConfig const& modelConfig,
+    TensorPtr const& inputIds, TensorPtr const& commPtrs, ModelConfig const& modelConfig,
     WorldConfig const& worldConfig) const
 {
     LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
