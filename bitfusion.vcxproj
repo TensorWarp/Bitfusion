@@ -555,7 +555,7 @@
     <ClCompile Include="runtime\runtimeKernels.cu" />
     <ClCompile Include="runtime\statefulDecoder.cpp" />
     <ClCompile Include="runtime\tllmLogger.cpp" />
-    <ClCompile Include="runtime\tllmRuntime.cpp" />
+    <ClCompile Include="runtime\runtime.cpp" />
     <ClCompile Include="runtime\utils\cdl.cpp" />
     <ClCompile Include="runtime\utils\debugUtils.cu" />
     <ClCompile Include="runtime\utils\filters.cpp" />
@@ -716,7 +716,7 @@
     <ClInclude Include="runtime\tensorView.h" />
     <ClInclude Include="runtime\tllmBuffers.h" />
     <ClInclude Include="runtime\tllmLogger.h" />
-    <ClInclude Include="runtime\tllmRuntime.h" />
+    <ClInclude Include="runtime\runtime.h" />
     <ClInclude Include="runtime\utils\cdl.h" />
     <ClInclude Include="runtime\utils\debugUtils.h" />
     <ClInclude Include="runtime\utils\filters.h" />
