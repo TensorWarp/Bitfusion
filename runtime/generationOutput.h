@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "../common/cudaUtils.h"
@@ -11,42 +10,58 @@
 namespace bitfusion::runtime
 {
 
-template <typename TTensor>
-class GenericGenerationOutput
-{
-public:
-    using TensorPtr = TTensor;
-    using Callback = std::function<void(TensorPtr const& ids, SizeType step, bool finished)>;
-
-    explicit GenericGenerationOutput(TensorPtr ids, TensorPtr lengths)
-        : ids{std::move(ids)}
-        , lengths{std::move(lengths)}
+    /// <summary>
+    /// Template class for handling generic generation output data.
+    /// </summary>
+    /// <typeparam name="TTensor">Type of the tensor used for generation output.</typeparam>
+    template <typename TTensor>
+    class GenericGenerationOutput
     {
-        CHECK_WITH_INFO(static_cast<bool>(this->ids), "Invalid ids tensor");
-        CHECK_WITH_INFO(static_cast<bool>(this->lengths), "Invalid lengths tensor");
-    }
+    public:
+        using TensorPtr = TTensor;
+        using Callback = std::function<void(TensorPtr const& ids, SizeType step, bool finished)>;
 
-    TensorPtr ids;
-    TensorPtr lengths;
+        /// <summary>
+        /// Constructor for GenericGenerationOutput.
+        /// </summary>
+        /// <param name="ids">Pointer to the output tensor for IDs.</param>
+        /// <param name="lengths">Pointer to the output tensor for lengths.</param>
+        explicit GenericGenerationOutput(TensorPtr ids, TensorPtr lengths)
+            : ids{ std::move(ids) }
+            , lengths{ std::move(lengths) }
+        {
+            CHECK_WITH_INFO(static_cast<bool>(this->ids), "Invalid ids tensor");
+            CHECK_WITH_INFO(static_cast<bool>(this->lengths), "Invalid lengths tensor");
+        }
 
-    TensorPtr cumLogProbs;
-    TensorPtr logProbs;
-    TensorPtr contextLogits;
-    TensorPtr generationLogits;
+        TensorPtr ids;
+        TensorPtr lengths;
 
-    Callback onTokenGenerated;
-};
+        TensorPtr cumLogProbs;
+        TensorPtr logProbs;
+        TensorPtr contextLogits;
+        TensorPtr generationLogits;
 
-class GenerationOutput : public GenericGenerationOutput<ITensor::SharedPtr>
-{
-public:
-    using Base = GenericGenerationOutput<ITensor::SharedPtr>;
-    using TensorPtr = Base::TensorPtr;
+        Callback onTokenGenerated;
+    };
 
-    explicit GenerationOutput(TensorPtr ids, TensorPtr lengths)
-        : GenericGenerationOutput(std::move(ids), std::move(lengths))
+    /// <summary>
+    /// Class for handling generation output data.
+    /// </summary>
+    class GenerationOutput : public GenericGenerationOutput<ITensor::SharedPtr>
     {
-    }
-};
+    public:
+        using Base = GenericGenerationOutput<ITensor::SharedPtr>;
+        using TensorPtr = Base::TensorPtr;
 
+        /// <summary>
+        /// Constructor for GenerationOutput.
+        /// </summary>
+        /// <param name="ids">Pointer to the output tensor for IDs.</param>
+        /// <param name="lengths">Pointer to the output tensor for lengths.</param>
+        explicit GenerationOutput(TensorPtr ids, TensorPtr lengths)
+            : GenericGenerationOutput(std::move(ids), std::move(lengths))
+        {
+        }
+    };
 }
