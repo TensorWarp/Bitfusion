@@ -426,9 +426,9 @@ __global__ void buildTokenMask(SizeType* tokenMask, SizeType const* inputLengths
 void invokeBuildTokenMask(
     ITensor& tokenMask, ITensor const& inputLengths, SizeType const maxInputLength, CudaStream const& stream)
 {
-    CHECK_WITH_INFO(TRTDataType<SizeType>::value == tokenMask.getDataType(), "tokenMask has wrong data type");
+    CHECK_WITH_INFO(DataType<SizeType>::value == tokenMask.getDataType(), "tokenMask has wrong data type");
     CHECK_WITH_INFO(
-        TRTDataType<SizeType>::value == inputLengths.getDataType(), "inputLengths has wrong data type");
+        DataType<SizeType>::value == inputLengths.getDataType(), "inputLengths has wrong data type");
 
     auto const& shape = tokenMask.getShape();
     SizeType const batchSize = shape.d[0];
@@ -462,7 +462,7 @@ __global__ void buildAttentionMask(SizeType* attentionMask, SizeType const size,
 void invokeBuildAttentionMask(ITensor& attentionMask, SizeType const padId, CudaStream const& stream)
 {
     CHECK_WITH_INFO(
-        TRTDataType<SizeType>::value == attentionMask.getDataType(), "attentionMask has wrong data type");
+        DataType<SizeType>::value == attentionMask.getDataType(), "attentionMask has wrong data type");
 
     auto const size = attentionMask.getSize();
     dim3 const blockSize(256);
@@ -493,8 +493,8 @@ __global__ void extendAttentionMask(
 
 void invokeExtendAttentionMask(ITensor& newMask, ITensor const& oldMask, CudaStream const& stream)
 {
-    CHECK_WITH_INFO(TRTDataType<SizeType>::value == newMask.getDataType(), "attentionMask has wrong data type");
-    CHECK_WITH_INFO(TRTDataType<SizeType>::value == oldMask.getDataType(), "attentionMask has wrong data type");
+    CHECK_WITH_INFO(DataType<SizeType>::value == newMask.getDataType(), "attentionMask has wrong data type");
+    CHECK_WITH_INFO(DataType<SizeType>::value == oldMask.getDataType(), "attentionMask has wrong data type");
 
     auto const& shape = oldMask.getShape();
     SizeType const batchSize = shape.d[0];
