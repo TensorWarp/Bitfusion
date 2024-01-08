@@ -7,7 +7,7 @@
 #include "cudaEvent.h"
 #include "generationInput.h"
 #include "generationOutput.h"
-#include "gptModelConfig.h"
+#include "ModelConfig.h"
 #include "iTensor.h"
 #include "samplingConfig.h"
 #include "worldConfig.h"
@@ -74,17 +74,17 @@ public:
         std::optional<SizeType> genMicroBatchSize = std::nullopt;
     };
 
-    Session(Config const& sessionConfig, GptModelConfig const& modelConfig, WorldConfig const& worldConfig,
+    Session(Config const& sessionConfig, ModelConfig const& modelConfig, WorldConfig const& worldConfig,
         void const* engineBuffer, std::size_t engineSize, LoggerPtr logger = nullptr);
 
-    Session(Config const& sessionConfig, GptModelConfig const& modelConfig, WorldConfig const& worldConfig,
+    Session(Config const& sessionConfig, ModelConfig const& modelConfig, WorldConfig const& worldConfig,
         std::vector<uint8_t> const& engineBuffer, LoggerPtr logger = nullptr)
         : Session(
             sessionConfig, modelConfig, worldConfig, engineBuffer.data(), engineBuffer.size(), std::move(logger))
     {
     }
 
-    Session(Config const& sessionConfig, GptModelConfig const& modelConfig, WorldConfig const& worldConfig,
+    Session(Config const& sessionConfig, ModelConfig const& modelConfig, WorldConfig const& worldConfig,
         std::string const& engineFile, LoggerPtr logger = nullptr)
         : Session(sessionConfig, modelConfig, worldConfig, utils::loadEngine(engineFile), std::move(logger))
     {
@@ -94,7 +94,7 @@ public:
 
     [[nodiscard]] BufferManager const& getBufferManager() const;
 
-    [[nodiscard]] GptModelConfig const& getModelConfig() const
+    [[nodiscard]] ModelConfig const& getModelConfig() const
     {
         return mModelConfig;
     }
@@ -222,7 +222,7 @@ private:
     friend class batch_manager::TrtGptModelV1;
 
 private:
-    GptModelConfig const mModelConfig;
+    ModelConfig const mModelConfig;
     WorldConfig const mWorldConfig;
     int mDevice{-1};
     std::shared_ptr<NcclCommunicator> mPipelineComm;
