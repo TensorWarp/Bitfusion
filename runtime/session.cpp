@@ -296,7 +296,7 @@ ITensor::SharedPtr Session::initDecoder(ITensor& outputIds, GenerationInput cons
         auto const* inputLengthsData = bufferCast<SizeType>(*inputLengthsHost);
         SizeType const maxInputLength = *std::max_element(inputLengthsData, inputLengthsData + inputLengths->getSize());
 
-        ITensor::SharedPtr inputOffsets = manager.emptyTensor(MemoryType::kGPU, TRTDataType<SizeType>::value);
+        ITensor::SharedPtr inputOffsets = manager.emptyTensor(MemoryType::kGPU, DataType<SizeType>::value);
         if (inputs.packed)
         {
             inputOffsets->reshape(ITensor::makeShape({batchSize + 1}));
