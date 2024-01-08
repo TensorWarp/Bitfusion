@@ -2,7 +2,7 @@
 #include "../common/assert.h"
 #include "../common/logger.h"
 #include "../common/stringUtils.h"
-#include "tllmLogger.h"
+#include "logger.h"
 #include "../runtime/utils/multiDeviceUtils.h"
 
 #include <algorithm>
@@ -161,7 +161,7 @@ WorldConfig WorldConfig::mpi(nvinfer1::ILogger& logger, SizeType gpusPerNode, st
 WorldConfig WorldConfig::mpi(SizeType gpusPerNode, std::optional<SizeType> tensorParallelism,
     std::optional<SizeType> pipelineParallelism, std::optional<std::vector<SizeType>> const& deviceIds)
 {
-    TllmLogger logger{};
+    Logger logger{};
     return mpi(logger, gpusPerNode, tensorParallelism, pipelineParallelism, deviceIds);
 }
 
