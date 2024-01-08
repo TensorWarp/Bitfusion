@@ -11,8 +11,8 @@
 #include "runtimeBuffers.h"
 #include "runtimeKernels.h"
 #include "statefulDecoder.h"
-#include "tllmLogger.h"
-#include "tllmRuntime.h"
+#include "logger.h"
+#include "runtime.h"
 #include "../runtime/utils/sessionUtils.h"
 
 #include <algorithm>
@@ -29,8 +29,8 @@ Session::Session(Config const& sessionConfig, GptModelConfig const& modelConfig,
     : mModelConfig{modelConfig}
     , mWorldConfig{worldConfig}
     , mDevice{utils::initDevice(worldConfig)}
-    , mLogger{logger ? std::move(logger) : std::make_shared<TllmLogger>()}
-    , mRuntime{std::make_shared<TllmRuntime>(engineBuffer, engineSize, *mLogger)}
+    , mLogger{logger ? std::move(logger) : std::make_shared<Logger>()}
+    , mRuntime{std::make_shared<Runtime>(engineBuffer, engineSize, *mLogger)}
     , mDecoders{}
     , mBuffers{}
     , mCudaGraphInstances{}
@@ -1047,7 +1047,7 @@ void Session::CudaGraphExecutor::clear()
     LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
 }
 
-void Session::CudaGraphExecutor::prepareNextGraph(TllmRuntime const& runtime, SizeType nextContextId)
+void Session::CudaGraphExecutor::prepareNextGraph(Runtime const& runtime, SizeType nextContextId)
 {
     LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
     auto& stream = runtime.getStream();
