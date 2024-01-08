@@ -543,7 +543,7 @@
     <ClCompile Include="runtime\decodingOutput.cpp" />
     <ClCompile Include="runtime\decoder.cpp" />
     <ClCompile Include="runtime\decoderBatch.cpp" />
-    <ClCompile Include="runtime\gptJsonConfig.cpp" />
+    <ClCompile Include="runtime\jsonConfig.cpp" />
     <ClCompile Include="runtime\session.cpp" />
     <ClCompile Include="runtime\iBuffer.cpp" />
     <ClCompile Include="runtime\ipcUtils.cpp" />
@@ -698,8 +698,8 @@
     <ClInclude Include="runtime\generationOutput.h" />
     <ClInclude Include="runtime\decoder.h" />
     <ClInclude Include="runtime\decoderBatch.h" />
-    <ClInclude Include="runtime\gptJsonConfig.h" />
-    <ClInclude Include="runtime\gptModelConfig.h" />
+    <ClInclude Include="runtime\jsonConfig.h" />
+    <ClInclude Include="runtime\modelConfig.h" />
     <ClInclude Include="runtime\session.h" />
     <ClInclude Include="runtime\iBuffer.h" />
     <ClInclude Include="runtime\iDecoderBatch.h" />
