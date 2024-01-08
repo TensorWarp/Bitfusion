@@ -123,8 +123,7 @@ namespace bitfusion
         /// <param name="vocabSizePadded">Padded vocabulary size.</param>
         /// <param name="stream">CUDA stream for decoding.</param>
         /// <returns>A unique pointer to the created IDecoder instance.</returns>
-        template <typename T>
-        std::unique_ptr<IDecoder> IDecoder::create(nvinfer1::DataType dtype, size_t vocabSize, size_t vocabSizePadded,
+        static std::unique_ptr<IDecoder> create(nvinfer1::DataType dtype, size_t vocabSize, size_t vocabSizePadded,
             const BufferManager::CudaStreamPtr& stream)
         {
             switch (dtype)
