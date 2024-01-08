@@ -3,7 +3,7 @@
 #include "../common/nvtxUtils.h"
 #include "../common/stringUtils.h"
 #include "tllmBuffers.h"
-#include "tllmLogger.h"
+#include "logger.h"
 #include <limits>
 #include <type_traits>
 #include <memory>
@@ -58,7 +58,7 @@ namespace
     }
 
     // Create an instance of the default logger for the bitfusion::runtime::TllmLogger class.
-    bitfusion::runtime::TllmLogger defaultLogger{};
+    bitfusion::runtime::Logger defaultLogger{};
 }
 
 /// <summary>
