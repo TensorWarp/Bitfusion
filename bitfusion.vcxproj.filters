@@ -1620,7 +1620,7 @@
     <ClCompile Include="runtime\decoderBatch.cpp">
       <Filter>runtime</Filter>
     </ClCompile>
-    <ClCompile Include="runtime\gptJsonConfig.cpp">
+    <ClCompile Include="runtime\jsonConfig.cpp">
       <Filter>runtime</Filter>
     </ClCompile>
     <ClCompile Include="runtime\session.cpp">
@@ -2041,10 +2041,10 @@
     <ClInclude Include="runtime\decoderBatch.h">
       <Filter>runtime</Filter>
     </ClInclude>
-    <ClInclude Include="runtime\gptJsonConfig.h">
+    <ClInclude Include="runtime\jsonConfig.h">
       <Filter>runtime</Filter>
     </ClInclude>
-    <ClInclude Include="runtime\gptModelConfig.h">
+    <ClInclude Include="runtime\modelConfig.h">
       <Filter>runtime</Filter>
     </ClInclude>
     <ClInclude Include="runtime\session.h">
