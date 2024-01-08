@@ -148,9 +148,9 @@ namespace bitfusion::runtime {
     /// <param name="out">The output stream to print to.</param>
     template <typename T>
     void printTensor(ITensor const& tensor, std::ostream& out) {
-        CHECK_WITH_INFO(tensor.getDataType() == TRTDataType<std::remove_cvref_t<T>>::value,
+        CHECK_WITH_INFO(tensor.getDataType() == DataType<std::remove_cvref_t<T>>::value,
             tc::fmtstr("Data type mismatch: %d vs %d", static_cast<std::int32_t>(tensor.getDataType()),
-                static_cast<std::int32_t>(TRTDataType<std::remove_cvref_t<T>>::value)));
+                static_cast<std::int32_t>(DataType<std::remove_cvref_t<T>>::value)));
         auto const& shape = tensor.getShape();
         out << "shape: " << shape << std::endl;
         out << "vals: " << std::endl;
