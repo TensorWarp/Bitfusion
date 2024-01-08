@@ -3,7 +3,7 @@
 
 #include "../../common/assert.h"
 #include "../../runtime/runtimeKernels.h"
-#include "../../runtime/tllmRuntime.h"
+#include "../../runtime/Runtime.h"
 
 #include <algorithm>
 #include <cassert>
@@ -34,7 +34,7 @@ std::vector<uint8_t> loadEngine(std::string const& enginePath)
     return engineBlob;
 }
 
-std::vector<ITensor::SharedPtr> createBufferVector(TllmRuntime const& runtime, SizeType const indexOffset,
+std::vector<ITensor::SharedPtr> createBufferVector(Runtime const& runtime, SizeType const indexOffset,
     SizeType const numBuffers, std::string const& prefix, MemoryType memType)
 {
     auto const& manager = runtime.getBufferManager();
@@ -52,7 +52,7 @@ std::vector<ITensor::SharedPtr> createBufferVector(TllmRuntime const& runtime, S
 }
 
 std::vector<ITensor::SharedPtr> createBufferVector(
-    TllmRuntime const& runtime, SizeType const numBuffers, MemoryType const memType, nvinfer1::DataType const dtype)
+    Runtime const& runtime, SizeType const numBuffers, MemoryType const memType, nvinfer1::DataType const dtype)
 {
     auto const& manager = runtime.getBufferManager();
 
