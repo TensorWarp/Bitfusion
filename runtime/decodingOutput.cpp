@@ -8,10 +8,10 @@ namespace bitfusion::runtime {
     /// </summary>
     /// <param name="manager">Buffer manager for memory allocation.</param>
     void DecodingOutput::BeamHypotheses::empty(BufferManager& manager) {
-        constexpr auto nvTokenIdType = TRTDataType<TokenIdType>::value;
-        constexpr auto nvSizeType = TRTDataType<SizeType>::value;
-        constexpr auto nvFloatType = TRTDataType<float>::value;
-        constexpr auto nvBoolType = TRTDataType<bool>::value;
+        constexpr auto nvTokenIdType = DataType<TokenIdType>::value;
+        constexpr auto nvSizeType = DataType<SizeType>::value;
+        constexpr auto nvFloatType = DataType<float>::value;
+        constexpr auto nvBoolType = DataType<bool>::value;
 
         outputIdsTgt = manager.emptyTensor(MemoryType::kGPU, nvTokenIdType);
         sequenceLengthsTgt = manager.emptyTensor(MemoryType::kGPU, nvSizeType);
