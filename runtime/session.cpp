@@ -24,7 +24,7 @@ using namespace bitfusion::runtime;
 namespace tc = bitfusion::common;
 namespace bmkv = bitfusion::batch_manager::kv_cache_manager;
 
-Session::Session(Config const& sessionConfig, GptModelConfig const& modelConfig, WorldConfig const& worldConfig,
+Session::Session(Config const& sessionConfig, ModelConfig const& modelConfig, WorldConfig const& worldConfig,
     void const* engineBuffer, std::size_t engineSize, LoggerPtr logger)
     : mModelConfig{modelConfig}
     , mWorldConfig{worldConfig}
