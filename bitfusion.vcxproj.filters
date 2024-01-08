@@ -2089,7 +2089,7 @@
     <ClInclude Include="runtime\tensorView.h">
       <Filter>runtime</Filter>
     </ClInclude>
-    <ClInclude Include="runtime\tllmBuffers.h">
+    <ClInclude Include="runtime\Buffers.h">
       <Filter>runtime</Filter>
     </ClInclude>
     <ClInclude Include="runtime\logger.h">
