@@ -10,6 +10,7 @@
 #include <cstdint>
 #include <ranges>
 #include <format>
+#include "Buffers.h"
 
 namespace bitfusion::runtime {
 
