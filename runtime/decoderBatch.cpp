@@ -61,9 +61,9 @@ DecoderBatch::DecoderBatch(
     , mBufferManager{mStream}
 {
     LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
-    auto constexpr nvTokenIdType = TRTDataType<TokenIdType>::value;
-    auto constexpr nvSizeType = TRTDataType<SizeType>::value;
-    auto constexpr nvFloatType = TRTDataType<float>::value;
+    auto constexpr nvTokenIdType = DataType<TokenIdType>::value;
+    auto constexpr nvSizeType = DataType<SizeType>::value;
+    auto constexpr nvFloatType = DataType<float>::value;
 
     auto& dInput = mJointDecodingInput;
     auto dummyLogits = mBufferManager.emptyTensor(MemoryType::kGPU, nvFloatType);
@@ -80,7 +80,7 @@ DecoderBatch::DecoderBatch(
     dOutput->newTokensSteps = mBufferManager.emptyTensor(MemoryType::kGPU, nvTokenIdType);
     dOutput->parentIds = mBufferManager.emptyTensor(MemoryType::kGPU, nvTokenIdType);
     mFinishedSteps
-        = mBufferManager.emptyTensor(MemoryType::kGPU, TRTDataType<tk::FinishedState::UnderlyingType>::value);
+        = mBufferManager.emptyTensor(MemoryType::kGPU, DataType<tk::FinishedState::UnderlyingType>::value);
     mDraftProbs = mBufferManager.emptyTensor(MemoryType::kGPU, nvFloatType);
     mTargetProbs = mBufferManager.emptyTensor(MemoryType::kGPU, nvFloatType);
     dOutput->finishedSum = mBufferManager.emptyTensor(MemoryType::kPINNED, nvSizeType);
@@ -212,7 +212,7 @@ void DecoderBatch::newRequest(
     CHECK_WITH_INFO(inputLength + maxNewTokens <= mMaxSequenceLength,
         tc::fmtstr("Input length (%d) + max new tokens (%d) must be less than max sequence length (%d).", inputLength,
             maxNewTokens, mMaxSequenceLength));
-    CHECK(requestIds->getDataType() == TRTDataType<TokenIdType>::value);
+    CHECK(requestIds->getDataType() == DataType<TokenIdType>::value);
     auto const endId = request.endId.value_or(mVocabSize - 1);
 
     auto constexpr localBatchSize = 1;
@@ -362,8 +362,8 @@ DecoderBatch::TokenPtr DecoderBatch::forwardAsync(
     auto& tgtCacheIndirection = output.cacheIndirection;
     CHECK_WITH_INFO((srcCacheIndirection && tgtCacheIndirection) || (!srcCacheIndirection && !tgtCacheIndirection),
         "Specify both srcCacheIndirection and tgtCacheIndirection or neither.");
-    CHECK(!srcCacheIndirection || srcCacheIndirection->getDataType() == TRTDataType<SizeType>::value);
-    CHECK(!tgtCacheIndirection || tgtCacheIndirection->getDataType() == TRTDataType<SizeType>::value);
+    CHECK(!srcCacheIndirection || srcCacheIndirection->getDataType() == DataType<SizeType>::value);
+    CHECK(!tgtCacheIndirection || tgtCacheIndirection->getDataType() == DataType<SizeType>::value);
 
     CHECK(static_cast<SizeType>(output.sequenceLengths->getSize()) == mActualBatchSize * maxBeamWidth);
     TensorPtr sequenceLengths
