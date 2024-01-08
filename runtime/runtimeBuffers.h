@@ -2,7 +2,7 @@
 #pragma once
 
 #include "bufferManager.h"
-#include "gptModelConfig.h"
+#include "ModelConfig.h"
 #include "iTensor.h"
 #include "promptTuningParams.h"
 #include "worldConfig.h"
@@ -100,41 +100,41 @@ public:
     void clear();
     void clearTensorMaps();
 
-    void create(Runtime& runtime, GptModelConfig const& modelConfig, WorldConfig const& worldConfig);
+    void create(Runtime& runtime, ModelConfig const& modelConfig, WorldConfig const& worldConfig);
 
     void initFromInput(ITensor const& inputIds, TensorPtr const& inputLengths, bool inputPacked, SizeType beamWidth,
         SizeType maxAttentionWindow, SizeType maxSequenceLength, BufferManager& manager);
 
-    void reshape(GptModelConfig const& modelConfig, WorldConfig const& worldConfig);
+    void reshape(ModelConfig const& modelConfig, WorldConfig const& worldConfig);
 
     void reset(BufferManager& manager);
 
     std::vector<RuntimeBuffers> split(
-        SizeType contextBatchSize, GptModelConfig const& modelConfig, WorldConfig const& worldConfig);
+        SizeType contextBatchSize, ModelConfig const& modelConfig, WorldConfig const& worldConfig);
 
     void postContextStep(std::vector<RuntimeBuffers> const& contextBuffers, BufferManager& manager,
-        GptModelConfig const& modelConfig, WorldConfig const& worldConfig);
+        ModelConfig const& modelConfig, WorldConfig const& worldConfig);
 
     void postEachGenerationStep(BufferManager& manager, TensorPtr outputGenerationLogits, SizeType step,
         SizeType firstBatchSlotIdx, SizeType microBatchSize, SizeType beamWidth, WorldConfig const& worldConfig);
 
     void prepareContextStep(TensorPtr const& inputIds, TokenIdType padId, BufferManager& manager,
-        KvCacheManager const* kvCacheManager, SizeType firstBatchSlotIdx, GptModelConfig const& modelConfig,
+        KvCacheManager const* kvCacheManager, SizeType firstBatchSlotIdx, ModelConfig const& modelConfig,
         WorldConfig const& worldConfig);
     TensorPtr prepareNextStep(SizeType step, BufferManager& manager, KvCacheManager* kvCacheManager,
-        SizeType firstBatchSlotIdx, GptModelConfig const& modelConfig, WorldConfig const& worldConfig);
+        SizeType firstBatchSlotIdx, ModelConfig const& modelConfig, WorldConfig const& worldConfig);
 
     void getRuntimeBuffers(TensorMap& inputBuffers, TensorMap& outputBuffers, SizeType const step,
-        TensorPtr const& inputIds, TensorPtr const& commPtrs, GptModelConfig const& modelConfig,
+        TensorPtr const& inputIds, TensorPtr const& commPtrs, ModelConfig const& modelConfig,
         WorldConfig const& worldConfig) const;
 
 private:
     void gatherLastTokenLogits(
-        BufferManager& manager, GptModelConfig const& modelConfig, WorldConfig const& worldConfig);
+        BufferManager& manager, ModelConfig const& modelConfig, WorldConfig const& worldConfig);
 
     void copyAttentionMasks(std::vector<RuntimeBuffers> const& contextBatches, BufferManager& manager);
 
-    void tile(BufferManager& manager, GptModelConfig const& modelConfig, WorldConfig const& worldConfig);
+    void tile(BufferManager& manager, ModelConfig const& modelConfig, WorldConfig const& worldConfig);
 
     static std::vector<SizeType> getPositionIdsContextPhaseGlm(const SizeType& batchSize,
         const SizeType& maxInputLength, const SizeType* pInputLengths, const bool useGptAttentionPlugin,
