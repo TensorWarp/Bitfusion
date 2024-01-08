@@ -22,10 +22,10 @@ StatefulDecoder::StatefulDecoder(std::size_t vocabSize, std::size_t vocabSizePad
     mStream{ std::move(stream) },
     mBufferManager{ mStream },
     mDecodingInput(std::make_unique<DecodingInput>(0, 0, 0,
-        mBufferManager.emptyTensor(MemoryType::kGPU, TRTDataType<float>::value),
-        mBufferManager.emptyTensor(MemoryType::kGPU, TRTDataType<TokenIdType>::value))),
+        mBufferManager.emptyTensor(MemoryType::kGPU, DataType<float>::value),
+        mBufferManager.emptyTensor(MemoryType::kGPU, DataType<TokenIdType>::value))),
     mDecodingOutput(std::make_unique<DecodingOutput>(
-        mBufferManager.emptyTensor(MemoryType::kGPU, TRTDataType<TokenIdType>::value))),
+        mBufferManager.emptyTensor(MemoryType::kGPU, DataType<TokenIdType>::value))),
     mNbSteps{ 0 }
 {
     LOG_DEBUG("%s start", __PRETTY_FUNCTION__);
@@ -33,16 +33,16 @@ StatefulDecoder::StatefulDecoder(std::size_t vocabSize, std::size_t vocabSizePad
     auto& dInput = *mDecodingInput;
     auto& dOutput = *mDecodingOutput;
 
-    dInput.sequenceLimitLength = mBufferManager.emptyTensor(MemoryType::kGPU, TRTDataType<SizeType>::value);
-    dInput.lengths = mBufferManager.emptyTensor(MemoryType::kGPU, TRTDataType<SizeType>::value);
+    dInput.sequenceLimitLength = mBufferManager.emptyTensor(MemoryType::kGPU, DataType<SizeType>::value);
+    dInput.lengths = mBufferManager.emptyTensor(MemoryType::kGPU, DataType<SizeType>::value);
 
-    auto outputIds = mBufferManager.emptyTensor(MemoryType::kGPU, TRTDataType<TokenIdType>::value);
-    dOutput.newTokens = mBufferManager.emptyTensor(MemoryType::kGPU, TRTDataType<TokenIdType>::value);
-    dOutput.parentIds = mBufferManager.emptyTensor(MemoryType::kGPU, TRTDataType<TokenIdType>::value);
-    dOutput.finished = mBufferManager.emptyTensor(MemoryType::kGPU, TRTDataType<tk::FinishedState::UnderlyingType>::value);
-    dOutput.finishedSum = BufferManager::pinned(ITensor::makeShape({ 1 }), TRTDataType<SizeType>::value);
-    dOutput.lengths = mBufferManager.emptyTensor(MemoryType::kGPU, TRTDataType<SizeType>::value);
-    dOutput.cumLogProbs = mBufferManager.emptyTensor(MemoryType::kGPU, TRTDataType<float>::value);
+    auto outputIds = mBufferManager.emptyTensor(MemoryType::kGPU, DataType<TokenIdType>::value);
+    dOutput.newTokens = mBufferManager.emptyTensor(MemoryType::kGPU, DataType<TokenIdType>::value);
+    dOutput.parentIds = mBufferManager.emptyTensor(MemoryType::kGPU, DataType<TokenIdType>::value);
+    dOutput.finished = mBufferManager.emptyTensor(MemoryType::kGPU, DataType<tk::FinishedState::UnderlyingType>::value);
+    dOutput.finishedSum = BufferManager::pinned(ITensor::makeShape({ 1 }), DataType<SizeType>::value);
+    dOutput.lengths = mBufferManager.emptyTensor(MemoryType::kGPU, DataType<SizeType>::value);
+    dOutput.cumLogProbs = mBufferManager.emptyTensor(MemoryType::kGPU, DataType<float>::value);
     dOutput.beamHypotheses.empty(mBufferManager);
 
     LOG_DEBUG("%s stop", __PRETTY_FUNCTION__);
@@ -154,7 +154,7 @@ void StatefulDecoder::newBatch(GenerationInput const& inputs, GenerationOutput c
     auto const* inputLengthsData = bufferCast<SizeType>(*inputLengthsHost);
     SizeType const maxInputLength = *std::max_element(inputLengthsData, inputLengthsData + inputLengths->getSize());
 
-    TensorPtr inputOffsets = manager.emptyTensor(MemoryType::kGPU, TRTDataType<SizeType>::value);
+    TensorPtr inputOffsets = manager.emptyTensor(MemoryType::kGPU, DataType<SizeType>::value);
     if (inputs.packed)
     {
         inputOffsets->reshape(ITensor::makeShape({ batchSize + 1 }));
@@ -162,7 +162,7 @@ void StatefulDecoder::newBatch(GenerationInput const& inputs, GenerationOutput c
         kernels::invokeInclusiveSum(*ITensor::slice(inputOffsets, 1), *inputLengths, manager, *stream);
     }
 
-    CHECK(inputIds->getDataType() == TRTDataType<TokenIdType>::value);
+    CHECK(inputIds->getDataType() == DataType<TokenIdType>::value);
     auto const endId = inputs.endId;
     auto const padId = inputs.padId;
 
@@ -252,8 +252,8 @@ void StatefulDecoder::forwardAsync(decoder::Output& output, decoder::Input const
     auto& tgtCacheIndirection = output.cacheIndirection;
     CHECK_WITH_INFO((srcCacheIndirection && tgtCacheIndirection) || (!srcCacheIndirection && !tgtCacheIndirection),
         "Specify both srcCacheIndirection and tgtCacheIndirection or neither.");
-    CHECK(!srcCacheIndirection || srcCacheIndirection->getDataType() == TRTDataType<SizeType>::value);
-    CHECK(!tgtCacheIndirection || tgtCacheIndirection->getDataType() == TRTDataType<SizeType>::value);
+    CHECK(!srcCacheIndirection || srcCacheIndirection->getDataType() == DataType<SizeType>::value);
+    CHECK(!tgtCacheIndirection || tgtCacheIndirection->getDataType() == DataType<SizeType>::value);
 
     auto& dInput = *mDecodingInput;
     auto& dOutput = *mDecodingOutput;
