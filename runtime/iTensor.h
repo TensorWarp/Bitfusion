@@ -132,7 +132,7 @@ public:
     template <typename T>
     static UniquePtr wrap(T* data, Shape const& shape, std::size_t capacity)
     {
-        return wrap(data, TRTDataType<T>::value, shape, capacity);
+        return wrap(data, DataType<T>::value, shape, capacity);
     }
 
     template <typename T>
