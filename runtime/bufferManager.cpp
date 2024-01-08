@@ -1,6 +1,6 @@
 #include "bufferManager.h"
 #include "../common/assert.h"
-#include "tllmBuffers.h"
+#include "Buffers.h"
 
 #include <cstring>
 #include <cuda_runtime_api.h>
