@@ -22,33 +22,61 @@ namespace bitfusion
 
     namespace runtime
     {
+        /// <summary>
+        /// Interface for decoding operations.
+        /// </summary>
         class IDecoder
         {
         public:
             virtual ~IDecoder() = default;
 
+            /// <summary>
+            /// Set up the decoder with the provided sampling configuration, batch size, and maximum sequence length.
+            /// </summary>
+            /// <param name="samplingConfig">Sampling configuration for decoding.</param>
+            /// <param name="batchSize">Batch size for decoding.</param>
+            /// <param name="maxSequenceLength">Maximum sequence length for decoding.</param>
             virtual void setup(const SamplingConfig& samplingConfig, size_t batchSize, SizeType maxSequenceLength) = 0;
 
+            /// <summary>
+            /// Perform forward decoding and update the output.
+            /// </summary>
+            /// <param name="output">Decoding output to be updated.</param>
+            /// <param name="input">Decoding input.</param>
+            /// <returns>True if the decoding was successful, false otherwise.</returns>
             virtual bool forward(DecodingOutput& output, const DecodingInput& input) = 0;
 
+            /// <summary>
+            /// Perform forward decoding asynchronously and update the output.
+            /// </summary>
+            /// <param name="output">Decoding output to be updated.</param>
+            /// <param name="input">Decoding input.</param>
             virtual void forwardAsync(DecodingOutput& output, const DecodingInput& input) = 0;
 
+            /// <summary>
+            /// Gather the final output of the decoding operation.
+            /// </summary>
+            /// <param name="finalOutputIds">Final output tensor for IDs.</param>
+            /// <param name="decodingOutput">Decoding output.</param>
+            /// <param name="decodingInput">Decoding input.</param>
+            /// <param name="manager">Buffer manager for resource management.</param>
             virtual void gatherTree(ITensor& finalOutputIds, const DecodingOutput& decodingOutput,
                 const DecodingInput& decodingInput, const BufferManager& manager) = 0;
 
+            /// <summary>
+            /// Get the sampling configuration for decoding.
+            /// </summary>
+            /// <returns>Sampling configuration for decoding.</returns>
             virtual const SamplingConfig& getSamplingConfig() = 0;
 
-            static void acceptDraftTokensByIds(const ITensor& targetTokenIds, const ITensor& draftTokenIds,
-                const ITensor& contextLengths, const ITensor& numDraftTokens,
-                ITensor& sequenceLengths, const ITensor& finishedVec, ITensor& finishedFinal,
-                ITensor& finishedSum, const BufferManager::CudaStreamPtr& stream);
-
-            static void acceptDraftTokensByLogits(ITensor& draftLogits, const ITensor& targetLogits, ITensor& draftProbs,
-                ITensor& targetProbs, const ITensor& numDraftTokens, ITensor& finished,
-                SizeType vocabSize, SizeType vocabSizePadded, bool useRandomAcceptThreshold,
-                float randomAcceptThreshold, curandState_t* curandState,
-                const BufferManager::CudaStreamPtr& stream);
-
+            /// <summary>
+            /// Create an instance of IDecoder based on the data type, vocabulary size, and stream.
+            /// </summary>
+            /// <param name="dtype">Data type for decoding.</param>
+            /// <param name="vocabSize">Vocabulary size.</param>
+            /// <param name="vocabSizePadded">Padded vocabulary size.</param>
+            /// <param name="stream">CUDA stream for decoding.</param>
+            /// <returns>A unique pointer to the created IDecoder instance.</returns>
             static std::unique_ptr<IDecoder> create(nvinfer1::DataType dtype, size_t vocabSize, size_t vocabSizePadded,
                 const BufferManager::CudaStreamPtr& stream);
         };
@@ -60,6 +88,12 @@ namespace bitfusion
             using CudaStreamPtr = BufferManager::CudaStreamPtr;
             using TensorPtr = std::shared_ptr<ITensor>;
 
+            /// <summary>
+            /// Constructor for the Decoder class.
+            /// </summary>
+            /// <param name="vocabSize">Vocabulary size.</param>
+            /// <param name="vocabSizePadded">Padded vocabulary size.</param>
+            /// <param name="stream">CUDA stream for decoding.</param>
             Decoder(size_t vocabSize, size_t vocabSizePadded, const CudaStreamPtr& stream);
 
             void setup(const SamplingConfig& samplingConfig, size_t batchSize, SizeType maxSequenceLength) override;
@@ -81,6 +115,15 @@ namespace bitfusion
             SamplingConfig mSamplingConfig;
         };
 
+        /// <summary>
+        /// Create an instance of IDecoder based on the data type, vocabulary size, and stream.
+        /// </summary>
+        /// <param name="dtype">Data type for decoding.</param>
+        /// <param name="vocabSize">Vocabulary size.</param>
+        /// <param name="vocabSizePadded">Padded vocabulary size.</param>
+        /// <param name="stream">CUDA stream for decoding.</param>
+        /// <returns>A unique pointer to the created IDecoder instance.</returns>
+        template <typename T>
         std::unique_ptr<IDecoder> IDecoder::create(nvinfer1::DataType dtype, size_t vocabSize, size_t vocabSizePadded,
             const BufferManager::CudaStreamPtr& stream)
         {
