@@ -17,7 +17,7 @@ class KVCacheManager;
 
 namespace bitfusion::runtime
 {
-class TllmRuntime;
+class Runtime;
 
 class RuntimeBuffers
 {
@@ -100,7 +100,7 @@ public:
     void clear();
     void clearTensorMaps();
 
-    void create(TllmRuntime& runtime, GptModelConfig const& modelConfig, WorldConfig const& worldConfig);
+    void create(Runtime& runtime, GptModelConfig const& modelConfig, WorldConfig const& worldConfig);
 
     void initFromInput(ITensor const& inputIds, TensorPtr const& inputLengths, bool inputPacked, SizeType beamWidth,
         SizeType maxAttentionWindow, SizeType maxSequenceLength, BufferManager& manager);
