@@ -157,7 +157,7 @@ template <typename T>
 void tileCpuBufferReplaceImpl(ITensor::SharedPtr& tensor, SizeType beamWidth, BufferManager& manager)
 {
     CHECK(tensor != nullptr);
-    CHECK(tensor->getDataType() == TRTDataType<T>::value);
+    CHECK(tensor->getDataType() == DataType<T>::value);
     auto shape = tensor->getShape();
     shape.d[0] *= beamWidth;
 
