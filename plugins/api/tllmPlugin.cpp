@@ -2,7 +2,7 @@
 #include "tllmPlugin.h"
 
 #include "../../common/stringUtils.h"
-#include "../../runtime/tllmLogger.h"
+#include "../../runtime/Logger.h"
 
 #include "../../plugins/bertAttentionPlugin/bertAttentionPlugin.h"
 #include "../../plugins/gemmPlugin/gemmPlugin.h"
@@ -49,9 +49,9 @@ nvinfer1::IPluginCreator* creatorPtr(nvinfer1::IPluginCreator& creator)
     return &creator;
 }
 
-auto tllmLogger = bitfusion::runtime::TllmLogger();
+auto Logger = bitfusion::runtime::Logger();
 
-nvinfer1::ILogger* gLogger{&tllmLogger};
+nvinfer1::ILogger* gLogger{&Logger};
 
 class GlobalLoggerFinder : public nvinfer1::ILoggerFinder
 {
