@@ -5,7 +5,7 @@
 #include "bufferManager.h"
 #include "common.h"
 #include "iTensor.h"
-#include "tllmBuffers.h"
+#include "buffers.h"
 
 #include <optional>
 #include <utility>
