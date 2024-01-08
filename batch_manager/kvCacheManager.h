@@ -5,7 +5,7 @@
 #include "../runtime/bufferManager.h"
 #include "../runtime/common.h"
 #include "../runtime/cudaStream.h"
-#include "../runtime/gptModelConfig.h"
+#include "../runtime/ModelConfig.h"
 #include "../runtime/iTensor.h"
 #include "../runtime/worldConfig.h"
 
@@ -345,20 +345,20 @@ namespace bitfusion::batch_manager::kv_cache_manager
         void copyBlockPointers(
             runtime::ITensor& dstPointers, SizeType dstSlotOffset, SizeType seqSlotIdx, SizeType beamWidth) const;
 
-        [[nodiscard]] static SizeType constexpr calculatePageSize(bitfusion::runtime::GptModelConfig const& modelConfig)
+        [[nodiscard]] static SizeType constexpr calculatePageSize(bitfusion::runtime::ModelConfig const& modelConfig)
         {
             return 2 * modelConfig.getNbKvHeads() * modelConfig.getTokensPerBlock() * modelConfig.getSizePerHead();
         }
 
         [[nodiscard]] static SizeType constexpr calculateCacheSizePerToken(
-            bitfusion::runtime::GptModelConfig const& modelConfig, bitfusion::runtime::WorldConfig const& worldConfig)
+            bitfusion::runtime::ModelConfig const& modelConfig, bitfusion::runtime::WorldConfig const& worldConfig)
         {
             return modelConfig.getNbLayers(worldConfig.getPipelineParallelism()) * 2 * modelConfig.getNbKvHeads()
                 * modelConfig.getSizePerHead();
         }
 
         [[nodiscard]] static SizeType getMaxNumTokens(KvCacheConfig const& config, nvinfer1::DataType dtype,
-            bitfusion::runtime::GptModelConfig const& modelConfig, bitfusion::runtime::WorldConfig const& worldConfig,
+            bitfusion::runtime::ModelConfig const& modelConfig, bitfusion::runtime::WorldConfig const& worldConfig,
             runtime::BufferManager const& bufferManager);
 
         [[nodiscard]] SizeType getNumPrepopulatedTokens(SizeType batchSlotIdx, SizeType beamIdx) const
