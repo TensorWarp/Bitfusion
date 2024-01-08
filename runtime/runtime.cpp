@@ -2,7 +2,7 @@
 #include "../common/cudaUtils.h"
 #include "../common/nvtxUtils.h"
 #include "../common/stringUtils.h"
-#include "tllmBuffers.h"
+#include "buffers.h"
 #include "logger.h"
 #include <limits>
 #include <type_traits>
@@ -57,7 +57,7 @@ namespace
         return shape;
     }
 
-    // Create an instance of the default logger for the bitfusion::runtime::TllmLogger class.
+    // Create an instance of the default logger for the bitfusion::runtime::Logger class.
     bitfusion::runtime::Logger defaultLogger{};
 }
 
